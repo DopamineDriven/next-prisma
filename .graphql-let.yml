@@ -1,0 +1,35 @@
+# schema:
+#   - "http://localhost:3000/graphql"
+#   - headers:
+#       - "authorization": "Bearer eyJhbGciOiJIUzUxMiIsInR5cCI6IkpXVCJ9.eyJ1c2VySWQiOiI4NmE3NDY1My05MTg4LTQ2YTQtYjNiOS1lMTYwMzhjMTNjOGMiLCJpYXQiOjE2NDQ0NDEzNTYsImV4cCI6MTY0NDUyNzc1Nn0.2D7ZjaCEJNJzRh4K7dEXUkxuvh0uKJ4nZoiEdr_-INyy_Qw7kIQ_uNYriB92YxbryCfnZ788Q7TpkeDubVBsyA"
+schema: "schema.gql"
+documents:
+  - "!./src/graphql/generated/**/*.graphql"
+  - "./src/graphql/queries/**/*.graphql"
+  - "./src/graphql/mutations/**/*.graphql"
+  - "./src/graphql/fragments/**/*.graphql"
+hooks:
+  afterOneFileWrite:
+    - prettier --write
+respectGitIgnore: true
+config:
+  experimentalFragmentVariables: true
+  reactApolloVersion: 3
+  apolloReactComponentsImportFrom: "@apollo/client/react/components"
+  useIndexSignature: true
+  withHooks: true
+  withRefetchFn: true
+plugins:
+  - typescript-operations:
+      dedupeFragments: true
+    config:
+      maybeValue: "T"
+  - typescript-react-apollo:
+      addDocBlocks: true
+      reactApolloVersion: 3
+      withRefetchFn: true
+      withHooks: true
+      experimentalFragmentVariables: true
+      useTypeImports: true
+cacheDir: "./src/.cache"
+TSConfigFile: "./tsconfig.json"

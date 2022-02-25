@@ -1,0 +1,19 @@
+{
+
+  "name": "Cortina CRM Next",
+  "documents": [
+    "./src/graphql/Queries/**/*.graphql",
+    "./src/graphql/Mutations/**/*.graphql",
+    "./src/graphql/Fragments/**/*.graphql"
+  ],
+  "exclude": "./src/swr/**/*.graphql",
+  "extensions": {
+    "languageService": {
+      "useSchemaFileDefinitions": true
+    },
+    "endpoints": {
+      "dev": "http://localhost:3000/graphql"
+    }
+  },
+  "schema": "./schema.gql"
+}

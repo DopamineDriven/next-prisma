@@ -1,0 +1,5 @@
+**/*.d.ts
+node_modules/
+.next/
+pgdata/
+/home/dopaminedriven/next-crm/cortina-tracking/pgdata
