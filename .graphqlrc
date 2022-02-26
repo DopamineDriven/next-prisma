@@ -1,19 +1,18 @@
 {
-
-  "name": "Cortina CRM Next",
+  "name": "Next-Prisma",
   "documents": [
-    "./src/graphql/Queries/**/*.graphql",
-    "./src/graphql/Mutations/**/*.graphql",
-    "./src/graphql/Fragments/**/*.graphql"
+    "./src/graphql/queries/**/*.graphql",
+    "./src/graphql/mutations/**/*.graphql",
+    "./src/graphql/fragments/**/*.graphql",
+    "./src/graphql/generated/**/*.ts"
   ],
-  "exclude": "./src/swr/**/*.graphql",
   "extensions": {
     "languageService": {
       "useSchemaFileDefinitions": true
     },
     "endpoints": {
-      "dev": "http://localhost:3000/graphql"
+      "dev": "http://localhost:3040/api/graphql"
     }
   },
-  "schema": "./schema.gql"
+  "schema": "./src/server/NexusSchema/schema.gql"
 }

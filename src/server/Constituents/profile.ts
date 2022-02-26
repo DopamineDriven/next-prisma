@@ -8,10 +8,11 @@ import {
 } from "nexus";
 import { Prisma } from "@prisma/client";
 import { buildOrderBy } from "./utils";
-import { Role, Department } from ".";
+import { Role, UserStatus } from ".";
 import { format } from "date-fns";
 import { arg } from "nexus";
-import { v4 } from "uuid";
+import { nanoid } from "nanoid";
+import { ObjectID } from "graphql-scalars/typeDefs";
 
 export const Profile: core.NexusObjectTypeDef<"Profile"> = objectType({
   name: "Profile",
@@ -50,7 +51,7 @@ export const Profile: core.NexusObjectTypeDef<"Profile"> = objectType({
   }
 });
 
-/** 
+/**
  *     t.connectionField("accounts", {
       type: "Account",
       inheritAdditionalArgs: true,
@@ -65,7 +66,7 @@ export const Profile: core.NexusObjectTypeDef<"Profile"> = objectType({
         return accounts;
       }
     });
- * 
+ *
 */
 
 export const ProfileOrderBy = buildOrderBy("Profile", [
@@ -138,6 +139,7 @@ export const PorfileMutations: core.NexusExtendTypeDef<"Mutation"> = extendType(
           email: nonNull(stringArg()),
           bio: stringArg(),
           coverImage: stringArg(),
+          dob: stringArg(),
           phoneNumber: stringArg({
             description:
               "compliant with standard E164 formatting (+15559871234)"
@@ -146,15 +148,17 @@ export const PorfileMutations: core.NexusExtendTypeDef<"Mutation"> = extendType(
         async resolve(_root, args, ctx, _info) {
           const create = await ctx.prisma.profile.create({
             data: {
-              id: v4(),
+              id: ObjectID,
               user: {
                 connect: {
                   email: args.email
                 }
               },
-              bio: args.bio,
-              coverImage: args.coverImage,
-              dob: new Date(700376889),
+              bio: {set: {headline: ""}},
+              coverPhoto: {
+                // media item
+              },
+              // dob: new Date(args.).toISOString().split(/([T])/)[0],
               memberSince: new Date(1631333289),
               phoneNumber: args.phoneNumber
             },

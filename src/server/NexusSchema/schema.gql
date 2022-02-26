@@ -473,7 +473,7 @@ type Query {
     """
     last: Int
   ): UserConnection
-  viewer(id: ID = "Pq6c3h3G3a6YbV2_WdroQ"): Viewer
+  viewer(id: ID = "Wz9IsOc1mhg92UmSgPjCI"): Viewer
 }
 
 """
