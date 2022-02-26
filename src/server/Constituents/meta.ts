@@ -1,20 +1,20 @@
-import { enumType, core } from "nexus";
+import { core } from "nexus";
 
 export const OrderByEnum: core.NexusEnumTypeDef<"OrderBy"> =
-  enumType<"OrderBy">({
+  core.enumType<"OrderBy">({
     name: "OrderBy",
     members: ["asc", "desc"],
     description: "Direction in which to order one or more corresponding fields"
   });
 
-export const Role: core.NexusEnumTypeDef<"Role"> = enumType<"Role">({
+export const Role: core.NexusEnumTypeDef<"Role"> = core.enumType<"Role">({
   name: "Role",
   members: ["USER", "ADMIN", "SUPERADMIN", "MAINTAINER"],
   description: "User Role"
 });
 
 export const UserStatus: core.NexusEnumTypeDef<"UserStatus"> =
-  enumType<"UserStatus">({
+  core.enumType<"UserStatus">({
     name: "UserStatus",
     members: [
       "ONLINE",
@@ -27,16 +27,15 @@ export const UserStatus: core.NexusEnumTypeDef<"UserStatus"> =
     description: "User Status"
   });
 
-export const MimeType: core.NexusEnumTypeDef<"MimeType"> = enumType<"MimeType">(
-  {
+export const MimeType: core.NexusEnumTypeDef<"MimeType"> =
+  core.enumType<"MimeType">({
     name: "MimeType",
     members: ["GIF", "JPEG", "WEBP", "AVIF", "PNG", "SVG", "TIFF", "BMP"],
     description: "Mime Types"
-  }
-);
+  });
 
 export const MediaItemDestination: core.NexusEnumTypeDef<"MediaItemDestination"> =
-  enumType<"MediaItemDestination">({
+  core.enumType<"MediaItemDestination">({
     name: "MediaItemDestination",
     members: [
       "COVER_IMAGE",
@@ -48,14 +47,14 @@ export const MediaItemDestination: core.NexusEnumTypeDef<"MediaItemDestination">
     description: "Media Item Destination"
   });
 
-export const Gender: core.NexusEnumTypeDef<"Gender"> = enumType<"Gender">({
+export const Gender: core.NexusEnumTypeDef<"Gender"> = core.enumType<"Gender">({
   name: "Gender",
   members: ["MALE", "FEMALE", "UNCERTAIN", "OTHER"],
   description: "User Gender"
 });
 
-export const Pronouns: core.NexusEnumTypeDef<"Pronouns"> = enumType<"Pronouns">(
-  {
+export const Pronouns: core.NexusEnumTypeDef<"Pronouns"> =
+  core.enumType<"Pronouns">({
     name: "Pronouns",
     members: [
       "HE_HIM_HIS",
@@ -65,10 +64,23 @@ export const Pronouns: core.NexusEnumTypeDef<"Pronouns"> = enumType<"Pronouns">(
       "THEY_THEM_THEIRS"
     ],
     description: "User pronouns"
-  }
-);
+  });
 
-export const Reaction: core.NexusEnumTypeDef<"Reaction"> = enumType<"Reaction">({
-  name: "Reaction",
-  members: ["LIKE", "LOVE", "LAUGH", "TEARS", "DISLIKE", "ANGRY", "CONFUSED", "CARE", "WOW", "PARROT", "ROCKET"]
-})
+export const Reaction: core.NexusEnumTypeDef<"Reaction"> =
+  core.enumType<"Reaction">({
+    name: "Reaction",
+    members: [
+      "LIKE",
+      "LOVE",
+      "LAUGH",
+      "TEARS",
+      "DISLIKE",
+      "ANGRY",
+      "CONFUSED",
+      "CARE",
+      "WOW",
+      "PARROT",
+      "ROCKET"
+    ],
+    description: "Comment/Entry Reactions"
+  });
