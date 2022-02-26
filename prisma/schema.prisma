@@ -1,0 +1,219 @@
+datasource db {
+  provider = "mongodb"
+  url      = env("DATABASE_URL")
+}
+
+generator client {
+  provider        = "prisma-client-js"
+  previewFeatures = ["mongoDb"]
+}
+
+
+model User {
+  id            String       @id @map("_id") @default(auto()) @db.ObjectId
+  firstName     String?
+  lastName      String?
+  email         String       @unique
+  image         String?      @default("https://dev-to-uploads.s3.amazonaws.com/uploads/articles/g4apn65eo8acy988pfhb.gif")
+  imageMeta     MediaItem?
+  role          Role?        @default(USER)
+  status        UserStatus?  @default(OFFLINE)
+  password      String?
+  createdAt     DateTime     @default(now())
+  updatedAt     DateTime?    @updatedAt
+  emailVerified DateTime?
+  profile       Profile?     @relation("UserProfile")
+  accounts      Account[]    @relation("UserAccounts")
+  sessions      Session[]    @relation("UserSessions")
+  entries       Entry[]      @relation("Author")
+  comments      Comment[]    @relation("CommentAuthor")
+}
+
+model Account {
+  id                String  @id @map("_id") @default(auto()) @db.ObjectId
+  userId            String
+  type              String
+  provider          String
+  providerAccountId String
+  refresh_token     String?
+  access_token      String?
+  expires_at        Int?
+  token_type        String?
+  scope             String?
+  id_token          String?
+  session_state     String?
+  user              User?    @relation("UserAccounts", fields: [userId], references: [id], onDelete: Cascade)
+
+  @@unique([provider, providerAccountId])
+}
+
+
+model Comment {
+  id        String             @id @map("_id") @default(auto()) @db.ObjectId
+  authorId  String?
+  entryId   String?
+  body      String?
+  position  String?
+  createdAt DateTime           @default(now())
+  updatedAt DateTime?          @updatedAt
+  reactions Reaction[]
+  entry     Entry?              @relation("EntryComments", fields: [entryId], references: [id], onDelete: Cascade)
+  author    User?               @relation("CommentAuthor", fields: [authorId], references: [id], onDelete: Cascade)
+  @@unique([authorId, entryId])
+}
+
+
+model Entry {
+  id            String      @id @map("_id") @default(auto()) @db.ObjectId
+  title         String
+  published     Boolean    @default(false)
+  authorId      String?
+  content       String?
+  createdAt     DateTime   @default(now())
+  updatedAt     DateTime?  @updatedAt
+  featuredImage MediaItem?
+  reactions     Reaction[]
+  categories    Category[]
+  author        User?       @relation("Author", fields: [authorId], references: [id], onDelete: Cascade)
+  comments      Comment[]  @relation("EntryComments")
+}
+
+
+model Profile {
+  id             String    @id @map("_id") @default(auto()) @db.ObjectId
+  userId         String?
+  memberSince    DateTime  @default(now())
+  gender         Gender?   @default(OTHER)
+  pronouns       Pronouns? @default(NOT_LISTED)
+  coverPhoto     MediaItem?
+  lastSeen       DateTime? @updatedAt
+  dob            String?
+  phoneNumber    String?
+  occupation     String?
+  city           String?
+  country        String?
+  bio            Bio?
+  activiyFeed    String?
+  user           User?      @relation("UserProfile", fields: [userId], references: [id], onDelete: Cascade)
+  recentActivity String?
+}
+
+model Session {
+  id           String    @id @map("_id") @default(auto()) @db.ObjectId
+  sessionToken String   @unique
+  userId       String
+  expires      DateTime
+  user         User?      @relation("UserSessions", fields: [userId], references: [id], onDelete: Cascade)
+}
+
+/// Passwordless login for email providers
+model VerificationToken {
+  id         String   @id @map("_id") @default(auto()) @db.ObjectId
+  identifier String
+  token      String   @unique
+  expires    DateTime
+  @@unique([identifier, token])
+}
+
+
+type Category {
+  creatorId String?
+  createdAt DateTime? @default(now())
+  updatedAt DateTime?
+  root      Boolean @default(true)
+  name      String
+  entryId   String?
+}
+
+type Bio {
+  headline String
+  intro String?
+  body String?
+  status String?
+  createdAt DateTime @default(now())
+  updatedAt DateTime?
+}
+
+type MediaItem {
+  mediaItemId String?
+  uploadedAt DateTime @default(now())
+  updatedAt DateTime?
+  filename String?
+  size String?
+  filetype MimeType?
+  destination MediaItemDestination?
+  fileLastModified DateTime?
+  width Float
+  height Float
+  quality Int   @default(85)
+  src String?
+  srcSet String?
+  ariaLabel String?
+  title String?
+  caption String?
+}
+
+
+enum UserStatus {
+  ONLINE
+  OFFLINE
+  SUSPENDED
+  DELETED
+  BANNED
+  DEACTIVATED
+}
+
+enum MimeType {
+  GIF
+  JPEG
+  WEBP
+  AVIF
+  PNG
+  SVG
+  TIFF
+  BMP
+}
+
+enum MediaItemDestination {
+  COVER_IMAGE
+  AVATAR
+  COMMENT_ATTACHMENT
+  ENTRY_ATTACHMENT
+  FEATURED_IMAGE
+}
+
+enum Role {
+  SUPERADMIN
+  ADMIN
+  MAINTAINER
+  USER
+}
+
+enum Reaction {
+  LIKE
+  LOVE
+  LAUGH
+  TEARS
+  DISLIKE
+  ANGRY
+  CONFUSED
+  CARE
+  WOW
+  PARROT
+  ROCKET
+}
+enum Pronouns {
+  HE_HIM_HIS
+  SHE_HER_HERS
+  NOT_LISTED
+  PREFER_NOT_TO_SAY
+  THEY_THEM_THEIRS
+}
+
+enum Gender {
+  MALE
+  FEMALE
+  OTHER
+  UNCERTAIN
+}
+
