@@ -1,63 +1,74 @@
 import { fromGlobalId, toGlobalId } from "graphql-relay";
 import { PaginationArgs, relayToPrismaPagination } from "./utils";
-import { Prisma, PrismaClient } from "@prisma/client";
+import { Prisma, PrismaClient, Entry, User, Comment } from "@prisma/client";
 import {
   Connection,
   Edge,
   findManyCursorConnection
 } from "@devoxa/prisma-relay-cursor-connection";
 
-export interface VerificationTokenRelayCursorArgs {
-  orderBy?:
-    | Prisma.Enumerable<Prisma.VerificationTokenOrderByWithRelationInput>
-    | undefined;
-  where?: Prisma.VerificationTokenWhereInput | undefined;
-  distinct?:
-    | Prisma.Enumerable<Prisma.VerificationTokenScalarFieldEnum>
-    | undefined;
+export interface CommentRelayCursorArgs {
+  orderBy?: Prisma.Enumerable<Prisma.CommentOrderByWithRelationInput> | undefined;
+  where?: Prisma.CommentWhereInput | undefined;
+  distinct?: Prisma.Enumerable<Prisma.CommentScalarFieldEnum> | undefined;
   skip?: number | undefined;
   take?: number | undefined;
-  cursor?: Prisma.VerificationTokenWhereUniqueInput;
+  cursor?: Prisma.CommentWhereUniqueInput;
   params: PaginationArgs;
 }
 
-export class VerificationToken {
+export class CommentService {
   constructor(protected prisma: PrismaClient) {}
 
   async findUnique(params: { id: string }) {
-    const verificationToken = await this.prisma.verificationToken.findUnique({
+    const comment = await this.prisma.comment.findUnique({
       where: { id: fromGlobalId(params.id).id }
     });
 
-    if (!verificationToken) {
-      throw new Error("could not find verification token with id: " + params.id);
+    if (!comment) {
+      throw new Error("could not find comment with id: " + params.id);
     }
 
-    return verificationToken;
+    return comment;
   }
 
-  async findMany(params: PaginationArgs) {
-    return await this.prisma.verificationToken.findMany({
+  findMany(params: PaginationArgs) {
+    return this.prisma.comment.findMany({
       ...relayToPrismaPagination(params)
     });
   }
 
-  async findManyVerificationTokensPaginated(
-    params: VerificationTokenRelayCursorArgs
-  ): Promise<Connection<VerificationToken, Edge<VerificationToken>>> {
+  async findManyCommentsPaginated(params: CommentRelayCursorArgs): Promise<
+    Connection<
+      Comment & {
+        entry: Entry | undefined;
+        author: User | undefined;
+      },
+      Edge<
+        Comment & {
+          entry: Entry | undefined;
+          author: User | undefined;
+        }
+      >
+    >
+  > {
     return await findManyCursorConnection(
       args =>
-        this.prisma.verificationToken.findMany({
+        this.prisma.comment.findMany({
           cursor: params.cursor,
           distinct: params.distinct,
           skip: params.skip,
           take: params.take,
           where: params.where,
           orderBy: params.orderBy,
+          include: {
+            entry: true,
+            author: true
+          },
           ...args
         }),
       () =>
-        this.prisma.verificationToken.count({
+        this.prisma.comment.count({
           cursor: params.cursor,
           orderBy: params.orderBy,
           where: params.where,
@@ -77,7 +88,7 @@ export class VerificationToken {
         },
         decodeCursor: (cursor: string) => fromGlobalId(cursor),
         encodeCursor: (cursor: { id: string }) =>
-          toGlobalId("VerificationToken", cursor.id)
+          toGlobalId("Comment", cursor.id)
       }
     );
   }
