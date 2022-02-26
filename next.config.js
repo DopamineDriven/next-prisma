@@ -1,16 +1,8 @@
 const { withSuperjson } = require("next-superjson");
-const {
-  PHASE_DEVELOPMENT_SERVER,
-  PHASE_PRODUCTION_BUILD
-} = require("next/constants");
 
 const withRpc = require("next-rpc")();
 
 require("eslint-config-next/parser");
-
-const {
-  env: { ANALYZE }
-} = process;
 
 // @ts-check
 /**
@@ -19,7 +11,7 @@ const {
 
 module.exports = withSuperjson()({
   webpack(config, options) {
-    if (ANALYZE) {
+    if (process.env.ANALYZE) {
       config.plugins.push(new withRpc("stats.txt"));
     }
     // config.context = join(process.cwd(), "./");
@@ -44,15 +36,6 @@ module.exports = withSuperjson()({
   },
   async headers() {
     return [
-      {
-        source: "/fonts/inter-var-latin.woff2",
-        headers: [
-          {
-            key: "Cache-Control",
-            value: "public, max-age=31536000, immutable"
-          }
-        ]
-      },
       {
         source: "/fonts/inter-var-latin.woff2",
         headers: [
@@ -110,7 +93,7 @@ module.exports = withSuperjson()({
     defaultLocale: "en-US",
     domains: [
       {
-        domain: "andrewross.com",
+        domain: "andrewross.app",
         defaultLocale: "en-US"
       }
     ]

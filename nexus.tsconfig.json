@@ -1,0 +1,23 @@
+{
+  "compilerOptions": {
+    "sourceMap": true,
+    "outDir": "out",
+    "strict": true,
+    "lib": ["esnext"],
+    "esModuleInterop": true,
+    "paths": {
+      "@/apollo/*": ["src/apollo/*"],
+      "@/cache/*": ["src/.cache/*"],
+      "@/components/*": ["src/components/*"],
+      "@/context/*": ["src/context/*"],
+      "@/graphql/*": ["src/graphql/*"],
+      "@/hooks/*": ["src/hooks/*"],
+      "@/lib/*": ["src/lib/*"],
+      "@/pages/*": ["src/pages/*"],
+      "@/server/*": ["src/server/*"],
+      "@/styles/*": ["src/styles/*"],
+      "@/types/*": ["src/types/*"],
+      "@/utils/*": ["src/utils/*"]
+    }
+  }
+}
