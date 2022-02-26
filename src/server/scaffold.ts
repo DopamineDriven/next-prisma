@@ -2,6 +2,20 @@ import { join } from "path";
 import { makeSchema, connectionPlugin } from "nexus";
 import * as types from "./Constituents";
 import { SchemaBuilder } from "nexus/dist/builder";
+import { GraphQLFileLoader } from "@graphql-tools/graphql-file-loader";
+import { loadSchemaSync } from "@graphql-tools/load";
+import { GraphQLSchema } from "graphql";
+
+export const LoadSchemaSync: GraphQLSchema = loadSchemaSync(
+  join(process.cwd(), "/src/server/NexusSchema/schema.gql"),
+  {
+    loaders: [new GraphQLFileLoader()],
+    sort: true,
+    inheritResolversFromInterfaces: true,
+    experimentalFragmentVariables: true,
+    commentDescriptions: true
+  }
+);
 
 export const schemaBuilder = new SchemaBuilder({
   plugins: [
@@ -38,7 +52,7 @@ export const schemaBuilder = new SchemaBuilder({
   prettierConfig: join(process.cwd(), "/.prettierrc.yaml"),
   shouldGenerateArtifacts: true,
   outputs: {
-    schema: join(process.cwd(), "/src/server/NexusSchema/schema.graphql"),
+    schema: join(process.cwd(), "/src/server/NexusSchema/schema.gql"),
     typegen: join(process.cwd(), "/src/server/NexusSchema/nexus.ts")
   }
 });
@@ -76,7 +90,7 @@ export const schema = makeSchema({
   prettierConfig: join(process.cwd(), "/.prettierrc.yaml"),
   shouldGenerateArtifacts: true,
   outputs: {
-    schema: join(process.cwd(), "/src/server/NexusSchema/schema.graphql"),
+    schema: join(process.cwd(), "/src/server/NexusSchema/schema.gql"),
     typegen: join(process.cwd(), "/src/server/NexusSchema/nexus.ts")
   }
 

@@ -1,5 +1,5 @@
 import { ApolloServer } from "apollo-server-micro";
-import { schema as NexusSchema } from "../../../server/scaffold";
+import { schema as NexusSchema, LoadSchemaSync } from "../../../server/scaffold";
 import cors from "micro-cors";
 import { RequestHandler } from "micro";
 import {
@@ -17,12 +17,20 @@ import { GraphQLSchema } from "graphql";
 import { mergeResolvers } from "@graphql-tools/merge";
 import { buildServices } from "../../../server/Services/index";
 import { PageConfig } from "next";
+import { GraphQLFileLoader } from "@graphql-tools/graphql-file-loader"
+import {loadSchemaSync } from "@graphql-tools/load"
 
 export const serverSchema = new GraphQLSchema(NexusSchema.toConfig());
 export const corsMiddleware = (handler: RequestHandler) => {
   return cors()(handler);
 };
-
+const rootSchema = loadSchemaSync("src/schema.gql", {
+  loaders: [new GraphQLFileLoader()],
+  sort: true,
+  inheritResolversFromInterfaces: true,
+  experimentalFragmentVariables: true,
+  commentDescriptions: true
+});
 const configg: Config<ContextObject<Context>> = {
   // resolvers: mergeResolvers<ResolversObject<Resolvers<Context>>, Context>({
   //   ...types,

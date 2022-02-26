@@ -2,7 +2,7 @@ overwrite: true
 generates:
   ./src/graphql/generated/graphql.schema.graphql:
     schema:
-      ${NEST_GQL_ENDPOINT}:
+      ${NEXT_GQL_ENDPOINT}:
         headers:
           authorization: ${NEXT_TOKEN_CODEGEN}
 
@@ -18,7 +18,7 @@ generates:
       includeDirectives: true
   ./src/graphql/generated/introspection.schema.json:
     schema:
-      ${NEST_GQL_ENDPOINT}:
+      ${NEXT_GQL_ENDPOINT}:
         headers:
           authorization: ${NEXT_TOKEN_CODEGEN}
     documents: "./src/graphql/**/*.graphql"
@@ -29,7 +29,7 @@ generates:
       - introspection
   ./src/graphql/generated/resolver-types.ts:
     schema:
-      ${NEST_GQL_ENDPOINT}:
+      ${NEXT_GQL_ENDPOINT}:
         headers:
           authorization: ${NEXT_TOKEN_CODEGEN}
     documents: "./src/graphql/**/*.graphql"
@@ -43,7 +43,7 @@ generates:
       useIndexSignature: true
   ./src/graphql/generated/graphql.ts:
     schema:
-      ${NEST_GQL_ENDPOINT}:
+      ${NEXT_GQL_ENDPOINT}:
         headers:
           authorization: ${NEXT_TOKEN_CODEGEN}
     documents: "./src/graphql/**/*.graphql"
@@ -102,7 +102,7 @@ generates:
       addDocBlocks: true
   ./src/apollo/fragment-matcher.ts:
     schema:
-      ${NEST_GQL_ENDPOINT}:
+      ${NEXT_GQL_ENDPOINT}:
         headers:
           authorization: ${NEXT_TOKEN_CODEGEN}
     documents: "./src/graphql/**/*.graphql"
@@ -116,7 +116,7 @@ generates:
       apolloClientVersion: 3
   ./src/apollo/helpers.ts:
     schema:
-      ${NEST_GQL_ENDPOINT}:
+      ${NEXT_GQL_ENDPOINT}:
         headers:
           authorization: ${NEXT_TOKEN_CODEGEN}
     documents: "./src/graphql/**/*.graphql"
