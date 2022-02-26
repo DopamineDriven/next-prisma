@@ -1,13 +1,22 @@
-export const slashExtractFragment = (y: string): string[] => {
-  return y.split(/([/])/);
+export const fractionateDateTime = (w: string) => w.split(/[(T)]/);
+
+export const fractionateDashSymbol = (x: string) => x.split(/([-])/);
+
+export const fractionateCommaDelimitedData = (y: string) =>
+  y.split(/([,])/);
+
+export const fractionateAtSymbol = (z: string) => z.split(/([@])/);
+
+export const stripDobYear = (dob: Date) => {
+  return Number.parseInt(
+    fractionateDateTime(new Date(dob).toISOString())[0],
+    10
+  );
 };
 
-export const extractWords = (y: string): string[] => {
-  return y.split(/([ ])/);
-};
-
-export const fractionateCommaDelimitedData = (data: string): string[] => {
-  return data.split(/([,])/);
+export const stripEmailSubdomain = (email: string) => {
+  const userEmailSubDomain = fractionateAtSymbol(email);
+  return `${userEmailSubDomain[1]}${userEmailSubDomain[2]}`;
 };
 
 export async function fetchGetJSON(url: string) {
