@@ -10,7 +10,7 @@ import { JSONObject } from "graphql-scalars/mocks";
 
 export const jsonScalar = asNexusMethod(
   new GraphQLScalarType({
-    ...JSONResolver,
+    ...JSONObjectResolver,
     name: "Json"
   }),
   "Json",

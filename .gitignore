@@ -103,3 +103,8 @@ dist
 
 # TernJS port file
 .tern-port
+
+# Codegen Output
+introspection.schema.json
+graphql.schema.graphql
+*.graphql.d.ts

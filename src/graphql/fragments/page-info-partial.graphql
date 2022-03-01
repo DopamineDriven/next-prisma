@@ -1,0 +1,7 @@
+fragment PageInfoPartial on PageInfo {
+  endCursor
+  hasNextPage
+  hasPreviousPage
+  startCursor
+  __typename
+}

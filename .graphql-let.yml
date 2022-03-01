@@ -2,7 +2,7 @@
 #   - "http://localhost:3000/graphql"
 #   - headers:
 #       - "authorization": "Bearer eyJhbGciOiJIUzUxMiIsInR5cCI6IkpXVCJ9.eyJ1c2VySWQiOiI4NmE3NDY1My05MTg4LTQ2YTQtYjNiOS1lMTYwMzhjMTNjOGMiLCJpYXQiOjE2NDQ0NDEzNTYsImV4cCI6MTY0NDUyNzc1Nn0.2D7ZjaCEJNJzRh4K7dEXUkxuvh0uKJ4nZoiEdr_-INyy_Qw7kIQ_uNYriB92YxbryCfnZ788Q7TpkeDubVBsyA"
-schema: "schema.gql"
+schema: "http://localhost:3040/api/graphql"
 documents:
   - "!./src/graphql/generated/**/*.graphql"
   - "./src/graphql/queries/**/*.graphql"

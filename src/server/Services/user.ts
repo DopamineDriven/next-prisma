@@ -1,6 +1,6 @@
 import { fromGlobalId, toGlobalId } from "graphql-relay";
 import { PaginationArgs, relayToPrismaPagination } from "./utils";
-import { PrismaClient, Prisma, Profile, Entry } from "@prisma/client";
+import { PrismaClient, Prisma, Profile, Entry, Account, Session } from "@prisma/client";
 import {
   Connection,
   Edge,
@@ -69,16 +69,20 @@ export class UserService {
     Connection<
       User & {
         _count: Prisma.UserCountOutputType;
-        profile: Profile | null;
-        comments: Comment[];
-        entries: Entry[];
+        profile?: Profile | null;
+        comments?: Comment[];
+        entries?: Entry[];
+        sessions?: Session[];
+        accounts?: Account[];
       },
       Edge<
         User & {
           _count: Prisma.UserCountOutputType;
-          profile: Profile | null;
-          comments: Comment[];
-          entries: Entry[];
+          profile?: Profile | null;
+          comments?: Comment[];
+          entries?: Entry[];
+          sessions?: Session[]
+          accounts?: Account[]
         }
       >
     >
@@ -93,6 +97,8 @@ export class UserService {
           where: params.where,
           orderBy: params.orderBy,
           include: {
+            accounts: true,
+            sessions: true,
             _count: true,
             profile: true,
             comments: true,

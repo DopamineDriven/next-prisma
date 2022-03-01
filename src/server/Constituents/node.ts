@@ -20,6 +20,7 @@ export const Node = interfaceType({
     | "Session"
     | "Profile"
     | "User"
+    | "Comment"
     | "Viewer"
     | "VerificationToken" {
     return "User" in root
@@ -30,6 +31,8 @@ export const Node = interfaceType({
       ? "Session"
       : "Entry" in root
       ? "Entry"
+      : "Comment" in root
+      ? "Comment"
       : "Profile" in root
       ? "Profile"
       : "Viewer" in root
@@ -45,20 +48,18 @@ export const Node = interfaceType({
         "VerificationToken";
   },
   definition(t) {
-    t.id("id", {
+    t.field("id", {
+      type: "String",
       resolve: (root, _args, _ctx, info) => {
-        return toGlobalId(
-          info.parentType.name,
-          root?.id ? root.id.toString() : `${root.id}`
-        );
+        return toGlobalId(info.parentType.name, root as unknown as string);
       }
     });
-    t.field("id", {
-      type: "ID",
+    t.field("type", {
+      type: "String",
       resolve: root => {
-        return root?.__typename
-          ? root.__typename
-          : `${root.__typename}:${root.id?.toString()}`;
+        return fromGlobalId(<string>root).type
+          ? fromGlobalId(<string>root).type
+          : fromGlobalId(<string>root).id;
       }
     });
   }
@@ -127,6 +128,13 @@ export const NodeField = queryField(t => {
           where: { id: String(args.id) }
         });
         return { ...user, __typename: type };
+      }
+
+      if (type === "Comment") {
+        const comment = await ctx.prisma.comment.findUnique({
+          where: { id: String(args.id) }
+        });
+        return { ...comment, __typename: type };
       }
 
       return assertAllTypesCovered(type as unknown as never, String(args.id));

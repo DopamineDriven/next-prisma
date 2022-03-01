@@ -1,5 +1,13 @@
-import { arg, extendType, objectType, core, FieldResolver } from "nexus";
+import {
+  arg,
+  extendType,
+  objectType,
+  core,
+  FieldResolver,
+  nonNull
+} from "nexus";
 import { nanoid } from "nanoid";
+import { ObjectId } from "bson";
 
 export const ViewerQuery: core.NexusExtendTypeDef<"Query"> =
   extendType<"Query">({
@@ -8,14 +16,16 @@ export const ViewerQuery: core.NexusExtendTypeDef<"Query"> =
       t.field("viewer", {
         type: "Viewer",
         args: {
-          id: arg({
-            type: "ID",
-            default: nanoid()
-          })
+          id: nonNull(
+            arg({
+              type: "String",
+              default: new ObjectId().toHexString()
+            })
+          )
         },
         resolve(root, args, ctx, info) {
           return {
-            id: "Viewer:" + String(args.id)
+            id: args.id
           };
         }
       });
@@ -26,6 +36,5 @@ export const Viewer: core.NexusObjectTypeDef<"Viewer"> = objectType({
   name: "Viewer",
   definition(t) {
     t.implements("Node");
-    t.id("id");
   }
 });

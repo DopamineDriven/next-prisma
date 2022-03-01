@@ -3,16 +3,16 @@ import {
   objectType,
   stringArg,
   nonNull,
-  intArg,
   core
 } from "nexus";
 import { buildOrderBy } from "./utils";
+import { SortOrderEnum, UserRelationFilter, StringFilter, StringNullableFilter, IntNullableFilter } from "."
 
 export const Account: core.NexusObjectTypeDef<"Account"> = objectType({
   name: "Account",
   definition(t) {
     t.implements("Node");
-    t.id("id");
+    t.nonNull.string("id");
     t.string("userId");
     t.string("type");
     t.string("provider");
@@ -90,80 +90,43 @@ export const AccountQuery: core.NexusExtendTypeDef<"Viewer"> = extendType({
     });
   }
 });
-//     t.connectionField("GetAllEntries", {
-//       type: "Entry",
-//       inheritAdditionalArgs: true,
-//       additionalArgs: {
-//         take: intArg(),
-//         searchString: nonNull(stringArg())
-//       },
-//       async nodes(_root, args, ctx, _info) {
-//         return await ctx.prisma.entry.findMany({
-//           take: Number(args.first),
-//           orderBy: {
-//             createdAt: "asc",
-//             _relevance: {
-//               fields: ["userId"],
-//               search: String(args.searchString),
-//               sort: "asc"
-//             }
-//           }
-//         });
-//       }
-//     });
-//     t.connectionField("SearchEntriesByTitle", {
-//       type: "Entry",
-//       inheritAdditionalArgs: true,
-//       additionalArgs: {
-//         searchString: nonNull(stringArg())
-//       },
-//       async nodes(_root, args, ctx, _info) {
-//         return await ctx.prisma.entry.findMany({
-//           orderBy: {
-//             _relevance: {
-//               fields: ["title"],
-//               search: String(args.searchString),
-//               sort: "asc"
-//             }
-//           }
-//         });
-//       }
-//     });
-//   }
-// });
 
-// export const EntryMutation = extendType({
-//   type: "Mutation",
-//   definition(t) {
-//     t.field("CreateEntry", {
-//       type: "Entry",
-//       args: {
-//         title: stringArg({ description: "Entry Title", default: "" }),
-//         content: stringArg({ description: "Entry Content", default: "" }),
-//         featuredImage: stringArg({ description: "Entry Image", default: "" })
-//       },
-//       async resolve(_root, args, ctx, _info) {
-//         return await ctx.prisma.entry.create({
-//           data: {
-//             title: String(args.title),
-//             content: String(args.content),
-//             featuredImage: String(args.featuredImage),
-//             createdAt: new Date(Date.now()),
-//             published: true,
-//             user: ctx.prisma.user
-//           }
-//         });
-//       }
-//     });
-//   }
-// });
-/**
-const or = args.searchString
-  ? {
-      OR: [
-        { title: { contains: String(args.searchString) } },
-        { content: { contains: String(args.searchString) } }
-      ]
-    }
-  : {};
- */
+// Input Types
+
+export const AccountOrderByRelationAggregateInput = core.inputObjectType({
+  name: "AccountOrderByRelationAggregateInput",
+  definition(t) {
+    t.field("_count", { type: SortOrderEnum })
+  }
+});
+
+const AccountWhereInput = core.inputObjectType({
+  name: "AccountWhereInput",
+  definition(t) {
+    t.list.nonNull.field("AND", { type: AccountWhereInput })
+    t.list.nonNull.field("NOT", { type: AccountWhereInput })
+    t.list.nonNull.field("OR", { type: AccountWhereInput })
+    t.field("access_token", { type: StringNullableFilter })
+    t.field("expires_at", { type: IntNullableFilter })
+    t.field("id", { type: StringFilter })
+    t.field("id_token", { type: StringNullableFilter })
+    t.field("provider", { type: StringFilter })
+    t.field("providerAccountId", { type: StringFilter })
+    t.field("refresh_token", { type: StringNullableFilter })
+    t.field("scope", { type: StringNullableFilter })
+    t.field("session_state", { type: StringNullableFilter })
+    t.field("token_type", { type: StringNullableFilter })
+    t.field("type", { type: StringFilter })
+    t.field("user", { type: UserRelationFilter })
+    t.field("userId", { type: StringFilter })
+  }
+});
+
+export const AccountListRelationFilter = core.inputObjectType({
+  name: "AccountListRelationFilter",
+  definition(t) {
+    t.field("every", { type: AccountWhereInput })
+    t.field("none", { type: AccountWhereInput })
+    t.field("some", { type: AccountWhereInput })
+  }
+});

@@ -57,7 +57,7 @@ export const Query = queryField(t => {
     nodes: (root, args, ctx, info) => {
       return ctx.prisma.entry.findMany({
         where: {
-          userId: String(args.id)
+          authorId: String(args.id)
         }
       });
     }
@@ -91,63 +91,34 @@ export const Query = queryField(t => {
 
   t.connectionField("SearchByUserEmail", {
     type: "User",
-    /**
-     * Additional args to include for just this field
-  additionalArgs: {
-    orderBy: arg({ type: nonNull(SortOrderEnum) })
-  }
-     */
     inheritAdditionalArgs: true,
     additionalArgs: {
-      // role: enumType<"Role">({
-      //   name: "Role",
-      //   members: {
-      //     user: "USER",
-      //     admin: "ADMIN",
-      //     superadmin: "SUPERADMIN"
-      //   },
-      //   sourceType: typeof Role
-      // }).asArg({ default: "USER" }),
-      // department: nonNull(
-      //   Department.asArg({
-      //     default: "UNASSIGNED"
-      //   })
-      // ) as core.NexusNonNullDef<"Department">,
       search: nonNull(stringArg({ default: "" }) as core.NexusArgDef<"String">)
     },
     async nodes(parent, args, ctx, info) {
       const role = arg({ type: nonNull(Role) });
       return await ctx.prisma.user.findMany({
-        // where: {
-        //   role: args.role ?? "ADMIN",
-        //   department: args.department ?? "CUSTOMER_SERVICE"
-        // },
         orderBy: {
-          _relevance: {
-            fields: ["email"],
-            search: String(args.search),
-            sort: "asc"
-          }
+          email: "asc"
         }
       });
     }
   });
 
-  t.connectionField("ActiveFilter", {
-    type: "Account",
-    inheritAdditionalArgs: true,
-    additionalArgs: {
-      id: stringArg()
-    },
-    nodes(_parent, { id }, ctx) {
-      return ctx.prisma.account
-        .findUnique({
-          where: { id: String(id) }
-        })
-        .user()
-        .accounts();
-    }
-  });
+  // t.connectionField("ActiveFilter", {
+  //   type: "Account",
+  //   additionalArgs: {
+  //     id: stringArg()
+  //   },
+  //   nodes(_parent, { id }, ctx) {
+  //     return ctx.prisma.account
+  //       .findUnique({
+  //         where: { id: String(id) }
+  //       })
+  //       .user()
+  //       .accounts();
+  //   }
+  // });
 
   t.connectionField("FilterUsers", {
     type: "User",

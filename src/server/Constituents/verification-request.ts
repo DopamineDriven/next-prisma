@@ -5,7 +5,7 @@ export const VerificationToken: NexusObjectTypeDef<"VerificationToken"> =
     name: "VerificationToken",
     definition(t) {
       t.implements("Node");
-      t.id("id");
+      t.nonNull.string("id");
       t.string("identifier");
       t.string("token");
       t.DateTime("expires");

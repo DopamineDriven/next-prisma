@@ -1,5 +1,5 @@
 import { core, inputObjectType } from "nexus";
-import { OrderByEnum } from "./meta";
+import { SortOrderEnum } from "./meta";
 import { NexusGenRootTypes } from "../NexusSchema/nexus";
 
 export function buildOrderBy<M extends keyof core.GetGen<"rootTypes">>(
@@ -10,7 +10,7 @@ export function buildOrderBy<M extends keyof core.GetGen<"rootTypes">>(
     name: `${model}OrderBy`,
     definition(t) {
       for (const f of fields as Array<keyof NexusGenRootTypes[M]>) {
-        t.field(f as string, { type: OrderByEnum });
+        t.field(f as string, { type: SortOrderEnum });
       }
     }
   });

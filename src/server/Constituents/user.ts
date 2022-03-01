@@ -1,135 +1,166 @@
-import { extendType, objectType, core, nonNull, stringArg } from "nexus";
-import { Department, Role } from ".";
+import { Prisma } from "@prisma/client";
+import { core, stringArg } from "nexus";
+import {
+  Role,
+  EntryListRelationFilter,
+  SessionListRelationFilter,
+  CommentListRelationFilter,
+  MediaItem,
+  PaginationArgsInput,
+  EnumUserStatusNullableFilter,
+  EnumRoleNullableFilter,
+  ProfileRelationFilter,
+  UserScalarFieldsEnum,
+  DateTimeFilter,
+  DateTimeNullableFilter,
+  StringFilter,
+  StringNullableFilter,
+  SortOrderEnum,
+  AccountListRelationFilter,
+  UserOrderByRelevanceFieldEnum,
+  CommentOrderByRelationAggregateInput,
+  EntryOrderByRelationAggregateInput,
+  ProfileOrderByWithRelationAndSearchRelevanceInput,
+  AccountOrderByRelationAggregateInput,
+  SessionOrderByRelationAggregateInput,
+  MediaItemWhereInput,
+  MediaItemInput,
+  MediaItemRelationFilter,
+  UserStatus
+} from ".";
 
-export const UserExtended: core.NexusExtendTypeDef<"Viewer"> = extendType({
-  type: "Viewer",
-  definition(t) {
-    t.field("userById", {
-      type: "User",
-      args: {
-        id: nonNull(stringArg()) as core.NexusNonNullDef<"String">
-      },
-      resolve(_root, args, ctx, _info) {
-        return ctx.prisma.user.findUnique({
-          where: { id: args.id },
-          include: {
-            accounts: true,
-            entries: true,
-            sessions: true
-          }
-        });
-      }
-    });
+export const UserExtended: core.NexusExtendTypeDef<"Viewer"> =
+  core.extendType<"Viewer">({
+    type: "Viewer",
+    definition(t) {
+      t.field("userById", {
+        type: "User",
+        args: {
+          id: core.nonNull(core.stringArg()) as core.NexusNonNullDef<"String">
+        },
+        resolve(_root, args, ctx, _info) {
+          return ctx.prisma.user.findUnique({
+            where: { id: args.id },
+            include: {
+              accounts: true,
+              entries: true,
+              sessions: true
+            }
+          });
+        }
+      });
 
-    t.field("userByEmail", {
-      type: "User",
-      args: {
-        email: nonNull(stringArg()) as core.NexusNonNullDef<"String">
-      },
-      resolve(_root, args, ctx, _info) {
-        return ctx.prisma.user.findUnique({
-          where: { email: args.email },
-          include: {
-            accounts: true,
-            entries: true,
-            sessions: true
-          }
-        });
-      }
-    });
-    t.connectionField("allUsers", {
-      type: "User",
-      nodes: async (_root, _args, ctx, _info) => {
-        return await ctx.prisma.user.findMany({});
-      }
-    });
-    t.connectionField("userAccount", {
-      type: "Account",
-      async nodes(root, args, ctx, info) {
-        // const idToBase = base64Encode(String(root.id))
-        return await ctx.prisma.account.findMany({
-          include: { user: true }
-        });
-      }
-    });
-    t.connectionField("session", {
-      type: "Session",
-      nodes(root, args, ctx, info) {
-        return ctx.prisma.session.findMany({
-          include: { user: true }
-        });
-      }
-    });
-    t.connectionField("entries", {
-      type: "Entry",
-      nodes: (root, args, ctx, info) => {
-        return ctx.prisma.entry.findMany({ include: { author: true } });
-      }
-    });
-    // TODO Update User on Login Success
-    // t.list.field("UpdateUserOnLogin", {
-    //   type: "User"
-    // });
-  }
-});
+      t.field("userByEmail", {
+        type: "User",
+        args: {
+          email: core.nonNull(
+            core.stringArg()
+          ) as core.NexusNonNullDef<"String">
+        },
+        resolve(_root, args, ctx, _info) {
+          return ctx.prisma.user.findUnique({
+            where: { email: args.email },
+            include: {
+              accounts: true,
+              entries: true,
+              sessions: true
+            }
+          });
+        }
+      });
+      // t.field("allUsers", {
+      //   type: "UserConnection",
+      //   args: {
+      //     params: core.arg({ type: FindManyUsersPaginatedInput })
+      //   },
+      // resolve: async (_root, args, ctx, _info) => {
+      //     return await ctx.user?.findManyUsersPaginated(args.params)
+      //   }
+      // });
+      t.connectionField("userAccount", {
+        type: "Account",
+        async nodes(root, args, ctx, info) {
+          // const idToBase = base64Encode(String(root.id))
+          return await ctx.prisma.account.findMany({
+            include: { user: true }
+          });
+        }
+      });
+      t.connectionField("session", {
+        type: "Session",
+        nodes(root, args, ctx, info) {
+          return ctx.prisma.session.findMany({
+            include: { user: true }
+          });
+        }
+      });
+      t.connectionField("entries", {
+        type: "Entry",
+        nodes: (root, args, ctx, info) => {
+          return ctx.prisma.entry.findMany({ include: { author: true } });
+        }
+      });
+    }
+  });
 
-/**
-import { getSession } from "next-auth/react";
-import { core, FieldResolver, stringArg } from "nexus";
-import { connectionFromArray } from "graphql-relay";
-import { HarvestNetworkInfo } from "@/types/network-functions";
-import { IncomingMessage, ServerResponse, IncomingHttpHeaders } from "http";
-import connectionPluginCore from 'nexus';
-
-  // TODO Update User on Login Success
- const updateUserOnLogin = async (req: IncomingMessage, res: ServerResponse) => {
-  const session = await getSession({ req });
-  const {
-    harvestedData: { BoundAFP, ClientIp, Cookies, Headers }
-  } = await HarvestNetworkInfo(req);
-
-  const resresolveUserField: core.AbstractTypeResolver<"User"> = (
-    root,
-    ctx,
-    args,
-    info
-  ) => {
-    ctx.prisma.entry.update({
-      where: { id: String(root.id) },
-      data: {
-
-      }
-    })
-  };
-};
- */
-
-export const User: core.NexusObjectTypeDef<"User"> = objectType({
+export const User: core.NexusObjectTypeDef<"User"> = core.objectType({
   name: "User",
 
   definition(t: core.ObjectDefinitionBlock<"User">) {
     t.implements("Node");
-    t.id("id");
+    t.nonNull.field("_count", {
+      type: UserCount,
+      resolve: async (source, _, ctx, info) => {
+        return await ctx.prisma.user
+          .findFirst({
+            where: { id: source.id },
+            include: {
+              accounts: true,
+              entries: true,
+              comments: true,
+              sessions: true,
+              _count: true
+            }
+          })
+          .then(data => {
+            return data?._count as unknown as Prisma.UserCountOutputType;
+          });
+      }
+    });
+    t.nonNull.string("id");
     t.string("email");
     t.nullable.string("image");
-    t.nullable.string("name");
+    t.nullable.field("firstName", {
+      type: "String",
+      resolve(user) {
+        return user.firstName;
+      }
+    });
+    t.nullable.field("lastName", {
+      type: "String",
+      resolve(user) {
+        return user.firstName;
+      }
+    });
     t.nullable.DateTime("emailVerified", {
       resolve(source, args, ctx, info) {
-        return source.emailVerified as Date;
+        return source.emailVerified as Date | null;
       }
     });
-    t.field("role", {
-      type: "Role",
-      args: {
-        role: Role.asArg({ default: "USER" })
+    t.nullable.field("imageMeta", {
+      type: MediaItem,
+      resolve(user) {
+        return user.imageMeta;
       }
     });
-    t.field("department", {
-      type: "Department",
-      args: {
-        department: Department.asArg({ default: "UNASSIGNED" })
+    t.nullable.string("password", {
+      resolve(user) {
+        return user.password ?? null;
       }
     });
+
+    t.field("role", { type: Role });
+    t.nullable.field("status", { type: UserStatus });
     t.field("profile", {
       type: "Profile",
       async resolve(root, args, ctx, _info) {
@@ -148,10 +179,10 @@ export const User: core.NexusObjectTypeDef<"User"> = objectType({
     t.connectionField<"accounts">("accounts", {
       type: "Account",
       inheritAdditionalArgs: true,
-
-      async nodes(root, _args, ctx, _info) {
+      async nodes(root, args, ctx, _info) {
         const accounts = await ctx.prisma.user
           .findFirst({
+            include: { accounts: true },
             where: {
               accounts: { every: { userId: String(root.id) } }
             }
@@ -159,14 +190,14 @@ export const User: core.NexusObjectTypeDef<"User"> = objectType({
           .accounts();
         return accounts;
       }
-    } as core.connectionPluginCore.ConnectionFieldConfig<"User", "accounts">);
+    });
     t.connectionField("entries", {
       type: "Entry",
       async nodes(root, _args, ctx, _info) {
         const entries = await ctx.prisma.user
           .findFirst({
             where: {
-              entries: { every: { userId: String(root.id) } }
+              entries: { every: { authorId: root.id } }
             }
           })
           .entries();
@@ -189,26 +220,141 @@ export const User: core.NexusObjectTypeDef<"User"> = objectType({
   }
 });
 
-// export const UserConnections: Prisma.UserInclude = {
-//   accounts: true,
-//   entries: true,
-//   sessions: true,
-//   _count: true
-// };
+/**
+ *     // t.field<"accounts">("accounts", {
+    //   type: "AccountConnection",
+    //   args: {
+    //     params: FindManyUsersPaginatedInput.asArg({
+    //       default: {
+    //         pagination: { first: 10 },
+    //         orderBy: [
+    //           { _relevance: { fields: ["email"], search: "", sort: "asc" } }
+    //         ]
+    //       }
+    //     }) as unknown as core.NexusInputObjectTypeDef<"FindManyUsersPaginatedInput">
+    //   },
+    //  async resolve({}, args=FindManyUsersPaginatedInput.asArg(), ctx ) {
+    //     const accounts = await ctx.user?.findManyUsersPaginated({
+    //       params: {
+    //         after: args.params.after,
+    //         before: args.params.before,
+    //         first: args.params.first,
+    //         last: args.params.last
+    //       },
+    //       orderBy: args.params.orderBy,
+    //       where: args.params.where
+    //     });
+    //     return accounts;
+    //   }
+    // } as unknown as core.connectionPluginCore.ConnectionFieldConfig<"User", "accounts">);
+ */
 
-// TODO USE THIS
-// role: nonNull(
-//   Role.asArg({ default: "USER" })
-// ) as core.NexusNonNullDef<"Role">,
-// department: nonNull(
-//   Department.asArg({
-//     default: "UNASSIGNED"
-//   })
-// ) as core.NexusNonNullDef<"Department">,
-// data: {
-//   user: {
-//     connect: {
-//       department: args.department,
-//       role: args.role
-//     }
-//   },
+export const UserCount: core.NexusObjectTypeDef<"UserCount"> =
+  core.objectType<"UserCount">({
+    name: "UserCount",
+    definition(t) {
+      t.nonNull.int("accounts");
+      t.nonNull.int("comments");
+      t.nonNull.int("entries");
+      t.nonNull.int("sessions");
+    }
+  });
+
+// Input Types
+
+export const UserWhereUniqueInput = core.inputObjectType({
+  name: "UserWhereUniqueInput",
+  definition(t) {
+    t.string("email");
+    t.string("id");
+  }
+});
+
+export const UserOrderByRelevanceInput = core.inputObjectType({
+  name: "UserOrderByRelevanceInput",
+  definition(t) {
+    t.nonNull.list.nonNull.field("fields", {
+      type: UserOrderByRelevanceFieldEnum
+    });
+    t.nonNull.string("search");
+    t.nonNull.field("sort", { type: SortOrderEnum });
+  }
+});
+
+export const UserOrderByWithRelationAndSearchRelevanceInput =
+  core.inputObjectType({
+    name: "UserOrderByWithRelationAndSearchRelevanceInput",
+    definition(t) {
+      t.field("_relevance", { type: UserOrderByRelevanceInput });
+      t.field("accounts", { type: AccountOrderByRelationAggregateInput });
+      t.field("comments", { type: CommentOrderByRelationAggregateInput });
+      t.field("createdAt", { type: SortOrderEnum });
+      t.field("email", { type: SortOrderEnum });
+      t.field("emailVerified", { type: SortOrderEnum });
+      t.field("entries", { type: EntryOrderByRelationAggregateInput });
+      t.field("firstName", { type: SortOrderEnum });
+      t.field("id", { type: SortOrderEnum });
+      t.field("image", { type: SortOrderEnum });
+      t.field("lastName", { type: SortOrderEnum });
+      t.field("password", { type: SortOrderEnum });
+      t.field("profile", {
+        type: ProfileOrderByWithRelationAndSearchRelevanceInput
+      });
+      t.field("role", { type: SortOrderEnum });
+      t.field("sessions", { type: SessionOrderByRelationAggregateInput });
+      t.field("status", { type: SortOrderEnum });
+      t.field("updatedAt", { type: SortOrderEnum });
+    }
+  });
+
+export const FindManyUsersPaginatedInput = core.inputObjectType({
+  name: "FindManyUsersPaginatedInput",
+  definition(t) {
+    t.field("cursor", { type: UserWhereUniqueInput });
+    t.list.nonNull.field("distinct", { type: UserScalarFieldsEnum });
+    t.nonNull.list.nonNull.field("orderBy", {
+      type: UserOrderByWithRelationAndSearchRelevanceInput
+    });
+    t.field("pagination", {
+      type: PaginationArgsInput,
+      default: { after: null, before: null, first: 10, last: null }
+    });
+    t.int("skip");
+    t.int("take");
+    t.field("where", { type: UserWhereInput });
+  }
+});
+
+export const UserWhereInput = core.inputObjectType({
+  name: "UserWhereInput",
+  definition(t) {
+    t.list.nonNull.field("AND", { type: UserWhereInput });
+    t.list.nonNull.field("NOT", { type: UserWhereInput });
+    t.list.nonNull.field("OR", { type: UserWhereInput });
+    t.field("accounts", { type: AccountListRelationFilter });
+    t.field("comments", { type: CommentListRelationFilter });
+    t.field("createdAt", { type: DateTimeFilter });
+    t.field("email", { type: StringFilter });
+    t.field("emailVerified", { type: DateTimeNullableFilter });
+    t.field("entries", { type: EntryListRelationFilter });
+    t.field("firstName", { type: StringNullableFilter });
+    t.field("id", { type: StringFilter });
+    t.field("image", { type: StringNullableFilter });
+    t.field("imageMeta", { type: MediaItemRelationFilter });
+    t.field("lastName", { type: StringNullableFilter });
+    t.field("password", { type: StringFilter });
+    t.field("profile", { type: ProfileRelationFilter });
+    t.field("role", { type: EnumRoleNullableFilter });
+    t.field("sessions", { type: SessionListRelationFilter });
+    t.field("status", { type: EnumUserStatusNullableFilter });
+    t.field("updatedAt", { type: DateTimeNullableFilter });
+  }
+});
+
+export const UserRelationFilter = core.inputObjectType({
+  name: "UserRelationFilter",
+  definition(t) {
+    t.field("is", { type: UserWhereInput });
+    t.field("isNot", { type: UserWhereInput });
+  }
+});
