@@ -5,7 +5,7 @@ datasource db {
 
 generator client {
   provider        = "prisma-client-js"
-  previewFeatures = ["mongoDb"]
+  previewFeatures = ["mongodb"]
 }
 
 
@@ -31,7 +31,7 @@ model User {
 
 model Account {
   id                String  @id @map("_id") @default(auto()) @db.ObjectId
-  userId            String
+  userId            String  @db.ObjectId
   type              String
   provider          String
   providerAccountId String
@@ -50,8 +50,8 @@ model Account {
 
 model Comment {
   id        String             @id @map("_id") @default(auto()) @db.ObjectId
-  authorId  String?
-  entryId   String?
+  authorId  String             @db.ObjectId
+  entryId   String             @db.ObjectId
   body      String?
   position  String?
   createdAt DateTime           @default(now())
@@ -67,7 +67,7 @@ model Entry {
   id            String      @id @map("_id") @default(auto()) @db.ObjectId
   title         String
   published     Boolean    @default(false)
-  authorId      String?
+  authorId      String     @db.ObjectId
   content       String?
   createdAt     DateTime   @default(now())
   updatedAt     DateTime?  @updatedAt
@@ -81,7 +81,7 @@ model Entry {
 
 model Profile {
   id             String    @id @map("_id") @default(auto()) @db.ObjectId
-  userId         String?
+  userId         String   @db.ObjectId
   memberSince    DateTime  @default(now())
   gender         Gender?   @default(OTHER)
   pronouns       Pronouns? @default(NOT_LISTED)
@@ -101,7 +101,7 @@ model Profile {
 model Session {
   id           String    @id @map("_id") @default(auto()) @db.ObjectId
   sessionToken String   @unique
-  userId       String
+  userId       String   @db.ObjectId
   expires      DateTime
   user         User?      @relation("UserSessions", fields: [userId], references: [id], onDelete: Cascade)
 }
@@ -216,4 +216,3 @@ enum Gender {
   OTHER
   UNCERTAIN
 }
-

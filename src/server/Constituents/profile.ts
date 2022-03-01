@@ -3,71 +3,51 @@ import {
   objectType,
   core,
   nonNull,
-  stringArg,
-  scalarType
+  stringArg
 } from "nexus";
-import { Prisma } from "@prisma/client";
 import { buildOrderBy } from "./utils";
-import { Role, UserStatus } from ".";
-import { format } from "date-fns";
-import { arg } from "nexus";
-import { nanoid } from "nanoid";
-import { ObjectID } from "graphql-scalars/typeDefs";
+import { ObjectId } from "bson";
+import {
+  UserRelationFilter,
+  StringFilter,
+  StringNullableFilter,
+  DateTimeFilter,
+  DateTimeNullableFilter,
+  ProfileOrderByRelevanceFieldEnum,
+  SortOrderEnum,
+  UserOrderByWithRelationAndSearchRelevanceInput,
+  EnumGenderNullableFilter,
+  EnumPronounsNullableFilter
+} from ".";
 
-export const Profile: core.NexusObjectTypeDef<"Profile"> = objectType({
-  name: "Profile",
-  definition(t) {
-    t.implements("Node");
-    t.id("id");
-    t.string("userId");
-    t.DateTime("memberSince", {
-      args: {
-        type: "DateTime"
-      }
-    });
-    t.string("coverImage");
-    t.DateTime("dob", {
-      args: {
-        type: "DateTime"
-      }
-    });
-    t.PhoneNumber("phoneNumber");
-    t.string("bio");
-    t.field("user", {
-      type: "User",
-      async resolve(root, _args, ctx, _info) {
-        const profileToUser = await ctx.prisma.profile
-          .findFirst({
-            where: {
-              user: {
-                id: String(root.userId)
+export const Profile: core.NexusObjectTypeDef<"Profile"> =
+  objectType<"Profile">({
+    name: "Profile",
+    definition(t) {
+      t.implements("Node");
+      t.nonNull.string("id");
+      t.string("userId");
+      t.field("memberSince", {type: "DateTime"})
+      t.field("coverImage", {type: "MediaItem"});
+      t.field("dob", { type: "Date" });
+      t.field("phoneNumber", { type: "PhoneNumber" });
+      t.field("user", {
+        type: "User",
+        async resolve(root, _args, ctx, _info) {
+          const profileToUser = await ctx.prisma.profile
+            .findFirst({
+              where: {
+                user: {
+                  id: root.userId
+                }
               }
-            }
-          })
-          .user();
-        return profileToUser;
-      }
-    }) as core.FieldResolver<"Profile", "user"> | undefined;
-  }
-});
-
-/**
- *     t.connectionField("accounts", {
-      type: "Account",
-      inheritAdditionalArgs: true,
-      additionalArgs: {},
-      async nodes(root, args, ctx, info) {
-        const accounts = ctx.prisma.profile
-          .findFirst({
-            where: { user: { id: String(root.userId) } }
-          })
-          .user()
-          .accounts();
-        return accounts;
-      }
-    });
- *
-*/
+            })
+            .user();
+          return profileToUser;
+        }
+      }) as core.FieldResolver<"Profile", "user"> | undefined;
+    }
+  });
 
 export const ProfileOrderBy = buildOrderBy("Profile", [
   "memberSince"
@@ -98,36 +78,31 @@ export const ProfileQuery = extendType({
   }
 });
 
-// export type EnumRoleFieldUpdateOperationsInput = {
-//   set?: RoleType;
-// };
 
-// export type EnumDepartmentFieldUpdateOperationsInput = {
-//   set?: DepartmentType;
-// };
-// export declare const RoleExecutable: { input: "USER" | "ADMIN" | "SUPERADMIN" };
-// export declare const DepartmentExecutable: {
-//   input:
-//     | "CUSTOMER_SUPPORT"
-//     | "DESIGN"
-//     | "ENGINEERING"
-//     | "EXECUTIVE"
-//     | "FINANCE"
-//     | "HUMAN_RESOURCES"
-//     | "LEGAL"
-//     | "MARKETING"
-//     | "MEDIA"
-//     | "MEDICAL"
-//     | "OPERATIONS"
-//     | "SALES"
-//     | "UNASSIGNED";
-// };
-
-// dis is good https://github.com/prisma/prisma/issues/3372
 export const dateArg = (opts: core.SourceTypesConfigOptions) =>
   core.arg({ ...opts, type: "Date" }) as core.NexusArgDef<"Date">;
 export const dateTimeArg = (opts: core.SourceTypesConfigOptions) =>
   core.arg({ ...opts, type: "DateTime" }) as core.NexusArgDef<"DateTime">;
+/**
+ *     headline: string;
+    intro: string | null;
+    body: string | null;
+    status: string | null;
+    createdAt: Date;
+    updatedAt: Date | null;
+ */
+export const BioObjectType: core.NexusObjectTypeDef<"Bio"> =
+  core.objectType<"Bio">({
+    name: "Bio",
+    definition(t) {
+      t.nullable.string("intro");
+      t.nullable.string("body");
+      t.nullable.string("status");
+      t.DateTime("createdAt");
+      t.nullable.DateTime("updatedAt");
+    }
+  });
+
 export const PorfileMutations: core.NexusExtendTypeDef<"Mutation"> = extendType(
   {
     type: "Mutation",
@@ -148,13 +123,13 @@ export const PorfileMutations: core.NexusExtendTypeDef<"Mutation"> = extendType(
         async resolve(_root, args, ctx, _info) {
           const create = await ctx.prisma.profile.create({
             data: {
-              id: ObjectID,
+              id: new ObjectId().toHexString(),
               user: {
                 connect: {
                   email: args.email
                 }
               },
-              bio: {set: {headline: ""}},
+              bio: { set: { headline: "" } },
               coverPhoto: {
                 // media item
               },
@@ -175,48 +150,72 @@ export const PorfileMutations: core.NexusExtendTypeDef<"Mutation"> = extendType(
   }
 );
 
-// const UpsertProfileArgs = Prisma.validator<Prisma.ProfileUpsertArgs>();
-// Prisma.validator<
-//   XOR<
-//     Prisma.ProfileSelect | null | undefined,
-//     Prisma.ProfileInclude | null | undefined
-//   >
-// >()({});
-// const ProfileSelectUniqueInput = (
-//   id?: boolean | undefined,
-//   userId?: boolean | undefined,
-//   memberSince?: boolean | undefined,
-//   coverImage?: boolean | undefined,
-//   dob?: boolean | undefined,
-//   phoneNumber?: boolean | undefined,
-//   bio?: boolean | undefined
-// ) => {
-//   return Prisma.validator<Prisma.ProfileSelect | null | undefined>()({
-//     id,
-//     userId,
-//     memberSince,
-//     coverImage,
-//     dob,
-//     phoneNumber,
-//     bio
-//   }) as {
-//     id?: boolean | undefined;
-//     userId?: boolean | undefined;
-//     memberSince?: boolean | undefined;
-//     coverImage?: boolean | undefined;
-//     dob?: boolean | undefined;
-//     phoneNumber?: boolean | undefined;
-//     bio?: boolean | undefined;
-//   };
-// };
-// const ProfileWhereUniqueInput = (
-//   id: string | undefined,
-//   userId: string | undefined
-// ) => {
-//   return Prisma.validator<Prisma.ProfileWhereUniqueInput>()({
-//     id,
-//     userId
-//   } as { id: string | undefined; userId: string | undefined });
-// };
+// Input Types
+export const ProfileOrderByRelevanceInput = core.inputObjectType({
+  name: "ProfileOrderByRelevanceInput",
+  definition(t) {
+    t.nonNull.list.nonNull.field("fields", {
+      type: ProfileOrderByRelevanceFieldEnum
+    });
+    t.nonNull.string("search");
+    t.nonNull.field("sort", { type: SortOrderEnum });
+  }
+});
 
-// const PrismaPowerUp = () => Prisma.validator();
+export const ProfileOrderByWithRelationAndSearchRelevanceInput =
+  core.inputObjectType({
+    name: "ProfileOrderByWithRelationAndSearchRelevanceInput",
+    definition(t) {
+      t.field("_relevance", { type: ProfileOrderByRelevanceInput });
+      t.field("activiyFeed", { type: SortOrderEnum });
+      t.field("bio", { type: SortOrderEnum });
+      t.field("city", { type: SortOrderEnum });
+      t.field("country", { type: SortOrderEnum });
+      t.field("coverPhoto", { type: SortOrderEnum });
+      t.field("dob", { type: SortOrderEnum });
+      t.field("gender", { type: SortOrderEnum });
+      t.field("id", { type: SortOrderEnum });
+      t.field("lastSeen", { type: SortOrderEnum });
+      t.field("memberSince", { type: SortOrderEnum });
+      t.field("occupation", { type: SortOrderEnum });
+      t.field("phoneNumber", { type: SortOrderEnum });
+      t.field("pronouns", { type: SortOrderEnum });
+      t.field("recentActivity", { type: SortOrderEnum });
+      t.field("user", { type: UserOrderByWithRelationAndSearchRelevanceInput });
+      t.field("userId", { type: SortOrderEnum });
+    }
+  });
+
+
+  export const ProfileRelationFilter = core.inputObjectType({
+    name: "ProfileRelationFilter",
+    definition(t) {
+      t.field("is", { type: ProfileWhereInput })
+      t.field("isNot", { type: ProfileWhereInput })
+    }
+  });
+
+  export const ProfileWhereInput = core.inputObjectType({
+    name: "ProfileWhereInput",
+    definition(t) {
+      t.list.nonNull.field("AND", { type: ProfileWhereInput })
+      t.list.nonNull.field("NOT", { type: ProfileWhereInput })
+      t.list.nonNull.field("OR", { type: ProfileWhereInput })
+      t.field("activiyFeed", { type: StringNullableFilter })
+      t.field("bio", { type: StringNullableFilter })
+      t.field("city", { type: StringNullableFilter })
+      t.field("country", { type: StringNullableFilter })
+      t.field("coverPhoto", { type: StringNullableFilter })
+      t.field("dob", { type: StringNullableFilter })
+      t.field("gender", { type: EnumGenderNullableFilter })
+      t.field("id", { type: StringFilter })
+      t.field("lastSeen", { type: DateTimeNullableFilter })
+      t.field("memberSince", { type: DateTimeFilter })
+      t.field("occupation", { type: StringNullableFilter })
+      t.field("phoneNumber", { type: StringNullableFilter })
+      t.field("pronouns", { type: EnumPronounsNullableFilter })
+      t.field("recentActivity", { type: StringNullableFilter })
+      t.field("user", { type: UserRelationFilter })
+      t.field("userId", { type: StringNullableFilter })
+    }
+  });

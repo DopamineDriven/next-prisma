@@ -1,35 +1,43 @@
 import { ApolloServer } from "apollo-server-micro";
-import { schema as NexusSchema, LoadSchemaSync } from "../../../server/scaffold";
+import {
+  LoadSchemaSync,
+  schema as NexusSchema,
+  ConnectDb
+} from "../../../server/scaffold";
 import cors from "micro-cors";
 import { RequestHandler } from "micro";
 import {
   ApolloServerPluginInlineTrace,
-  ApolloServerPluginUsageReporting,
   Context as ContextObject
 } from "apollo-server-core";
-import { createContext, Context } from "../../../server/Context/index";
+import {
+  createContext,
+  Context,
+  loggingMiddleware
+} from "../../../server/Context/index";
 import { IncomingMessage, ServerResponse } from "http";
 import { MicroRequest } from "apollo-server-micro/dist/types";
-import prisma from "../../../server/Context/prisma";
+import {
+  graphqlMicro,
+  MicroGraphQLOptionsFunction
+} from "apollo-server-micro/dist/microApollo";
+import { Resolvers, ResolversObject } from "@/graphql/generated/graphql";
 import { Config } from "apollo-server-micro";
-import * as types from "../../../server/Constituents";
 import { GraphQLSchema } from "graphql";
-import { mergeResolvers } from "@graphql-tools/merge";
-import { buildServices } from "../../../server/Services/index";
 import { PageConfig } from "next";
-import { GraphQLFileLoader } from "@graphql-tools/graphql-file-loader"
-import {loadSchemaSync } from "@graphql-tools/load"
+import { buildServices } from "../../../server/Services";
+import { mergeResolvers } from "@graphql-tools/merge";
+import { MongoClient, ConnectOptions } from "mongodb";
+
+export const MONGO_DB_URI = process.env.DATABASE_URL ?? "";
 
 export const serverSchema = new GraphQLSchema(NexusSchema.toConfig());
 export const corsMiddleware = (handler: RequestHandler) => {
   return cors()(handler);
 };
-const rootSchema = loadSchemaSync("src/schema.gql", {
-  loaders: [new GraphQLFileLoader()],
-  sort: true,
-  inheritResolversFromInterfaces: true,
-  experimentalFragmentVariables: true,
-  commentDescriptions: true
+
+const resolversTypes = (resolverTypes: Resolvers<Context>) => ({
+  ...resolverTypes
 });
 const configg: Config<ContextObject<Context>> = {
   // resolvers: mergeResolvers<ResolversObject<Resolvers<Context>>, Context>({
@@ -37,21 +45,76 @@ const configg: Config<ContextObject<Context>> = {
   //   prisma,
   //   ...buildServices(prisma)
   // }),
+
   allowBatchedHttpRequests: true,
-  schema: new GraphQLSchema(NexusSchema.toConfig()),
+  schema: LoadSchemaSync || serverSchema,
   debug: process.env.NODE_ENV !== "production" ? true : false,
   introspection: true,
   context: () => ({ ...createContext }),
   plugins: [ApolloServerPluginInlineTrace()]
 };
+
+/**
+ * https://www.apollographql.com/docs/studio/schema/schema-reporting-protocol/
+ * create a SchemaHash
+ * function signHmacSha256(key: string, secret: string) {
+  key = accessToken;
+  secret = secretKey;
+  const hmac = crypto.createHmac("sha256", key);
+  const signed = hmac.update(Buffer.from(secret, "utf-8")).digest("hex");
+  return signed;
+}
+
+ */
+
 const apolloServer = new ApolloServer({
-  ...configg
+  resolvers: { ...resolversTypes },
+  parseOptions: {
+    allowLegacySDLImplementsInterfaces: true,
+    experimentalFragmentVariables: true
+  },
+  schema: NexusSchema,
+  debug: process.env.NODE_ENV !== "production" ? true : false,
+  introspection: true,
+  context: async ({ req, res, prisma }: Context) => {
+    const db = await ConnectDb();
+    const authHeader = req.headers.authorization?.split(/([ ])/)[2]
+      ? req.headers.authorization.split(/([ ])/)[2].trim()
+      : undefined;
+    // const {
+    //   account,
+    //   comment,
+    //   entry,
+    //   profile,
+    //   session,
+    //   user,
+    //   verificationRequest
+    // } = { ...buildServices(prisma) };
+    if (authHeader !== undefined && authHeader.length > 10) {
+      res.setHeader("Authorization", `Bearer ${authHeader}`);
+      // const viewer = await prisma.session
+      // .findFirst({
+      //   where: { sessionToken: authHeader },
+      //   include: { user: true }
+      // })
+      // .user();
+      return {
+        req,
+        res,
+        ...buildServices(prisma),
+        // authHeader,
+        db
+        // viewer
+      };
+    }
+    return { req, res, ...buildServices(prisma), db };
+  },
+  plugins: [ApolloServerPluginInlineTrace()]
 });
 
 const startServer = apolloServer.start();
-
 export default corsMiddleware(async function handler(
-  req: IncomingMessage | MicroRequest,
+  req: MicroRequest | IncomingMessage,
   res: ServerResponse
 ) {
   res.setHeader("Access-Control-Allow-Credentials", "true");
@@ -60,14 +123,15 @@ export default corsMiddleware(async function handler(
     "Cache-Control",
     "public, stale-while-revalidate=600, s-maxage=1200"
   );
-  res.setHeader(
-    "Access-Control-Allow-Headers",
+  res.setHeader("Access-Control-Allow-Headers", [
     "Origin, X-Requested-With, Content-Type, Accept, apollo-federation-include-trace, Authorization"
-  );
+  ]);
+  // loggingMiddleware()
   if (req.method === "OPTIONS") {
     res.end();
     return;
   }
+
   await startServer;
   await apolloServer.createHandler({
     path: "/api/graphql"

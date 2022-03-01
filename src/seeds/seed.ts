@@ -972,8 +972,8 @@ export async function seed<T extends import("@prisma/client").PrismaClient>(
     Pronouns.SHE_HER_HERS,
     Pronouns.HE_HIM_HIS,
     Pronouns.SHE_HER_HERS
-  ][n(0, 14)]
-  // intra-enum field ratios reflective of general population frequencies
+  ][n(min, max)]
+
 
   const seedUser = async () => {
     return await prisma.user.create({

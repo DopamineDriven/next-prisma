@@ -2,9 +2,8 @@ overwrite: true
 generates:
   ./src/graphql/generated/graphql.schema.graphql:
     schema:
-      ${NEXT_GQL_ENDPOINT}:
-        headers:
-          authorization: ${NEXT_TOKEN_CODEGEN}
+      ${NEXT_GQL_ENDPOINT}
+
 
     documents: "./src/graphql/**/*.graphql"
     hooks:
@@ -18,9 +17,8 @@ generates:
       includeDirectives: true
   ./src/graphql/generated/introspection.schema.json:
     schema:
-      ${NEXT_GQL_ENDPOINT}:
-        headers:
-          authorization: ${NEXT_TOKEN_CODEGEN}
+      ${NEXT_GQL_ENDPOINT}
+
     documents: "./src/graphql/**/*.graphql"
     hooks:
       afterOneFileWrite:
@@ -29,9 +27,8 @@ generates:
       - introspection
   ./src/graphql/generated/resolver-types.ts:
     schema:
-      ${NEXT_GQL_ENDPOINT}:
-        headers:
-          authorization: ${NEXT_TOKEN_CODEGEN}
+      ${NEXT_GQL_ENDPOINT}
+
     documents: "./src/graphql/**/*.graphql"
     hooks:
       afterOneFileWrite:
@@ -43,9 +40,8 @@ generates:
       useIndexSignature: true
   ./src/graphql/generated/graphql.ts:
     schema:
-      ${NEXT_GQL_ENDPOINT}:
-        headers:
-          authorization: ${NEXT_TOKEN_CODEGEN}
+      ${NEXT_GQL_ENDPOINT}
+
     documents: "./src/graphql/**/*.graphql"
     hooks:
       afterOneFileWrite:
@@ -61,7 +57,7 @@ generates:
           nonOptionalTypename: false
       - add:
           content:
-            - "import { ResolverContext } from '@/apollo/resolver-context'"
+            - "import { Context } from '@/server/Context/index'"
             - "import { Upload } from 'graphql-upload'"
             - "import { GraphQLDate, GraphQLDateTime, GraphQLTime, GraphQLJSON, GraphQLJSONObject, JSONResolver, GraphQLBigInt } from 'graphql-scalars';"
             - "import { DeepPartial } from 'utility-types';"
@@ -86,7 +82,7 @@ generates:
     config:
       useIndexSignature: true
       scalars:
-        JSON: typeof GraphQLJSON
+        Json: typeof GraphQLJSON
         JSONObject: typeof GraphQLJSONObject
         Upload: File
         Date: typeof GraphQLDate
@@ -100,28 +96,26 @@ generates:
       numericEnums: false
       namingConvention: keep
       addDocBlocks: true
-  ./src/apollo/fragment-matcher.ts:
-    schema:
-      ${NEXT_GQL_ENDPOINT}:
-        headers:
-          authorization: ${NEXT_TOKEN_CODEGEN}
-    documents: "./src/graphql/**/*.graphql"
-    hooks:
-      afterOneFileWrite:
-        - prettier --write
-    plugins:
-      - fragment-matcher
-    config:
-      useExplicitTyping: true
-      apolloClientVersion: 3
-  ./src/apollo/helpers.ts:
-    schema:
-      ${NEXT_GQL_ENDPOINT}:
-        headers:
-          authorization: ${NEXT_TOKEN_CODEGEN}
-    documents: "./src/graphql/**/*.graphql"
-    hooks:
-      afterOneFileWrite:
-        - prettier --write
-    plugins:
-      - typescript-apollo-client-helpers
+  # ./src/apollo/fragment-matcher.ts:
+  #   schema:
+  #     ${NEXT_GQL_ENDPOINT}
+
+  #   documents: "./src/graphql/**/*.graphql"
+  #   hooks:
+  #     afterOneFileWrite:
+  #       - prettier --write
+  #   plugins:
+  #     - fragment-matcher
+  #   config:
+  #     useExplicitTyping: true
+  #     apolloClientVersion: 3
+  # ./src/apollo/helpers.ts:
+  #   schema:
+  #     ${NEXT_GQL_ENDPOINT}
+
+  #   documents: "./src/graphql/**/*.graphql"
+  #   hooks:
+  #     afterOneFileWrite:
+  #       - prettier --write
+  #   plugins:
+  #     - typescript-apollo-client-helpers

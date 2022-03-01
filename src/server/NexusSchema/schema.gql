@@ -4,7 +4,7 @@
 type Account implements Node {
   access_token: String
   expires_at: Int
-  id: ID
+  id: String!
   id_token: String
   oauth_token: String
   oauth_token_secret: String
@@ -48,9 +48,129 @@ type AccountEdge {
   node: Account
 }
 
+input AccountListRelationFilter {
+  every: AccountWhereInput
+  none: AccountWhereInput
+  some: AccountWhereInput
+}
+
 input AccountOrderBy {
-  provider: OrderBy
-  providerAccountId: OrderBy
+  provider: SortOrderEnum
+  providerAccountId: SortOrderEnum
+}
+
+input AccountOrderByRelationAggregateInput {
+  _count: SortOrderEnum
+}
+
+input AccountWhereInput {
+  AND: [AccountWhereInput!]
+  NOT: [AccountWhereInput!]
+  OR: [AccountWhereInput!]
+  access_token: StringNullableFilter
+  expires_at: IntNullableFilter
+  id: StringFilter
+  id_token: StringNullableFilter
+  provider: StringFilter
+  providerAccountId: StringFilter
+  refresh_token: StringNullableFilter
+  scope: StringNullableFilter
+  session_state: StringNullableFilter
+  token_type: StringNullableFilter
+  type: StringFilter
+  user: UserRelationFilter
+  userId: StringFilter
+}
+
+type Bio {
+  body: String
+  createdAt: DateTime
+  intro: String
+  status: String
+  updatedAt: DateTime
+}
+
+input BoolFilter {
+  equals: Boolean
+  not: NestedBoolFilter
+}
+
+type Category {
+  createdAt: DateTime
+  creatorId: String
+  entryId: String
+  name: String
+  root: Boolean
+  updatedAt: DateTime
+}
+
+type Comment implements Node {
+  author: User
+  authorId: String
+  body: String
+  createdAt: DateTime!
+  entry: Entry
+  entryId: String
+  id: String!
+  position: String
+  reactions: [Reaction]
+  type: String
+  updatedAt: DateTime
+}
+
+type CommentConnection {
+  """
+  https://facebook.github.io/relay/graphql/connections.htm#sec-Edge-Types
+  """
+  edges: [CommentEdge]
+
+  """
+  Flattened list of Comment type
+  """
+  nodes: [Comment]
+
+  """
+  https://facebook.github.io/relay/graphql/connections.htm#sec-undefined.PageInfo
+  """
+  pageInfo: PageInfo!
+}
+
+type CommentEdge {
+  """
+  https://facebook.github.io/relay/graphql/connections.htm#sec-Cursor
+  """
+  cursor: String!
+
+  """
+  https://facebook.github.io/relay/graphql/connections.htm#sec-Node
+  """
+  node: Comment
+}
+
+input CommentListRelationFilter {
+  every: CommentWhereInput
+  none: CommentWhereInput
+  some: CommentWhereInput
+}
+
+input CommentOrderByRelationAggregateInput {
+  _count: SortOrderEnum
+}
+
+input CommentWhereInput {
+  AND: [CommentWhereInput!]
+  NOT: [CommentWhereInput!]
+  OR: [CommentWhereInput!]
+  author: UserRelationFilter
+  authorId: StringNullableFilter
+  body: StringNullableFilter
+  createdAt: DateTimeFilter
+  entry: EntryRelationFilter
+  entryId: StringNullableFilter
+  id: StringFilter
+  position: StringNullableFilter
+  reactions: EnumCommentReactionsNullableListFilter
+  updatedAt: DateTimeNullableFilter
 }
 
 """
@@ -63,35 +183,64 @@ A date-time string at UTC, such as 2007-12-03T10:15:30Z, compliant with the `dat
 """
 scalar DateTime
 
-"""
-Primary User Department
-"""
-enum Department {
-  CUSTOMER_SUPPORT
-  DESIGN
-  ENGINEERING
-  EXECUTIVE
-  FINANCE
-  HUMAN_RESOURCES
-  LEGAL
-  MARKETING
-  MEDIA
-  MEDICAL
-  OPERATIONS
-  SALES
-  UNASSIGNED
+input DateTimeFilter {
+  equals: DateTime
+  gt: DateTime
+  gte: DateTime
+  in: [DateTime!]
+  lt: DateTime
+  lte: DateTime
+  not: NestedDateTimeFilter
+  notIn: [DateTime!]
+}
+
+input DateTimeNullableFilter {
+  equals: DateTime
+  gt: DateTime
+  gte: DateTime
+  in: [DateTime!]
+  lt: DateTime
+  lte: DateTime
+  not: NestedDateTimeNullableFilter
+  notIn: [DateTime!]
 }
 
 type Entry implements Node {
   author: User
+  authorId: String
+  categories: [Category]
+  comments(
+    """
+    Returns the elements in the list that come after the specified cursor
+    """
+    after: String
+
+    """
+    Returns the elements in the list that come before the specified cursor
+    """
+    before: String
+
+    """
+    Returns the first n elements from the list.
+    """
+    first: Int
+
+    """
+    Returns the last n elements from the list.
+    """
+    last: Int
+    searchString: String!
+    take: Int
+  ): CommentConnection
   content: String
   createdAt: DateTime
-  featuredImage: String
-  id: ID
+  featuredImage: MediaItem
+  id: String!
   published: Boolean
+  reactions: [Reaction]
   title: String
+  type: String
   updatedAt: DateTime
-  userId: String
 }
 
 type EntryConnection {
@@ -123,26 +272,247 @@ type EntryEdge {
   node: Entry
 }
 
+input EntryListRelationFilter {
+  every: EntryWhereInput
+  none: EntryWhereInput
+  some: EntryWhereInput
+}
+
 input EntryOrderBy {
-  createdAt: OrderBy
-  title: OrderBy
-  updatedAt: OrderBy
+  createdAt: SortOrderEnum
+  title: SortOrderEnum
+  updatedAt: SortOrderEnum
+}
+
+input EntryOrderByRelationAggregateInput {
+  _count: SortOrderEnum
+}
+
+input EntryRelationFilter {
+  is: EntryWhereInput
+  isNot: EntryWhereInput
+}
+
+input EntryWhereInput {
+  AND: [EntryWhereInput!]
+  NOT: [EntryWhereInput!]
+  OR: [EntryWhereInput!]
+  author: UserRelationFilter
+  authorId: StringNullableFilter
+  categoryId: StringNullableFilter
+  comments: CommentListRelationFilter
+  content: StringNullableFilter
+  createdAt: DateTimeFilter
+  featuredImage: String
+  id: StringFilter
+  published: BoolFilter
+  title: StringFilter
+  updatedAt: DateTimeNullableFilter
+}
+
+input EnumCommentReactionsNullableListFilter {
+  equals: [Reaction!]
+  has: Reaction
+  hasEvery: [Reaction!]
+  hasSome: [Reaction!]
+  isEmpty: Boolean
+}
+
+input EnumGenderNullableFilter {
+  equals: Gender
+  in: [Gender!]
+  not: NestedEnumGenderNullableFilter
+  notIn: [Gender!]
+}
+
+input EnumMediaItemDestinationNullableFilter {
+  equals: MediaItemDestination
+  in: [MediaItemDestination!]
+  not: NestedEnumMediaItemDestinationNullableFilter
+  notIn: [MediaItemDestination!]
+}
+
+input EnumMimeTypeNullableFilter {
+  equals: MimeType
+  in: [MimeType!]
+  not: NestedEnumMimeTypeNullableFilter
+  notIn: [MimeType!]
+}
+
+input EnumPronounsNullableFilter {
+  equals: Pronouns
+  in: [Pronouns!]
+  not: NestedEnumPronounsNullableFilter
+  notIn: [Pronouns!]
+}
+
+input EnumRoleNullableFilter {
+  equals: Role
+  in: [Role!]
+  not: NestedEnumRoleNullableFilter
+  notIn: [Role!]
+}
+
+input EnumUserStatusNullableFilter {
+  equals: UserStatus
+  in: [UserStatus!]
+  not: NestedEnumUserStatusNullableFilter
+  notIn: [UserStatus!]
+}
+
+input FindManyUsersPaginatedInput {
+  cursor: UserWhereUniqueInput
+  distinct: [UserScalarFieldsEnum!]
+  orderBy: [UserOrderByWithRelationAndSearchRelevanceInput!]!
+  pagination: PaginationArgsInput = {
+    after: null
+    before: null
+    first: 10
+    last: null
+  }
+  skip: Int
+  take: Int
+  where: UserWhereInput
+}
+
+input FloatNullableFilter {
+  equals: Float
+  gt: Float
+  gte: Float
+  in: [Float!]
+  lt: Float
+  lte: Float
+  not: NestedFloatNullableFilter
+  notIn: [Float!]
 }
 
 """
-The `JSON` scalar type represents JSON values as specified by [ECMA-404](http://www.ecma-international.org/publications/files/ECMA-ST/ECMA-404.pdf).
+User Gender
+"""
+enum Gender {
+  FEMALE
+  MALE
+  OTHER
+  UNCERTAIN
+}
+
+input IntNullableFilter {
+  equals: Int
+  gt: Int
+  gte: Int
+  in: [Int!]
+  lt: Int
+  lte: Int
+  not: NestedIntNullableFilter
+  notIn: [Int!]
+}
+
+"""
+The `JSONObject` scalar type represents JSON objects as specified by [ECMA-404](http://www.ecma-international.org/publications/files/ECMA-ST/ECMA-404.pdf).
 """
 scalar Json
   @specifiedBy(
     url: "http://www.ecma-international.org/publications/files/ECMA-ST/ECMA-404.pdf"
   )
 
+type MediaItem {
+  ariaLabel: String
+  caption: String
+  destination: MediaItemDestination
+  fileLastModified: DateTime
+  filename: String
+  filetype: MimeType
+  height: Float!
+  mediaItemId: String
+  quality: Int!
+  size: String
+  src: String
+  srcSet: String
+  title: String
+  updatedAt: DateTime
+  uploadedAt: DateTime
+  width: Float!
+}
+
+"""
+Media Item Destination
+"""
+enum MediaItemDestination {
+  AVATAR
+  COMMENT_ATTACHMENT
+  COVER_IMAGE
+  ENTRY_ATTACHMENT
+  FEATURED_IMAGE
+}
+
+input MediaItemInput {
+  ariaLabel: String
+  caption: String
+  destination: MediaItemDestination
+  fileLastModified: DateTime
+  filename: String
+  filetype: MimeType
+  height: Float
+  mediaItemId: String
+  quality: Int
+  size: String
+  src: String
+  srcSet: String
+  title: String
+  updatedAt: DateTime
+  uploadedAt: DateTime
+  width: Float
+}
+
+input MediaItemRelationFilter {
+  is: MediaItemWhereInput
+  isNot: MediaItemWhereInput
+}
+
+input MediaItemWhereInput {
+  AND: [MediaItemWhereInput!]
+  NOT: [MediaItemWhereInput!]
+  OR: [MediaItemWhereInput!]
+  ariaLabel: StringNullableFilter
+  caption: StringNullableFilter
+  destination: EnumMediaItemDestinationNullableFilter
+  fileLastModified: DateTimeNullableFilter
+  filename: StringNullableFilter
+  filetype: EnumMimeTypeNullableFilter
+  height: FloatNullableFilter
+  mediaItemId: StringFilter
+  quality: IntNullableFilter
+  size: StringNullableFilter
+  src: StringNullableFilter
+  srcSet: StringNullableFilter
+  title: StringNullableFilter
+  updatedAt: DateTimeNullableFilter
+  uploadedAt: DateTimeFilter
+  user: UserRelationFilter
+  userId: StringNullableFilter
+  width: FloatNullableFilter
+}
+
+"""
+Mime Types
+"""
+enum MimeType {
+  AVIF
+  BMP
+  GIF
+  JPEG
+  PNG
+  SVG
+  TIFF
+  WEBP
+}
+
 type Mutation {
   CreateNewUser(
-    department: Department! = UNASSIGNED
-    email: String
+    email: String!
+    firstName: String
     image: String
-    name: String
+    lastName: String
     role: Role! = USER
   ): User
   DeleteUser(id: String!): User
@@ -171,6 +541,7 @@ type Mutation {
   createProfile(
     bio: String
     coverImage: String
+    dob: String
     email: String!
 
     """
@@ -181,16 +552,130 @@ type Mutation {
   ): Profile
 }
 
-interface Node {
-  id: ID
+input NestedBoolFilter {
+  equals: Boolean
+  not: NestedBoolFilter
 }
 
-"""
-Direction in which to order one or more corresponding fields
-"""
-enum OrderBy {
-  asc
-  desc
+input NestedDateTimeFilter {
+  equals: DateTime
+  gt: DateTime
+  gte: DateTime
+  in: [DateTime!]
+  lt: DateTime
+  lte: DateTime
+  not: NestedDateTimeFilter
+  notIn: [DateTime!]
+}
+
+input NestedDateTimeNullableFilter {
+  equals: DateTime
+  gt: DateTime
+  gte: DateTime
+  in: [DateTime!]
+  lt: DateTime
+  lte: DateTime
+  not: NestedDateTimeNullableFilter
+  notIn: [DateTime!]
+}
+
+input NestedEnumGenderNullableFilter {
+  equals: Gender
+  in: [Gender!]
+  not: NestedEnumGenderNullableFilter
+  notIn: [Gender!]
+}
+
+input NestedEnumMediaItemDestinationNullableFilter {
+  equals: MediaItemDestination
+  in: [MediaItemDestination!]
+  not: NestedEnumMediaItemDestinationNullableFilter
+  notIn: [MediaItemDestination!]
+}
+
+input NestedEnumMimeTypeNullableFilter {
+  equals: MimeType
+  in: [MimeType!]
+  not: NestedEnumMimeTypeNullableFilter
+  notIn: [MimeType!]
+}
+
+input NestedEnumPronounsNullableFilter {
+  equals: Pronouns
+  in: [Pronouns!]
+  not: NestedEnumPronounsNullableFilter
+  notIn: [Pronouns!]
+}
+
+input NestedEnumRoleNullableFilter {
+  equals: Role
+  in: [Role!]
+  not: NestedEnumRoleNullableFilter
+  notIn: [Role!]
+}
+
+input NestedEnumUserStatusNullableFilter {
+  equals: UserStatus
+  in: [UserStatus!]
+  not: NestedEnumUserStatusNullableFilter
+  notIn: [UserStatus!]
+}
+
+input NestedFloatNullableFilter {
+  equals: Float
+  gt: Float
+  gte: Float
+  in: [Float!]
+  lt: Float
+  lte: Float
+  not: NestedFloatNullableFilter
+  notIn: [Float!]
+}
+
+input NestedIntNullableFilter {
+  equals: Int
+  gt: Int
+  gte: Int
+  in: [Int!]
+  lt: Int
+  lte: Int
+  not: NestedIntNullableFilter
+  notIn: [Int!]
+}
+
+input NestedStringFilter {
+  contains: String
+  endsWith: String
+  equals: String
+  gt: String
+  gte: String
+  in: [String!]
+  lt: String
+  lte: String
+  not: NestedStringFilter
+  notIn: [String!]
+  search: String
+  startsWith: String
+}
+
+input NestedStringNullableFilter {
+  contains: String
+  endsWith: String
+  equals: String
+  gt: String
+  gte: String
+  in: [String!]
+  lt: String
+  lte: String
+  not: NestedStringNullableFilter
+  notIn: [String!]
+  search: String
+  startsWith: String
+}
+
+interface Node {
+  id: String
+  type: String
 }
 
 """
@@ -218,18 +703,25 @@ type PageInfo {
   startCursor: String
 }
 
+input PaginationArgsInput {
+  after: String = null
+  before: String = null
+  first: Int = 10
+  last: Int = null
+}
+
 """
 A field whose value conforms to the standard E.164 format as specified in: https://en.wikipedia.org/wiki/E.164. Basically this is +17895551234.
 """
 scalar PhoneNumber
 
 type Profile implements Node {
-  bio: String
-  coverImage: String
-  dob(type: DateTime): DateTime
-  id: ID
-  memberSince(type: DateTime): DateTime
+  coverImage: MediaItem
+  dob: Date
+  id: String!
+  memberSince: DateTime
   phoneNumber: PhoneNumber
+  type: String
   user: User
   userId: String
 }
@@ -264,32 +756,88 @@ type ProfileEdge {
 }
 
 input ProfileOrderBy {
-  memberSince: OrderBy
+  memberSince: SortOrderEnum
+}
+
+enum ProfileOrderByRelevanceFieldEnum {
+  activiyFeed
+  bio
+  city
+  country
+  coverPhoto
+  dob
+  id
+  occupation
+  phoneNumber
+  recentActivity
+  userId
+}
+
+input ProfileOrderByRelevanceInput {
+  fields: [ProfileOrderByRelevanceFieldEnum!]!
+  search: String!
+  sort: SortOrderEnum!
+}
+
+input ProfileOrderByWithRelationAndSearchRelevanceInput {
+  _relevance: ProfileOrderByRelevanceInput
+  activiyFeed: SortOrderEnum
+  bio: SortOrderEnum
+  city: SortOrderEnum
+  country: SortOrderEnum
+  coverPhoto: SortOrderEnum
+  dob: SortOrderEnum
+  gender: SortOrderEnum
+  id: SortOrderEnum
+  lastSeen: SortOrderEnum
+  memberSince: SortOrderEnum
+  occupation: SortOrderEnum
+  phoneNumber: SortOrderEnum
+  pronouns: SortOrderEnum
+  recentActivity: SortOrderEnum
+  user: UserOrderByWithRelationAndSearchRelevanceInput
+  userId: SortOrderEnum
+}
+
+input ProfileRelationFilter {
+  is: ProfileWhereInput
+  isNot: ProfileWhereInput
+}
+
+input ProfileWhereInput {
+  AND: [ProfileWhereInput!]
+  NOT: [ProfileWhereInput!]
+  OR: [ProfileWhereInput!]
+  activiyFeed: StringNullableFilter
+  bio: StringNullableFilter
+  city: StringNullableFilter
+  country: StringNullableFilter
+  coverPhoto: StringNullableFilter
+  dob: StringNullableFilter
+  gender: EnumGenderNullableFilter
+  id: StringFilter
+  lastSeen: DateTimeNullableFilter
+  memberSince: DateTimeFilter
+  occupation: StringNullableFilter
+  phoneNumber: StringNullableFilter
+  pronouns: EnumPronounsNullableFilter
+  recentActivity: StringNullableFilter
+  user: UserRelationFilter
+  userId: StringNullableFilter
+}
+
+"""
+User pronouns
+"""
+enum Pronouns {
+  HE_HIM_HIS
+  NOT_LISTED
+  PREFER_NOT_TO_SAY
+  SHE_HER_HERS
+  THEY_THEM_THEIRS
 }
 
 type Query {
-  ActiveFilter(
-    """
-    Returns the elements in the list that come after the specified cursor
-    """
-    after: String
-
-    """
-    Returns the elements in the list that come before the specified cursor
-    """
-    before: String
-
-    """
-    Returns the first n elements from the list.
-    """
-    first: Int
-    id: String
-
-    """
-    Returns the last n elements from the list.
-    """
-    last: Int
-  ): AccountConnection
   FilterUsers(
     """
     Returns the elements in the list that come after the specified cursor
@@ -473,22 +1021,46 @@ type Query {
     """
     last: Int
   ): UserConnection
-  viewer(id: ID = "Wz9IsOc1mhg92UmSgPjCI"): Viewer
+  viewer(id: String! = "621df7bfe79d1d9b7d728311"): Viewer
+}
+
+enum QueryModeEnum {
+  default
+  insensitive
 }
 
 """
-User hierarchical status
+Comment/Entry Reactions
+"""
+enum Reaction {
+  ANGRY
+  CARE
+  CONFUSED
+  DISLIKE
+  LAUGH
+  LIKE
+  LOVE
+  PARROT
+  ROCKET
+  TEARS
+  WOW
+}
+
+"""
+User Role
 """
 enum Role {
   ADMIN
+  MAINTAINER
   SUPERADMIN
   USER
 }
 
 type Session implements Node {
   expires: DateTime
-  id: ID
+  id: String!
   sessionToken: String
+  type: String
   user: User
   userId: String
 }
@@ -522,9 +1094,88 @@ type SessionEdge {
   node: Session
 }
 
+input SessionListRelationFilter {
+  every: SessionWhereInput
+  none: SessionWhereInput
+  some: SessionWhereInput
+}
+
 input SessionOrderBy {
-  expires: OrderBy
-  userId: OrderBy
+  expires: SortOrderEnum
+  id: SortOrderEnum
+  sessionToken: SortOrderEnum
+  userId: SortOrderEnum
+}
+
+input SessionOrderByRelationAggregateInput {
+  _count: SortOrderEnum
+}
+
+input SessionWhereInput {
+  AND: [SessionWhereInput!]
+  NOT: [SessionWhereInput!]
+  OR: [SessionWhereInput!]
+  accessToken: StringNullableFilter
+  alg: StringNullableFilter
+  exp: IntNullableFilter
+  iat: IntNullableFilter
+  id: StringFilter
+  lastVerified: DateTimeNullableFilter
+  provider: StringNullableFilter
+  refreshToken: StringNullableFilter
+  scopes: StringNullableListFilter
+  signature: StringNullableFilter
+  tokenState: StringNullableFilter
+  user: UserRelationFilter
+  userId: StringNullableFilter
+}
+
+"""
+Direction in which to order one or more corresponding fields
+"""
+enum SortOrderEnum {
+  asc
+  desc
+}
+
+input StringFilter {
+  contains: String
+  endsWith: String
+  equals: String
+  gt: String
+  gte: String
+  in: [String!]
+  lt: String
+  lte: String
+  mode: QueryModeEnum
+  not: NestedStringFilter
+  notIn: [String!]
+  search: String
+  startsWith: String
+}
+
+input StringNullableFilter {
+  contains: String
+  endsWith: String
+  equals: String
+  gt: String
+  gte: String
+  in: [String!]
+  lt: String
+  lte: String
+  mode: QueryModeEnum
+  not: NestedStringNullableFilter
+  notIn: [String!]
+  search: String
+  startsWith: String
+}
+
+input StringNullableListFilter {
+  equals: [String!]
+  has: String
+  hasEvery: [String!]
+  hasSome: [String!]
+  isEmpty: Boolean
 }
 
 """
@@ -543,6 +1194,7 @@ The `Upload` scalar type represents a file upload.
 scalar Upload
 
 type User implements Node {
+  _count: UserCount!
   accounts(
     """
     Returns the elements in the list that come after the specified cursor
@@ -564,7 +1216,6 @@ type User implements Node {
     """
     last: Int
   ): AccountConnection
-  department(department: Department = UNASSIGNED): Department
   email: String
   emailVerified: DateTime
   entries(
@@ -588,11 +1239,14 @@ type User implements Node {
     """
     last: Int
   ): EntryConnection
-  id: ID
+  firstName: String
+  id: String!
   image: String
-  name: String
+  imageMeta: MediaItem
+  lastName: String
+  password: String
   profile: Profile
-  role(role: Role = USER): Role
+  role: Role
   sessions(
     """
     Returns the elements in the list that come after the specified cursor
@@ -614,6 +1268,8 @@ type User implements Node {
     """
     last: Int
   ): SessionConnection
+  status: UserStatus
+  type: String
 }
 
 type UserConnection {
@@ -633,6 +1289,13 @@ type UserConnection {
   pageInfo: PageInfo!
 }
 
+type UserCount {
+  accounts: Int!
+  comments: Int!
+  entries: Int!
+  sessions: Int!
+}
+
 type UserEdge {
   """
   https://facebook.github.io/relay/graphql/connections.htm#sec-Cursor
@@ -645,11 +1308,106 @@ type UserEdge {
   node: User
 }
 
+enum UserOrderByRelevanceFieldEnum {
+  email
+  firstName
+  id
+  image
+  lastName
+  password
+}
+
+input UserOrderByRelevanceInput {
+  fields: [UserOrderByRelevanceFieldEnum!]!
+  search: String!
+  sort: SortOrderEnum!
+}
+
+input UserOrderByWithRelationAndSearchRelevanceInput {
+  _relevance: UserOrderByRelevanceInput
+  accounts: AccountOrderByRelationAggregateInput
+  comments: CommentOrderByRelationAggregateInput
+  createdAt: SortOrderEnum
+  email: SortOrderEnum
+  emailVerified: SortOrderEnum
+  entries: EntryOrderByRelationAggregateInput
+  firstName: SortOrderEnum
+  id: SortOrderEnum
+  image: SortOrderEnum
+  lastName: SortOrderEnum
+  password: SortOrderEnum
+  profile: ProfileOrderByWithRelationAndSearchRelevanceInput
+  role: SortOrderEnum
+  sessions: SessionOrderByRelationAggregateInput
+  status: SortOrderEnum
+  updatedAt: SortOrderEnum
+}
+
+input UserRelationFilter {
+  is: UserWhereInput
+  isNot: UserWhereInput
+}
+
+enum UserScalarFieldsEnum {
+  createdAt
+  email
+  emailVerified
+  firstName
+  id
+  image
+  lastName
+  password
+  role
+  status
+  updatedAt
+}
+
+"""
+User Status
+"""
+enum UserStatus {
+  BANNED
+  DEACTIVATED
+  DELETED
+  OFFLINE
+  ONLINE
+  SUSPENDED
+}
+
+input UserWhereInput {
+  AND: [UserWhereInput!]
+  NOT: [UserWhereInput!]
+  OR: [UserWhereInput!]
+  accounts: AccountListRelationFilter
+  comments: CommentListRelationFilter
+  createdAt: DateTimeFilter
+  email: StringFilter
+  emailVerified: DateTimeNullableFilter
+  entries: EntryListRelationFilter
+  firstName: StringNullableFilter
+  id: StringFilter
+  image: StringNullableFilter
+  imageMeta: MediaItemRelationFilter
+  lastName: StringNullableFilter
+  password: StringFilter
+  profile: ProfileRelationFilter
+  role: EnumRoleNullableFilter
+  sessions: SessionListRelationFilter
+  status: EnumUserStatusNullableFilter
+  updatedAt: DateTimeNullableFilter
+}
+
+input UserWhereUniqueInput {
+  email: String
+  id: String
+}
+
 type VerificationToken implements Node {
   expires: DateTime
-  id: ID
+  id: String!
   identifier: String
   token: String
+  type: String
 }
 
 type VerificationTokenConnection {
@@ -751,27 +1509,6 @@ type Viewer implements Node {
     last: Int
     searchString: String!
   ): EntryConnection
-  allUsers(
-    """
-    Returns the elements in the list that come after the specified cursor
-    """
-    after: String
-
-    """
-    Returns the elements in the list that come before the specified cursor
-    """
-    before: String
-
-    """
-    Returns the first n elements from the list.
-    """
-    first: Int
-
-    """
-    Returns the last n elements from the list.
-    """
-    last: Int
-  ): UserConnection
   entries(
     """
     Returns the elements in the list that come after the specified cursor
@@ -817,7 +1554,7 @@ type Viewer implements Node {
     provider: String!
     providerAccountId: String!
   ): AccountConnection
-  id: ID
+  id: String
   profiles(
     """
     Returns the elements in the list that come after the specified cursor
@@ -860,6 +1597,7 @@ type Viewer implements Node {
     """
     last: Int
   ): SessionConnection
+  type: String
   userAccount(
     """
     Returns the elements in the list that come after the specified cursor

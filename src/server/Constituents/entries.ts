@@ -9,34 +9,66 @@ import {
 } from "nexus";
 import { buildOrderBy } from "./utils";
 import {
-  NexusArgDef,
-  NexusExtendTypeDef,
-  NexusInputObjectTypeDef,
-  NexusObjectTypeDef
-} from "nexus/dist/core";
+  SortOrderEnum,
+  BoolFilter,
+  StringNullableFilter,
+  StringFilter,
+  MediaItem,
+  DateTimeNullableFilter,
+  DateTimeFilter,
+  UserRelationFilter,
+  CategoryObject,
+  CommentListRelationFilter,
+  Reaction
+} from ".";
 
-export const Entry: NexusObjectTypeDef<"Entry"> = objectType({
+export const Entry: core.NexusObjectTypeDef<"Entry"> = objectType({
   name: "Entry",
   definition(t) {
     t.implements("Node");
-    t.id("id");
+    t.nonNull.string("id");
     t.string("title");
     t.nullable.string("content");
-    t.nullable.string("featuredImage");
+    t.nullable.field("featuredImage", { type: MediaItem });
     t.boolean("published");
-    t.string("userId");
+    t.list.field("reactions", { type: Reaction });
+    t.list.field("categories", { type: CategoryObject });
+    t.string("authorId", {
+      resolve(source) {
+        return source.authorId;
+      }
+    });
     t.DateTime("createdAt");
     t.nullable.DateTime("updatedAt");
-    t.field("author", {
+    t.nullable.field("author", {
       type: "User",
       async resolve(parent, _args, ctx, _info) {
         return await ctx.prisma.entry
           .findFirst({
             where: {
-              author: { id: String(parent.userId) }
+              author: { id: String(parent.authorId) }
             }
           })
           .author();
+      }
+    });
+    t.connectionField("comments", {
+      type: "Comment",
+      additionalArgs: {
+        take: intArg(),
+        searchString: nonNull(stringArg())
+      },
+      async nodes(root, args, ctx, _info) {
+        return await ctx.prisma.comment
+          .findFirst({
+            include: { entry: true, author: true },
+            cursor: {
+              authorId_entryId: { entryId: root.id, authorId: root.authorId }
+            }
+          })
+          .entry()
+          .author()
+          .comments({ take: args.take ? args.take : 10 });
       }
     });
   }
@@ -74,13 +106,7 @@ export const EntryQuery = extendType({
       async nodes(_root, args, ctx, _info) {
         return await ctx.prisma.entry.findMany({
           take: Number(args.first),
-          orderBy: {
-            _relevance: {
-              fields: ["userId"],
-              search: String(args.searchString),
-              sort: "asc"
-            }
-          }
+          where: { title: { in: [args.searchString] } }
         });
       }
     });
@@ -92,20 +118,14 @@ export const EntryQuery = extendType({
       },
       async nodes(_root, args, ctx, _info) {
         return await ctx.prisma.entry.findMany({
-          orderBy: {
-            _relevance: {
-              fields: ["title"],
-              search: String(args.searchString),
-              sort: "asc"
-            }
-          }
+          where: { title: { contains: args.searchString } }
         });
       }
     });
   }
 });
 
-export const EntryMutation: NexusExtendTypeDef<"Mutation"> =
+export const EntryMutation: core.NexusExtendTypeDef<"Mutation"> =
   extendType<"Mutation">({
     type: "Mutation",
     definition(t) {
@@ -114,16 +134,16 @@ export const EntryMutation: NexusExtendTypeDef<"Mutation"> =
         args: {
           title: stringArg({
             description: "Entry Title"
-          }) as NexusArgDef<"String">,
+          }) as core.NexusArgDef<"String">,
           content: stringArg({
             description: "Entry Content"
-          }) as NexusArgDef<"String">,
+          }) as core.NexusArgDef<"String">,
           featuredImage: stringArg({
             description: "Entry Image"
-          }) as NexusArgDef<"String">,
+          }) as core.NexusArgDef<"String">,
           userId: stringArg({
             description: "User Id"
-          }) as NexusArgDef<"String">,
+          }) as core.NexusArgDef<"String">,
           publish: booleanArg()
         },
         async resolve(_root, args, ctx, _info) {
@@ -131,7 +151,9 @@ export const EntryMutation: NexusExtendTypeDef<"Mutation"> =
             data: {
               title: String(args.title),
               content: String(args.content),
-              featuredImage: String(args.featuredImage),
+              featuredImage: {
+                set: { ariaLabel: "", width: 0, height: 0, quality: 85 }
+              },
               createdAt: new Date(Date.now()),
               published: args?.publish ? args.publish : false,
               author: { connect: { id: String(args.userId) } }
@@ -141,13 +163,48 @@ export const EntryMutation: NexusExtendTypeDef<"Mutation"> =
       }) as core.FieldResolver<"Mutation", "createEntry"> | undefined;
     }
   });
-/**
-const or = args.searchString
-  ? {
-      OR: [
-        { title: { contains: String(args.searchString) } },
-        { content: { contains: String(args.searchString) } }
-      ]
-    }
-  : {};
- */
+// Input Types
+
+export const EntryListRelationFilter = core.inputObjectType({
+  name: "EntryListRelationFilter",
+  definition(t) {
+    t.field("every", { type: EntryWhereInput });
+    t.field("none", { type: EntryWhereInput });
+    t.field("some", { type: EntryWhereInput });
+  }
+});
+
+export const EntryOrderByRelationAggregateInput = core.inputObjectType({
+  name: "EntryOrderByRelationAggregateInput",
+  definition(t) {
+    t.field("_count", { type: SortOrderEnum });
+  }
+});
+
+export const EntryRelationFilter = core.inputObjectType({
+  name: "EntryRelationFilter",
+  definition(t) {
+    t.field("is", { type: EntryWhereInput });
+    t.field("isNot", { type: EntryWhereInput });
+  }
+});
+
+export const EntryWhereInput = core.inputObjectType({
+  name: "EntryWhereInput",
+  definition(t) {
+    t.list.nonNull.field("AND", { type: EntryWhereInput });
+    t.list.nonNull.field("NOT", { type: EntryWhereInput });
+    t.list.nonNull.field("OR", { type: EntryWhereInput });
+    t.field("author", { type: UserRelationFilter });
+    t.field("authorId", { type: StringNullableFilter });
+    t.field("categoryId", { type: StringNullableFilter });
+    t.field("comments", { type: CommentListRelationFilter });
+    t.field("content", { type: StringNullableFilter });
+    t.field("createdAt", { type: DateTimeFilter });
+    t.string("featuredImage");
+    t.field("id", { type: StringFilter });
+    t.field("published", { type: BoolFilter });
+    t.field("title", { type: StringFilter });
+    t.field("updatedAt", { type: DateTimeNullableFilter });
+  }
+});

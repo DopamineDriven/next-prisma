@@ -8,7 +8,8 @@ import type {
 } from "@apollo/client";
 import { ResolverContext } from "@/apollo/resolver-context";
 // import { AuthData } from "@/hooks/use-auth";
-import {Session} from "next-auth"
+import { Session } from "next-auth"
+
 
 declare module "next/app" {
   type AppProps<P = Record<string, unknown>> = {
