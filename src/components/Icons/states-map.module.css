@@ -1,0 +1,11 @@
+.path {
+  @apply flex-shrink container mx-auto align-top my-0 justify-start -translate-y-20 sm:-translate-y-10 md:-translate-y-5 lg:-translate-y-0;
+}
+
+.path g > path {
+  @apply has-tooltip transition-transform transform-gpu duration-150 ease-linear animated fadeIn hover:scale-[1.00025] hover:opacity-[0.85];
+}
+
+.path g > path > title {
+  @apply tooltip;
+}

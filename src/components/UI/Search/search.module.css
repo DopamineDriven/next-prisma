@@ -1,0 +1,24 @@
+.root {
+  @apply relative font-interVar px-3 pl-7 py-2 appearance-none w-full transform-gpu
+  duration-150 ease-linear pr-10 bg-opacity-50 text-[#424242]
+  bg-stone-50 text-[0.5rem] 5xs:text-[0.575rem] 4xs:text-[0.65rem]
+  3xs:text-[0.7rem] 2xs:text-[0.8rem] sm:text-[1.5rem] leading-[2.15rem] tracking-[0.18rem] font-normal;
+  & > *:nth-child(3n + 1) {
+    @apply sr-only;
+  }
+  & > *:nth-child(3n + 2) {
+    @apply bg-transparent px-3 py-2 appearance-none w-full rounded-[0.25rem]
+    transition placeholder-[#707070] transform-gpu ring-2 ring-inset ring-[#707070]
+    duration-150 ease-in-out pr-10 sm:min-w-[18.75rem] drop-shadow-lg lg:drop-shadow-2xl;
+    &:focus {
+      @apply outline-none shadow-outline-normal ring-transparent;
+    }
+  }
+  & > *:nth-child(3n + 3) {
+    @apply outline-none absolute inset-y-0 right-10
+    pr-3 flex items-center pointer-events-none;
+    & > svg {
+      @apply w-5 h-5 text-[#606060] z-50;
+    }
+  }
+}

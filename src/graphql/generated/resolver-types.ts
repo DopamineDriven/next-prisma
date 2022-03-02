@@ -44,7 +44,7 @@ export type Account = Node & {
   __typename?: "Account";
   access_token?: Maybe<Scalars["String"]>;
   expires_at?: Maybe<Scalars["Int"]>;
-  id?: Maybe<Scalars["ID"]>;
+  id: Scalars["String"];
   id_token?: Maybe<Scalars["String"]>;
   oauth_token?: Maybe<Scalars["String"]>;
   oauth_token_secret?: Maybe<Scalars["String"]>;
@@ -125,6 +125,16 @@ export type BoolFilter = {
   not?: InputMaybe<NestedBoolFilter>;
 };
 
+export type Category = {
+  __typename?: "Category";
+  createdAt?: Maybe<Scalars["DateTime"]>;
+  creatorId?: Maybe<Scalars["String"]>;
+  entryId?: Maybe<Scalars["String"]>;
+  name?: Maybe<Scalars["String"]>;
+  root?: Maybe<Scalars["Boolean"]>;
+  updatedAt?: Maybe<Scalars["DateTime"]>;
+};
+
 export type Comment = Node & {
   __typename?: "Comment";
   author?: Maybe<User>;
@@ -133,10 +143,29 @@ export type Comment = Node & {
   createdAt: Scalars["DateTime"];
   entry?: Maybe<Entry>;
   entryId?: Maybe<Scalars["String"]>;
-  id: Scalars["ID"];
+  id: Scalars["String"];
   position?: Maybe<Scalars["String"]>;
   reactions?: Maybe<Array<Maybe<Reaction>>>;
+  type?: Maybe<Scalars["String"]>;
   updatedAt?: Maybe<Scalars["DateTime"]>;
+};
+
+export type CommentConnection = {
+  __typename?: "CommentConnection";
+  /** https://facebook.github.io/relay/graphql/connections.htm#sec-Edge-Types */
+  edges?: Maybe<Array<Maybe<CommentEdge>>>;
+  /** Flattened list of Comment type */
+  nodes?: Maybe<Array<Maybe<Comment>>>;
+  /** https://facebook.github.io/relay/graphql/connections.htm#sec-undefined.PageInfo */
+  pageInfo: PageInfo;
+};
+
+export type CommentEdge = {
+  __typename?: "CommentEdge";
+  /** https://facebook.github.io/relay/graphql/connections.htm#sec-Cursor */
+  cursor: Scalars["String"];
+  /** https://facebook.github.io/relay/graphql/connections.htm#sec-Node */
+  node?: Maybe<Comment>;
 };
 
 export type CommentListRelationFilter = {
@@ -190,14 +219,27 @@ export type DateTimeNullableFilter = {
 export type Entry = Node & {
   __typename?: "Entry";
   author?: Maybe<User>;
+  authorId?: Maybe<Scalars["String"]>;
+  categories?: Maybe<Array<Maybe<Category>>>;
+  comments?: Maybe<CommentConnection>;
   content?: Maybe<Scalars["String"]>;
   createdAt?: Maybe<Scalars["DateTime"]>;
-  featuredImage?: Maybe<Scalars["String"]>;
-  id?: Maybe<Scalars["ID"]>;
+  featuredImage?: Maybe<MediaItem>;
+  id: Scalars["String"];
   published?: Maybe<Scalars["Boolean"]>;
+  reactions?: Maybe<Array<Maybe<Reaction>>>;
   title?: Maybe<Scalars["String"]>;
+  type?: Maybe<Scalars["String"]>;
   updatedAt?: Maybe<Scalars["DateTime"]>;
-  userId?: Maybe<Scalars["String"]>;
+};
+
+export type EntryCommentsArgs = {
+  after?: InputMaybe<Scalars["String"]>;
+  before?: InputMaybe<Scalars["String"]>;
+  first?: InputMaybe<Scalars["Int"]>;
+  last?: InputMaybe<Scalars["Int"]>;
+  searchString: Scalars["String"];
+  take?: InputMaybe<Scalars["Int"]>;
 };
 
 export type EntryConnection = {
@@ -249,7 +291,7 @@ export type EntryWhereInput = {
   comments?: InputMaybe<CommentListRelationFilter>;
   content?: InputMaybe<StringNullableFilter>;
   createdAt?: InputMaybe<DateTimeFilter>;
-  featuredImage?: InputMaybe<StringNullableFilter>;
+  featuredImage?: InputMaybe<Scalars["String"]>;
   id?: InputMaybe<StringFilter>;
   published?: InputMaybe<BoolFilter>;
   title?: InputMaybe<StringFilter>;
@@ -269,6 +311,20 @@ export type EnumGenderNullableFilter = {
   in?: InputMaybe<Array<Gender>>;
   not?: InputMaybe<NestedEnumGenderNullableFilter>;
   notIn?: InputMaybe<Array<Gender>>;
+};
+
+export type EnumMediaItemDestinationNullableFilter = {
+  equals?: InputMaybe<MediaItemDestination>;
+  in?: InputMaybe<Array<MediaItemDestination>>;
+  not?: InputMaybe<NestedEnumMediaItemDestinationNullableFilter>;
+  notIn?: InputMaybe<Array<MediaItemDestination>>;
+};
+
+export type EnumMimeTypeNullableFilter = {
+  equals?: InputMaybe<MimeType>;
+  in?: InputMaybe<Array<MimeType>>;
+  not?: InputMaybe<NestedEnumMimeTypeNullableFilter>;
+  notIn?: InputMaybe<Array<MimeType>>;
 };
 
 export type EnumPronounsNullableFilter = {
@@ -300,6 +356,17 @@ export type FindManyUsersPaginatedInput = {
   skip?: InputMaybe<Scalars["Int"]>;
   take?: InputMaybe<Scalars["Int"]>;
   where?: InputMaybe<UserWhereInput>;
+};
+
+export type FloatNullableFilter = {
+  equals?: InputMaybe<Scalars["Float"]>;
+  gt?: InputMaybe<Scalars["Float"]>;
+  gte?: InputMaybe<Scalars["Float"]>;
+  in?: InputMaybe<Array<Scalars["Float"]>>;
+  lt?: InputMaybe<Scalars["Float"]>;
+  lte?: InputMaybe<Scalars["Float"]>;
+  not?: InputMaybe<NestedFloatNullableFilter>;
+  notIn?: InputMaybe<Array<Scalars["Float"]>>;
 };
 
 /** User Gender */
@@ -349,6 +416,54 @@ export enum MediaItemDestination {
   EntryAttachment = "ENTRY_ATTACHMENT",
   FeaturedImage = "FEATURED_IMAGE"
 }
+
+export type MediaItemInput = {
+  ariaLabel?: InputMaybe<Scalars["String"]>;
+  caption?: InputMaybe<Scalars["String"]>;
+  destination?: InputMaybe<MediaItemDestination>;
+  fileLastModified?: InputMaybe<Scalars["DateTime"]>;
+  filename?: InputMaybe<Scalars["String"]>;
+  filetype?: InputMaybe<MimeType>;
+  height?: InputMaybe<Scalars["Float"]>;
+  mediaItemId?: InputMaybe<Scalars["String"]>;
+  quality?: InputMaybe<Scalars["Int"]>;
+  size?: InputMaybe<Scalars["String"]>;
+  src?: InputMaybe<Scalars["String"]>;
+  srcSet?: InputMaybe<Scalars["String"]>;
+  title?: InputMaybe<Scalars["String"]>;
+  updatedAt?: InputMaybe<Scalars["DateTime"]>;
+  uploadedAt?: InputMaybe<Scalars["DateTime"]>;
+  width?: InputMaybe<Scalars["Float"]>;
+};
+
+export type MediaItemRelationFilter = {
+  is?: InputMaybe<MediaItemWhereInput>;
+  isNot?: InputMaybe<MediaItemWhereInput>;
+};
+
+export type MediaItemWhereInput = {
+  AND?: InputMaybe<Array<MediaItemWhereInput>>;
+  NOT?: InputMaybe<Array<MediaItemWhereInput>>;
+  OR?: InputMaybe<Array<MediaItemWhereInput>>;
+  ariaLabel?: InputMaybe<StringNullableFilter>;
+  caption?: InputMaybe<StringNullableFilter>;
+  destination?: InputMaybe<EnumMediaItemDestinationNullableFilter>;
+  fileLastModified?: InputMaybe<DateTimeNullableFilter>;
+  filename?: InputMaybe<StringNullableFilter>;
+  filetype?: InputMaybe<EnumMimeTypeNullableFilter>;
+  height?: InputMaybe<FloatNullableFilter>;
+  mediaItemId?: InputMaybe<StringFilter>;
+  quality?: InputMaybe<IntNullableFilter>;
+  size?: InputMaybe<StringNullableFilter>;
+  src?: InputMaybe<StringNullableFilter>;
+  srcSet?: InputMaybe<StringNullableFilter>;
+  title?: InputMaybe<StringNullableFilter>;
+  updatedAt?: InputMaybe<DateTimeNullableFilter>;
+  uploadedAt?: InputMaybe<DateTimeFilter>;
+  user?: InputMaybe<UserRelationFilter>;
+  userId?: InputMaybe<StringNullableFilter>;
+  width?: InputMaybe<FloatNullableFilter>;
+};
 
 /** Mime Types */
 export enum MimeType {
@@ -433,6 +548,20 @@ export type NestedEnumGenderNullableFilter = {
   notIn?: InputMaybe<Array<Gender>>;
 };
 
+export type NestedEnumMediaItemDestinationNullableFilter = {
+  equals?: InputMaybe<MediaItemDestination>;
+  in?: InputMaybe<Array<MediaItemDestination>>;
+  not?: InputMaybe<NestedEnumMediaItemDestinationNullableFilter>;
+  notIn?: InputMaybe<Array<MediaItemDestination>>;
+};
+
+export type NestedEnumMimeTypeNullableFilter = {
+  equals?: InputMaybe<MimeType>;
+  in?: InputMaybe<Array<MimeType>>;
+  not?: InputMaybe<NestedEnumMimeTypeNullableFilter>;
+  notIn?: InputMaybe<Array<MimeType>>;
+};
+
 export type NestedEnumPronounsNullableFilter = {
   equals?: InputMaybe<Pronouns>;
   in?: InputMaybe<Array<Pronouns>>;
@@ -452,6 +581,17 @@ export type NestedEnumUserStatusNullableFilter = {
   in?: InputMaybe<Array<UserStatus>>;
   not?: InputMaybe<NestedEnumUserStatusNullableFilter>;
   notIn?: InputMaybe<Array<UserStatus>>;
+};
+
+export type NestedFloatNullableFilter = {
+  equals?: InputMaybe<Scalars["Float"]>;
+  gt?: InputMaybe<Scalars["Float"]>;
+  gte?: InputMaybe<Scalars["Float"]>;
+  in?: InputMaybe<Array<Scalars["Float"]>>;
+  lt?: InputMaybe<Scalars["Float"]>;
+  lte?: InputMaybe<Scalars["Float"]>;
+  not?: InputMaybe<NestedFloatNullableFilter>;
+  notIn?: InputMaybe<Array<Scalars["Float"]>>;
 };
 
 export type NestedIntNullableFilter = {
@@ -496,7 +636,8 @@ export type NestedStringNullableFilter = {
 };
 
 export type Node = {
-  id?: Maybe<Scalars["ID"]>;
+  id?: Maybe<Scalars["String"]>;
+  type?: Maybe<Scalars["String"]>;
 };
 
 /** PageInfo cursor, as defined in https://facebook.github.io/relay/graphql/connections.htm#sec-undefined.PageInfo */
@@ -521,21 +662,14 @@ export type PaginationArgsInput = {
 
 export type Profile = Node & {
   __typename?: "Profile";
-  coverImage?: Maybe<Scalars["String"]>;
-  dob?: Maybe<Scalars["DateTime"]>;
-  id?: Maybe<Scalars["ID"]>;
+  coverImage?: Maybe<MediaItem>;
+  dob?: Maybe<Scalars["Date"]>;
+  id: Scalars["String"];
   memberSince?: Maybe<Scalars["DateTime"]>;
   phoneNumber?: Maybe<Scalars["PhoneNumber"]>;
+  type?: Maybe<Scalars["String"]>;
   user?: Maybe<User>;
   userId?: Maybe<Scalars["String"]>;
-};
-
-export type ProfileDobArgs = {
-  type?: InputMaybe<Scalars["DateTime"]>;
-};
-
-export type ProfileMemberSinceArgs = {
-  type?: InputMaybe<Scalars["DateTime"]>;
 };
 
 export type ProfileConnection = {
@@ -638,25 +772,21 @@ export enum Pronouns {
 
 export type Query = {
   __typename?: "Query";
-  ActiveFilter?: Maybe<AccountConnection>;
   FilterUsers?: Maybe<UserConnection>;
   SearchByUserEmail?: Maybe<UserConnection>;
   accounts?: Maybe<AccountConnection>;
   allAccounts?: Maybe<AccountConnection>;
   allEntries?: Maybe<EntryConnection>;
+  entries?: Maybe<EntryConnection>;
   entryFeed?: Maybe<EntryConnection>;
   node?: Maybe<Node>;
+  session?: Maybe<SessionConnection>;
+  userAccount?: Maybe<AccountConnection>;
+  userByEmail?: Maybe<User>;
+  userById?: Maybe<User>;
   userEntries?: Maybe<EntryConnection>;
   usersQuery?: Maybe<UserConnection>;
   viewer?: Maybe<Viewer>;
-};
-
-export type QueryActiveFilterArgs = {
-  after?: InputMaybe<Scalars["String"]>;
-  before?: InputMaybe<Scalars["String"]>;
-  first?: InputMaybe<Scalars["Int"]>;
-  id?: InputMaybe<Scalars["String"]>;
-  last?: InputMaybe<Scalars["Int"]>;
 };
 
 export type QueryFilterUsersArgs = {
@@ -699,6 +829,13 @@ export type QueryAllEntriesArgs = {
   take: Scalars["Int"];
 };
 
+export type QueryEntriesArgs = {
+  after?: InputMaybe<Scalars["String"]>;
+  before?: InputMaybe<Scalars["String"]>;
+  first?: InputMaybe<Scalars["Int"]>;
+  last?: InputMaybe<Scalars["Int"]>;
+};
+
 export type QueryEntryFeedArgs = {
   after?: InputMaybe<Scalars["String"]>;
   before?: InputMaybe<Scalars["String"]>;
@@ -710,7 +847,29 @@ export type QueryEntryFeedArgs = {
 };
 
 export type QueryNodeArgs = {
-  id?: InputMaybe<Scalars["ID"]>;
+  id?: InputMaybe<Scalars["String"]>;
+};
+
+export type QuerySessionArgs = {
+  after?: InputMaybe<Scalars["String"]>;
+  before?: InputMaybe<Scalars["String"]>;
+  first?: InputMaybe<Scalars["Int"]>;
+  last?: InputMaybe<Scalars["Int"]>;
+};
+
+export type QueryUserAccountArgs = {
+  after?: InputMaybe<Scalars["String"]>;
+  before?: InputMaybe<Scalars["String"]>;
+  first?: InputMaybe<Scalars["Int"]>;
+  last?: InputMaybe<Scalars["Int"]>;
+};
+
+export type QueryUserByEmailArgs = {
+  email: Scalars["String"];
+};
+
+export type QueryUserByIdArgs = {
+  id: Scalars["String"];
 };
 
 export type QueryUserEntriesArgs = {
@@ -729,7 +888,7 @@ export type QueryUsersQueryArgs = {
 };
 
 export type QueryViewerArgs = {
-  id?: InputMaybe<Scalars["ID"]>;
+  id?: Scalars["String"];
 };
 
 export enum QueryModeEnum {
@@ -763,8 +922,9 @@ export enum Role {
 export type Session = Node & {
   __typename?: "Session";
   expires?: Maybe<Scalars["DateTime"]>;
-  id?: Maybe<Scalars["ID"]>;
+  id: Scalars["String"];
   sessionToken?: Maybe<Scalars["String"]>;
+  type?: Maybe<Scalars["String"]>;
   user?: Maybe<User>;
   userId?: Maybe<Scalars["String"]>;
 };
@@ -877,7 +1037,7 @@ export type User = Node & {
   emailVerified?: Maybe<Scalars["DateTime"]>;
   entries?: Maybe<EntryConnection>;
   firstName?: Maybe<Scalars["String"]>;
-  id: Scalars["ID"];
+  id: Scalars["String"];
   image?: Maybe<Scalars["String"]>;
   imageMeta?: Maybe<MediaItem>;
   lastName?: Maybe<Scalars["String"]>;
@@ -886,6 +1046,7 @@ export type User = Node & {
   role?: Maybe<Role>;
   sessions?: Maybe<SessionConnection>;
   status?: Maybe<UserStatus>;
+  type?: Maybe<Scalars["String"]>;
 };
 
 export type UserAccountsArgs = {
@@ -1012,6 +1173,7 @@ export type UserWhereInput = {
   firstName?: InputMaybe<StringNullableFilter>;
   id?: InputMaybe<StringFilter>;
   image?: InputMaybe<StringNullableFilter>;
+  imageMeta?: InputMaybe<MediaItemRelationFilter>;
   lastName?: InputMaybe<StringNullableFilter>;
   password?: InputMaybe<StringFilter>;
   profile?: InputMaybe<ProfileRelationFilter>;
@@ -1029,9 +1191,10 @@ export type UserWhereUniqueInput = {
 export type VerificationToken = Node & {
   __typename?: "VerificationToken";
   expires?: Maybe<Scalars["DateTime"]>;
-  id?: Maybe<Scalars["ID"]>;
+  id: Scalars["String"];
   identifier?: Maybe<Scalars["String"]>;
   token?: Maybe<Scalars["String"]>;
+  type?: Maybe<Scalars["String"]>;
 };
 
 export type VerificationTokenConnection = {
@@ -1059,14 +1222,10 @@ export type Viewer = Node & {
   GetEntry?: Maybe<Entry>;
   GetSession?: Maybe<Session>;
   SearchEntriesByTitle?: Maybe<EntryConnection>;
-  entries?: Maybe<EntryConnection>;
   getUserByAccount?: Maybe<AccountConnection>;
-  id?: Maybe<Scalars["ID"]>;
+  id?: Maybe<Scalars["String"]>;
   profiles?: Maybe<ProfileConnection>;
-  session?: Maybe<SessionConnection>;
-  userAccount?: Maybe<AccountConnection>;
-  userByEmail?: Maybe<User>;
-  userById?: Maybe<User>;
+  type?: Maybe<Scalars["String"]>;
   verificationTokens?: Maybe<VerificationTokenConnection>;
 };
 
@@ -1103,13 +1262,6 @@ export type ViewerSearchEntriesByTitleArgs = {
   searchString: Scalars["String"];
 };
 
-export type ViewerEntriesArgs = {
-  after?: InputMaybe<Scalars["String"]>;
-  before?: InputMaybe<Scalars["String"]>;
-  first?: InputMaybe<Scalars["Int"]>;
-  last?: InputMaybe<Scalars["Int"]>;
-};
-
 export type ViewerGetUserByAccountArgs = {
   after?: InputMaybe<Scalars["String"]>;
   before?: InputMaybe<Scalars["String"]>;
@@ -1125,28 +1277,6 @@ export type ViewerProfilesArgs = {
   before?: InputMaybe<Scalars["String"]>;
   first?: InputMaybe<Scalars["Int"]>;
   last?: InputMaybe<Scalars["Int"]>;
-};
-
-export type ViewerSessionArgs = {
-  after?: InputMaybe<Scalars["String"]>;
-  before?: InputMaybe<Scalars["String"]>;
-  first?: InputMaybe<Scalars["Int"]>;
-  last?: InputMaybe<Scalars["Int"]>;
-};
-
-export type ViewerUserAccountArgs = {
-  after?: InputMaybe<Scalars["String"]>;
-  before?: InputMaybe<Scalars["String"]>;
-  first?: InputMaybe<Scalars["Int"]>;
-  last?: InputMaybe<Scalars["Int"]>;
-};
-
-export type ViewerUserByEmailArgs = {
-  email: Scalars["String"];
-};
-
-export type ViewerUserByIdArgs = {
-  id: Scalars["String"];
 };
 
 export type ViewerVerificationTokensArgs = {
@@ -1276,7 +1406,10 @@ export type ResolversTypes = ResolversObject<{
   Bio: ResolverTypeWrapper<Bio>;
   BoolFilter: BoolFilter;
   Boolean: ResolverTypeWrapper<Scalars["Boolean"]>;
+  Category: ResolverTypeWrapper<Category>;
   Comment: ResolverTypeWrapper<Comment>;
+  CommentConnection: ResolverTypeWrapper<CommentConnection>;
+  CommentEdge: ResolverTypeWrapper<CommentEdge>;
   CommentListRelationFilter: CommentListRelationFilter;
   CommentOrderByRelationAggregateInput: CommentOrderByRelationAggregateInput;
   CommentWhereInput: CommentWhereInput;
@@ -1294,27 +1427,35 @@ export type ResolversTypes = ResolversObject<{
   EntryWhereInput: EntryWhereInput;
   EnumCommentReactionsNullableListFilter: EnumCommentReactionsNullableListFilter;
   EnumGenderNullableFilter: EnumGenderNullableFilter;
+  EnumMediaItemDestinationNullableFilter: EnumMediaItemDestinationNullableFilter;
+  EnumMimeTypeNullableFilter: EnumMimeTypeNullableFilter;
   EnumPronounsNullableFilter: EnumPronounsNullableFilter;
   EnumRoleNullableFilter: EnumRoleNullableFilter;
   EnumUserStatusNullableFilter: EnumUserStatusNullableFilter;
   FindManyUsersPaginatedInput: FindManyUsersPaginatedInput;
   Float: ResolverTypeWrapper<Scalars["Float"]>;
+  FloatNullableFilter: FloatNullableFilter;
   Gender: Gender;
-  ID: ResolverTypeWrapper<Scalars["ID"]>;
   Int: ResolverTypeWrapper<Scalars["Int"]>;
   IntNullableFilter: IntNullableFilter;
   Json: ResolverTypeWrapper<Scalars["Json"]>;
   MediaItem: ResolverTypeWrapper<MediaItem>;
   MediaItemDestination: MediaItemDestination;
+  MediaItemInput: MediaItemInput;
+  MediaItemRelationFilter: MediaItemRelationFilter;
+  MediaItemWhereInput: MediaItemWhereInput;
   MimeType: MimeType;
   Mutation: ResolverTypeWrapper<{}>;
   NestedBoolFilter: NestedBoolFilter;
   NestedDateTimeFilter: NestedDateTimeFilter;
   NestedDateTimeNullableFilter: NestedDateTimeNullableFilter;
   NestedEnumGenderNullableFilter: NestedEnumGenderNullableFilter;
+  NestedEnumMediaItemDestinationNullableFilter: NestedEnumMediaItemDestinationNullableFilter;
+  NestedEnumMimeTypeNullableFilter: NestedEnumMimeTypeNullableFilter;
   NestedEnumPronounsNullableFilter: NestedEnumPronounsNullableFilter;
   NestedEnumRoleNullableFilter: NestedEnumRoleNullableFilter;
   NestedEnumUserStatusNullableFilter: NestedEnumUserStatusNullableFilter;
+  NestedFloatNullableFilter: NestedFloatNullableFilter;
   NestedIntNullableFilter: NestedIntNullableFilter;
   NestedStringFilter: NestedStringFilter;
   NestedStringNullableFilter: NestedStringNullableFilter;
@@ -1389,7 +1530,10 @@ export type ResolversParentTypes = ResolversObject<{
   Bio: Bio;
   BoolFilter: BoolFilter;
   Boolean: Scalars["Boolean"];
+  Category: Category;
   Comment: Comment;
+  CommentConnection: CommentConnection;
+  CommentEdge: CommentEdge;
   CommentListRelationFilter: CommentListRelationFilter;
   CommentOrderByRelationAggregateInput: CommentOrderByRelationAggregateInput;
   CommentWhereInput: CommentWhereInput;
@@ -1407,24 +1551,32 @@ export type ResolversParentTypes = ResolversObject<{
   EntryWhereInput: EntryWhereInput;
   EnumCommentReactionsNullableListFilter: EnumCommentReactionsNullableListFilter;
   EnumGenderNullableFilter: EnumGenderNullableFilter;
+  EnumMediaItemDestinationNullableFilter: EnumMediaItemDestinationNullableFilter;
+  EnumMimeTypeNullableFilter: EnumMimeTypeNullableFilter;
   EnumPronounsNullableFilter: EnumPronounsNullableFilter;
   EnumRoleNullableFilter: EnumRoleNullableFilter;
   EnumUserStatusNullableFilter: EnumUserStatusNullableFilter;
   FindManyUsersPaginatedInput: FindManyUsersPaginatedInput;
   Float: Scalars["Float"];
-  ID: Scalars["ID"];
+  FloatNullableFilter: FloatNullableFilter;
   Int: Scalars["Int"];
   IntNullableFilter: IntNullableFilter;
   Json: Scalars["Json"];
   MediaItem: MediaItem;
+  MediaItemInput: MediaItemInput;
+  MediaItemRelationFilter: MediaItemRelationFilter;
+  MediaItemWhereInput: MediaItemWhereInput;
   Mutation: {};
   NestedBoolFilter: NestedBoolFilter;
   NestedDateTimeFilter: NestedDateTimeFilter;
   NestedDateTimeNullableFilter: NestedDateTimeNullableFilter;
   NestedEnumGenderNullableFilter: NestedEnumGenderNullableFilter;
+  NestedEnumMediaItemDestinationNullableFilter: NestedEnumMediaItemDestinationNullableFilter;
+  NestedEnumMimeTypeNullableFilter: NestedEnumMimeTypeNullableFilter;
   NestedEnumPronounsNullableFilter: NestedEnumPronounsNullableFilter;
   NestedEnumRoleNullableFilter: NestedEnumRoleNullableFilter;
   NestedEnumUserStatusNullableFilter: NestedEnumUserStatusNullableFilter;
+  NestedFloatNullableFilter: NestedFloatNullableFilter;
   NestedIntNullableFilter: NestedIntNullableFilter;
   NestedStringFilter: NestedStringFilter;
   NestedStringNullableFilter: NestedStringNullableFilter;
@@ -1488,7 +1640,7 @@ export type AccountResolvers<
     ContextType
   >;
   expires_at?: Resolver<Maybe<ResolversTypes["Int"]>, ParentType, ContextType>;
-  id?: Resolver<Maybe<ResolversTypes["ID"]>, ParentType, ContextType>;
+  id?: Resolver<ResolversTypes["String"], ParentType, ContextType>;
   id_token?: Resolver<Maybe<ResolversTypes["String"]>, ParentType, ContextType>;
   oauth_token?: Resolver<
     Maybe<ResolversTypes["String"]>,
@@ -1575,6 +1727,31 @@ export type BioResolvers<
   __isTypeOf?: IsTypeOfResolverFn<ParentType, ContextType>;
 }>;
 
+export type CategoryResolvers<
+  ContextType = any,
+  ParentType extends ResolversParentTypes["Category"] = ResolversParentTypes["Category"]
+> = ResolversObject<{
+  createdAt?: Resolver<
+    Maybe<ResolversTypes["DateTime"]>,
+    ParentType,
+    ContextType
+  >;
+  creatorId?: Resolver<
+    Maybe<ResolversTypes["String"]>,
+    ParentType,
+    ContextType
+  >;
+  entryId?: Resolver<Maybe<ResolversTypes["String"]>, ParentType, ContextType>;
+  name?: Resolver<Maybe<ResolversTypes["String"]>, ParentType, ContextType>;
+  root?: Resolver<Maybe<ResolversTypes["Boolean"]>, ParentType, ContextType>;
+  updatedAt?: Resolver<
+    Maybe<ResolversTypes["DateTime"]>,
+    ParentType,
+    ContextType
+  >;
+  __isTypeOf?: IsTypeOfResolverFn<ParentType, ContextType>;
+}>;
+
 export type CommentResolvers<
   ContextType = any,
   ParentType extends ResolversParentTypes["Comment"] = ResolversParentTypes["Comment"]
@@ -1585,18 +1762,46 @@ export type CommentResolvers<
   createdAt?: Resolver<ResolversTypes["DateTime"], ParentType, ContextType>;
   entry?: Resolver<Maybe<ResolversTypes["Entry"]>, ParentType, ContextType>;
   entryId?: Resolver<Maybe<ResolversTypes["String"]>, ParentType, ContextType>;
-  id?: Resolver<ResolversTypes["ID"], ParentType, ContextType>;
+  id?: Resolver<ResolversTypes["String"], ParentType, ContextType>;
   position?: Resolver<Maybe<ResolversTypes["String"]>, ParentType, ContextType>;
   reactions?: Resolver<
     Maybe<Array<Maybe<ResolversTypes["Reaction"]>>>,
     ParentType,
     ContextType
   >;
+  type?: Resolver<Maybe<ResolversTypes["String"]>, ParentType, ContextType>;
   updatedAt?: Resolver<
     Maybe<ResolversTypes["DateTime"]>,
     ParentType,
     ContextType
   >;
+  __isTypeOf?: IsTypeOfResolverFn<ParentType, ContextType>;
+}>;
+
+export type CommentConnectionResolvers<
+  ContextType = any,
+  ParentType extends ResolversParentTypes["CommentConnection"] = ResolversParentTypes["CommentConnection"]
+> = ResolversObject<{
+  edges?: Resolver<
+    Maybe<Array<Maybe<ResolversTypes["CommentEdge"]>>>,
+    ParentType,
+    ContextType
+  >;
+  nodes?: Resolver<
+    Maybe<Array<Maybe<ResolversTypes["Comment"]>>>,
+    ParentType,
+    ContextType
+  >;
+  pageInfo?: Resolver<ResolversTypes["PageInfo"], ParentType, ContextType>;
+  __isTypeOf?: IsTypeOfResolverFn<ParentType, ContextType>;
+}>;
+
+export type CommentEdgeResolvers<
+  ContextType = any,
+  ParentType extends ResolversParentTypes["CommentEdge"] = ResolversParentTypes["CommentEdge"]
+> = ResolversObject<{
+  cursor?: Resolver<ResolversTypes["String"], ParentType, ContextType>;
+  node?: Resolver<Maybe<ResolversTypes["Comment"]>, ParentType, ContextType>;
   __isTypeOf?: IsTypeOfResolverFn<ParentType, ContextType>;
 }>;
 
@@ -1615,6 +1820,18 @@ export type EntryResolvers<
   ParentType extends ResolversParentTypes["Entry"] = ResolversParentTypes["Entry"]
 > = ResolversObject<{
   author?: Resolver<Maybe<ResolversTypes["User"]>, ParentType, ContextType>;
+  authorId?: Resolver<Maybe<ResolversTypes["String"]>, ParentType, ContextType>;
+  categories?: Resolver<
+    Maybe<Array<Maybe<ResolversTypes["Category"]>>>,
+    ParentType,
+    ContextType
+  >;
+  comments?: Resolver<
+    Maybe<ResolversTypes["CommentConnection"]>,
+    ParentType,
+    ContextType,
+    RequireFields<EntryCommentsArgs, "searchString">
+  >;
   content?: Resolver<Maybe<ResolversTypes["String"]>, ParentType, ContextType>;
   createdAt?: Resolver<
     Maybe<ResolversTypes["DateTime"]>,
@@ -1622,23 +1839,28 @@ export type EntryResolvers<
     ContextType
   >;
   featuredImage?: Resolver<
-    Maybe<ResolversTypes["String"]>,
+    Maybe<ResolversTypes["MediaItem"]>,
     ParentType,
     ContextType
   >;
-  id?: Resolver<Maybe<ResolversTypes["ID"]>, ParentType, ContextType>;
+  id?: Resolver<ResolversTypes["String"], ParentType, ContextType>;
   published?: Resolver<
     Maybe<ResolversTypes["Boolean"]>,
     ParentType,
     ContextType
   >;
+  reactions?: Resolver<
+    Maybe<Array<Maybe<ResolversTypes["Reaction"]>>>,
+    ParentType,
+    ContextType
+  >;
   title?: Resolver<Maybe<ResolversTypes["String"]>, ParentType, ContextType>;
+  type?: Resolver<Maybe<ResolversTypes["String"]>, ParentType, ContextType>;
   updatedAt?: Resolver<
     Maybe<ResolversTypes["DateTime"]>,
     ParentType,
     ContextType
   >;
-  userId?: Resolver<Maybe<ResolversTypes["String"]>, ParentType, ContextType>;
   __isTypeOf?: IsTypeOfResolverFn<ParentType, ContextType>;
 }>;
 
@@ -1771,7 +1993,8 @@ export type NodeResolvers<
     ParentType,
     ContextType
   >;
-  id?: Resolver<Maybe<ResolversTypes["ID"]>, ParentType, ContextType>;
+  id?: Resolver<Maybe<ResolversTypes["String"]>, ParentType, ContextType>;
+  type?: Resolver<Maybe<ResolversTypes["String"]>, ParentType, ContextType>;
 }>;
 
 export type PageInfoResolvers<
@@ -1807,28 +2030,23 @@ export type ProfileResolvers<
   ParentType extends ResolversParentTypes["Profile"] = ResolversParentTypes["Profile"]
 > = ResolversObject<{
   coverImage?: Resolver<
-    Maybe<ResolversTypes["String"]>,
+    Maybe<ResolversTypes["MediaItem"]>,
     ParentType,
     ContextType
   >;
-  dob?: Resolver<
-    Maybe<ResolversTypes["DateTime"]>,
-    ParentType,
-    ContextType,
-    Partial<ProfileDobArgs>
-  >;
-  id?: Resolver<Maybe<ResolversTypes["ID"]>, ParentType, ContextType>;
+  dob?: Resolver<Maybe<ResolversTypes["Date"]>, ParentType, ContextType>;
+  id?: Resolver<ResolversTypes["String"], ParentType, ContextType>;
   memberSince?: Resolver<
     Maybe<ResolversTypes["DateTime"]>,
     ParentType,
-    ContextType,
-    Partial<ProfileMemberSinceArgs>
+    ContextType
   >;
   phoneNumber?: Resolver<
     Maybe<ResolversTypes["PhoneNumber"]>,
     ParentType,
     ContextType
   >;
+  type?: Resolver<Maybe<ResolversTypes["String"]>, ParentType, ContextType>;
   user?: Resolver<Maybe<ResolversTypes["User"]>, ParentType, ContextType>;
   userId?: Resolver<Maybe<ResolversTypes["String"]>, ParentType, ContextType>;
   __isTypeOf?: IsTypeOfResolverFn<ParentType, ContextType>;
@@ -1865,12 +2083,6 @@ export type QueryResolvers<
   ContextType = any,
   ParentType extends ResolversParentTypes["Query"] = ResolversParentTypes["Query"]
 > = ResolversObject<{
-  ActiveFilter?: Resolver<
-    Maybe<ResolversTypes["AccountConnection"]>,
-    ParentType,
-    ContextType,
-    Partial<QueryActiveFilterArgs>
-  >;
   FilterUsers?: Resolver<
     Maybe<ResolversTypes["UserConnection"]>,
     ParentType,
@@ -1901,6 +2113,12 @@ export type QueryResolvers<
     ContextType,
     RequireFields<QueryAllEntriesArgs, "take">
   >;
+  entries?: Resolver<
+    Maybe<ResolversTypes["EntryConnection"]>,
+    ParentType,
+    ContextType,
+    Partial<QueryEntriesArgs>
+  >;
   entryFeed?: Resolver<
     Maybe<ResolversTypes["EntryConnection"]>,
     ParentType,
@@ -1912,6 +2130,30 @@ export type QueryResolvers<
     ParentType,
     ContextType,
     Partial<QueryNodeArgs>
+  >;
+  session?: Resolver<
+    Maybe<ResolversTypes["SessionConnection"]>,
+    ParentType,
+    ContextType,
+    Partial<QuerySessionArgs>
+  >;
+  userAccount?: Resolver<
+    Maybe<ResolversTypes["AccountConnection"]>,
+    ParentType,
+    ContextType,
+    Partial<QueryUserAccountArgs>
+  >;
+  userByEmail?: Resolver<
+    Maybe<ResolversTypes["User"]>,
+    ParentType,
+    ContextType,
+    RequireFields<QueryUserByEmailArgs, "email">
+  >;
+  userById?: Resolver<
+    Maybe<ResolversTypes["User"]>,
+    ParentType,
+    ContextType,
+    RequireFields<QueryUserByIdArgs, "id">
   >;
   userEntries?: Resolver<
     Maybe<ResolversTypes["EntryConnection"]>,
@@ -1942,12 +2184,13 @@ export type SessionResolvers<
     ParentType,
     ContextType
   >;
-  id?: Resolver<Maybe<ResolversTypes["ID"]>, ParentType, ContextType>;
+  id?: Resolver<ResolversTypes["String"], ParentType, ContextType>;
   sessionToken?: Resolver<
     Maybe<ResolversTypes["String"]>,
     ParentType,
     ContextType
   >;
+  type?: Resolver<Maybe<ResolversTypes["String"]>, ParentType, ContextType>;
   user?: Resolver<Maybe<ResolversTypes["User"]>, ParentType, ContextType>;
   userId?: Resolver<Maybe<ResolversTypes["String"]>, ParentType, ContextType>;
   __isTypeOf?: IsTypeOfResolverFn<ParentType, ContextType>;
@@ -2023,7 +2266,7 @@ export type UserResolvers<
     ParentType,
     ContextType
   >;
-  id?: Resolver<ResolversTypes["ID"], ParentType, ContextType>;
+  id?: Resolver<ResolversTypes["String"], ParentType, ContextType>;
   image?: Resolver<Maybe<ResolversTypes["String"]>, ParentType, ContextType>;
   imageMeta?: Resolver<
     Maybe<ResolversTypes["MediaItem"]>,
@@ -2045,6 +2288,7 @@ export type UserResolvers<
     ParentType,
     ContextType
   >;
+  type?: Resolver<Maybe<ResolversTypes["String"]>, ParentType, ContextType>;
   __isTypeOf?: IsTypeOfResolverFn<ParentType, ContextType>;
 }>;
 
@@ -2095,13 +2339,14 @@ export type VerificationTokenResolvers<
     ParentType,
     ContextType
   >;
-  id?: Resolver<Maybe<ResolversTypes["ID"]>, ParentType, ContextType>;
+  id?: Resolver<ResolversTypes["String"], ParentType, ContextType>;
   identifier?: Resolver<
     Maybe<ResolversTypes["String"]>,
     ParentType,
     ContextType
   >;
   token?: Resolver<Maybe<ResolversTypes["String"]>, ParentType, ContextType>;
+  type?: Resolver<Maybe<ResolversTypes["String"]>, ParentType, ContextType>;
   __isTypeOf?: IsTypeOfResolverFn<ParentType, ContextType>;
 }>;
 
@@ -2170,12 +2415,6 @@ export type ViewerResolvers<
     ContextType,
     RequireFields<ViewerSearchEntriesByTitleArgs, "searchString">
   >;
-  entries?: Resolver<
-    Maybe<ResolversTypes["EntryConnection"]>,
-    ParentType,
-    ContextType,
-    Partial<ViewerEntriesArgs>
-  >;
   getUserByAccount?: Resolver<
     Maybe<ResolversTypes["AccountConnection"]>,
     ParentType,
@@ -2185,37 +2424,14 @@ export type ViewerResolvers<
       "id" | "provider" | "providerAccountId"
     >
   >;
-  id?: Resolver<Maybe<ResolversTypes["ID"]>, ParentType, ContextType>;
+  id?: Resolver<Maybe<ResolversTypes["String"]>, ParentType, ContextType>;
   profiles?: Resolver<
     Maybe<ResolversTypes["ProfileConnection"]>,
     ParentType,
     ContextType,
     Partial<ViewerProfilesArgs>
   >;
-  session?: Resolver<
-    Maybe<ResolversTypes["SessionConnection"]>,
-    ParentType,
-    ContextType,
-    Partial<ViewerSessionArgs>
-  >;
-  userAccount?: Resolver<
-    Maybe<ResolversTypes["AccountConnection"]>,
-    ParentType,
-    ContextType,
-    Partial<ViewerUserAccountArgs>
-  >;
-  userByEmail?: Resolver<
-    Maybe<ResolversTypes["User"]>,
-    ParentType,
-    ContextType,
-    RequireFields<ViewerUserByEmailArgs, "email">
-  >;
-  userById?: Resolver<
-    Maybe<ResolversTypes["User"]>,
-    ParentType,
-    ContextType,
-    RequireFields<ViewerUserByIdArgs, "id">
-  >;
+  type?: Resolver<Maybe<ResolversTypes["String"]>, ParentType, ContextType>;
   verificationTokens?: Resolver<
     Maybe<ResolversTypes["VerificationTokenConnection"]>,
     ParentType,
@@ -2230,7 +2446,10 @@ export type Resolvers<ContextType = any> = ResolversObject<{
   AccountConnection?: AccountConnectionResolvers<ContextType>;
   AccountEdge?: AccountEdgeResolvers<ContextType>;
   Bio?: BioResolvers<ContextType>;
+  Category?: CategoryResolvers<ContextType>;
   Comment?: CommentResolvers<ContextType>;
+  CommentConnection?: CommentConnectionResolvers<ContextType>;
+  CommentEdge?: CommentEdgeResolvers<ContextType>;
   Date?: GraphQLScalarType;
   DateTime?: GraphQLScalarType;
   Entry?: EntryResolvers<ContextType>;

@@ -1,0 +1,32 @@
+.root {
+  @apply cursor-pointer block transition-all ease-in-out duration-150 transform-gpu;
+}
+
+.root:hover {
+  @apply bg-blend-normal;
+}
+
+.root:focus {
+  @apply outline-none;
+}
+
+.root *:matches([type='active'], [type='data-active']) {
+  @apply hover:bg-basicallyBlack;
+}
+
+.loading {
+  @apply bg-current text-blue-600 border-basicallyBlack cursor-not-allowed;
+}
+
+.slim {
+  @apply py-2 transform-none normal-case;
+}
+
+.disabled,
+.disabled:hover {
+  @apply text-blue-800 border-basicallyBlack bg-current bg-opacity-90 cursor-not-allowed;
+  filter: grayscale(1);
+  -webkit-transform: translateZ(0);
+  -webkit-perspective: 1000;
+  -webkit-backface-visibility: hidden;
+}

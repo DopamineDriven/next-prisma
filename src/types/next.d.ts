@@ -21,7 +21,7 @@ declare module "next/app" {
     pageProps: P & {
       initialApolloState: NormalizedCacheObject | null;
       session: Session | null;
-      // resolverContext: ResolverContext;
+      resolverContext: ResolverContext;
       // authData: AuthData | null;
     };
   };
