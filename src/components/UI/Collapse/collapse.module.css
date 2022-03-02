@@ -1,0 +1,23 @@
+.root {
+  @apply border-b border-stone-600 py-4 flex flex-col outline-none;
+}
+
+.header {
+  @apply flex flex-row items-center;
+}
+
+.header .label {
+  @apply text-base font-medium;
+}
+
+.content {
+  @apply pt-3 overflow-hidden pl-8;
+}
+
+.icon {
+  @apply mr-3 text-stone-200 ml-[0.375rem] transform-gpu duration-[0.2s] ease-in-out;
+}
+
+.icon.open {
+  @apply will-change-transform after:rotate-90;
+}

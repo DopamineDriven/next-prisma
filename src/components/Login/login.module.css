@@ -1,0 +1,18 @@
+.root {
+  @apply bg-white transition-transform transform-gpu font-interVar bg-opacity-100 max-w-10xl mx-auto;
+}
+
+.stickyNav {
+  @apply z-[100] top-0;
+  position: sticky;
+  z-index: 100;
+  top: 0;
+  backdrop-filter: saturate(180%) blur(20px);
+  transition: 0.1 ease-in-out;
+  &.root {
+    transition: 0.1 ease-in-out;
+  }
+}
+.logo {
+  @apply block h-12 z-50 w-auto;
+}

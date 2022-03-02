@@ -1,0 +1,19 @@
+fragment MediaItemPartial on MediaItem {
+  ariaLabel
+  mediaItemId
+  uploadedAt
+  updatedAt
+  filename
+  size
+  filetype
+  destination
+  fileLastModified
+  width
+  height
+  quality
+  src
+  srcSet
+  caption
+  title
+  __typename
+}

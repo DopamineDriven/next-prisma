@@ -67,7 +67,7 @@ generates:
       - typescript-resolvers:
           defaultMapper: DeepPartial<{T}>
           optionalInfoArgument: true
-          contextType: ResolverContext
+          contextType: any
           makeResolverTypeCallable: true
           noSchemaStitching: false
         config:
@@ -96,26 +96,26 @@ generates:
       numericEnums: false
       namingConvention: keep
       addDocBlocks: true
-  # ./src/apollo/fragment-matcher.ts:
-  #   schema:
-  #     ${NEXT_GQL_ENDPOINT}
+  ./src/apollo/fragment-matcher.ts:
+    schema:
+      ${NEXT_GQL_ENDPOINT}
 
-  #   documents: "./src/graphql/**/*.graphql"
-  #   hooks:
-  #     afterOneFileWrite:
-  #       - prettier --write
-  #   plugins:
-  #     - fragment-matcher
-  #   config:
-  #     useExplicitTyping: true
-  #     apolloClientVersion: 3
-  # ./src/apollo/helpers.ts:
-  #   schema:
-  #     ${NEXT_GQL_ENDPOINT}
+    documents: "./src/graphql/**/*.graphql"
+    hooks:
+      afterOneFileWrite:
+        - prettier --write
+    plugins:
+      - fragment-matcher
+    config:
+      useExplicitTyping: true
+      apolloClientVersion: 3
+  ./src/apollo/helpers.ts:
+    schema:
+      ${NEXT_GQL_ENDPOINT}
 
-  #   documents: "./src/graphql/**/*.graphql"
-  #   hooks:
-  #     afterOneFileWrite:
-  #       - prettier --write
-  #   plugins:
-  #     - typescript-apollo-client-helpers
+    documents: "./src/graphql/**/*.graphql"
+    hooks:
+      afterOneFileWrite:
+        - prettier --write
+    plugins:
+      - typescript-apollo-client-helpers

@@ -1,0 +1,3 @@
+.spinnerRoot {
+  @apply animate-spin -ml-1 mr-3 h-[0.3125rem] w-[0.3125rem] border-[rgb(20,20,21)] text-[#141514];
+}
