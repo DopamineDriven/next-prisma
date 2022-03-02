@@ -6,7 +6,6 @@
 import type * as Prisma from "./../../../node_modules/.prisma/client/index";
 import type { Context as ctx } from "./../Context/index";
 import type { core, connectionPluginCore } from "nexus";
-import type { QueryComplexity } from "nexus/dist/plugins/queryComplexityPlugin";
 declare global {
   interface NexusGenCustomInputMethods<TypeName extends string> {
     UserScalarFieldsEnum<FieldName extends string>(
@@ -886,14 +885,14 @@ export interface NexusGenObjects {
 
 export interface NexusGenInterfaces {
   Node:
-    | core.Discriminate<"Account", "optional">
-    | core.Discriminate<"Comment", "optional">
-    | core.Discriminate<"Entry", "optional">
-    | core.Discriminate<"Profile", "optional">
-    | core.Discriminate<"Session", "optional">
-    | core.Discriminate<"User", "optional">
-    | core.Discriminate<"VerificationToken", "optional">
-    | core.Discriminate<"Viewer", "optional">;
+    | core.Discriminate<"Account", "required">
+    | core.Discriminate<"Comment", "required">
+    | core.Discriminate<"Entry", "required">
+    | core.Discriminate<"Profile", "required">
+    | core.Discriminate<"Session", "required">
+    | core.Discriminate<"User", "required">
+    | core.Discriminate<"VerificationToken", "required">
+    | core.Discriminate<"Viewer", "required">;
 }
 
 export interface NexusGenUnions {}
@@ -1065,8 +1064,13 @@ export interface NexusGenFieldTypes {
     accounts: NexusGenRootTypes["AccountConnection"] | null; // AccountConnection
     allAccounts: NexusGenRootTypes["AccountConnection"] | null; // AccountConnection
     allEntries: NexusGenRootTypes["EntryConnection"] | null; // EntryConnection
+    entries: NexusGenRootTypes["EntryConnection"] | null; // EntryConnection
     entryFeed: NexusGenRootTypes["EntryConnection"] | null; // EntryConnection
     node: NexusGenRootTypes["Node"] | null; // Node
+    session: NexusGenRootTypes["SessionConnection"] | null; // SessionConnection
+    userAccount: NexusGenRootTypes["AccountConnection"] | null; // AccountConnection
+    userByEmail: NexusGenRootTypes["User"] | null; // User
+    userById: NexusGenRootTypes["User"] | null; // User
     userEntries: NexusGenRootTypes["EntryConnection"] | null; // EntryConnection
     usersQuery: NexusGenRootTypes["UserConnection"] | null; // UserConnection
     viewer: NexusGenRootTypes["Viewer"] | null; // Viewer
@@ -1154,15 +1158,10 @@ export interface NexusGenFieldTypes {
     GetEntry: NexusGenRootTypes["Entry"] | null; // Entry
     GetSession: NexusGenRootTypes["Session"] | null; // Session
     SearchEntriesByTitle: NexusGenRootTypes["EntryConnection"] | null; // EntryConnection
-    entries: NexusGenRootTypes["EntryConnection"] | null; // EntryConnection
     getUserByAccount: NexusGenRootTypes["AccountConnection"] | null; // AccountConnection
     id: string | null; // String
     profiles: NexusGenRootTypes["ProfileConnection"] | null; // ProfileConnection
-    session: NexusGenRootTypes["SessionConnection"] | null; // SessionConnection
     type: string | null; // String
-    userAccount: NexusGenRootTypes["AccountConnection"] | null; // AccountConnection
-    userByEmail: NexusGenRootTypes["User"] | null; // User
-    userById: NexusGenRootTypes["User"] | null; // User
     verificationTokens: NexusGenRootTypes["VerificationTokenConnection"] | null; // VerificationTokenConnection
   };
   Node: {
@@ -1333,8 +1332,13 @@ export interface NexusGenFieldTypeNames {
     accounts: "AccountConnection";
     allAccounts: "AccountConnection";
     allEntries: "EntryConnection";
+    entries: "EntryConnection";
     entryFeed: "EntryConnection";
     node: "Node";
+    session: "SessionConnection";
+    userAccount: "AccountConnection";
+    userByEmail: "User";
+    userById: "User";
     userEntries: "EntryConnection";
     usersQuery: "UserConnection";
     viewer: "Viewer";
@@ -1422,15 +1426,10 @@ export interface NexusGenFieldTypeNames {
     GetEntry: "Entry";
     GetSession: "Session";
     SearchEntriesByTitle: "EntryConnection";
-    entries: "EntryConnection";
     getUserByAccount: "AccountConnection";
     id: "String";
     profiles: "ProfileConnection";
-    session: "SessionConnection";
     type: "String";
-    userAccount: "AccountConnection";
-    userByEmail: "User";
-    userById: "User";
     verificationTokens: "VerificationTokenConnection";
   };
   Node: {
@@ -1524,6 +1523,13 @@ export interface NexusGenArgTypes {
       last?: number | null; // Int
       take: number; // Int!
     };
+    entries: {
+      // args
+      after?: string | null; // String
+      before?: string | null; // String
+      first?: number | null; // Int
+      last?: number | null; // Int
+    };
     entryFeed: {
       // args
       after?: string | null; // String
@@ -1536,7 +1542,29 @@ export interface NexusGenArgTypes {
     };
     node: {
       // args
-      id?: string | null; // ID
+      id?: string | null; // String
+    };
+    session: {
+      // args
+      after?: string | null; // String
+      before?: string | null; // String
+      first?: number | null; // Int
+      last?: number | null; // Int
+    };
+    userAccount: {
+      // args
+      after?: string | null; // String
+      before?: string | null; // String
+      first?: number | null; // Int
+      last?: number | null; // Int
+    };
+    userByEmail: {
+      // args
+      email: string; // String!
+    };
+    userById: {
+      // args
+      id: string; // String!
     };
     userEntries: {
       // args
@@ -1615,13 +1643,6 @@ export interface NexusGenArgTypes {
       last?: number | null; // Int
       searchString: string; // String!
     };
-    entries: {
-      // args
-      after?: string | null; // String
-      before?: string | null; // String
-      first?: number | null; // Int
-      last?: number | null; // Int
-    };
     getUserByAccount: {
       // args
       after?: string | null; // String
@@ -1638,28 +1659,6 @@ export interface NexusGenArgTypes {
       before?: string | null; // String
       first?: number | null; // Int
       last?: number | null; // Int
-    };
-    session: {
-      // args
-      after?: string | null; // String
-      before?: string | null; // String
-      first?: number | null; // Int
-      last?: number | null; // Int
-    };
-    userAccount: {
-      // args
-      after?: string | null; // String
-      before?: string | null; // String
-      first?: number | null; // Int
-      last?: number | null; // Int
-    };
-    userByEmail: {
-      // args
-      email: string; // String!
-    };
-    userById: {
-      // args
-      id: string; // String!
     };
     verificationTokens: {
       // args
@@ -1708,11 +1707,11 @@ export type NexusGenUnionNames = never;
 
 export type NexusGenObjectsUsingAbstractStrategyIsTypeOf = never;
 
-export type NexusGenAbstractsUsingStrategyResolveType = "Node";
+export type NexusGenAbstractsUsingStrategyResolveType = never;
 
 export type NexusGenFeaturesConfig = {
   abstractTypeStrategies: {
-    isTypeOf: true;
+    isTypeOf: false;
     __typename: true;
     resolveType: true;
   };
@@ -1760,14 +1759,7 @@ declare global {
   interface NexusGenPluginFieldConfig<
     TypeName extends string,
     FieldName extends string
-  > {
-    /**
-     * The complexity for an individual field. Return a number
-     * or a function that returns a number to specify the
-     * complexity for this field.
-     */
-    complexity?: QueryComplexity<TypeName, FieldName>;
-  }
+  > {}
   interface NexusGenPluginInputFieldConfig<
     TypeName extends string,
     FieldName extends string

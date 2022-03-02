@@ -948,6 +948,27 @@ type Query {
     last: Int
     take: Int!
   ): EntryConnection
+  entries(
+    """
+    Returns the elements in the list that come after the specified cursor
+    """
+    after: String
+
+    """
+    Returns the elements in the list that come before the specified cursor
+    """
+    before: String
+
+    """
+    Returns the first n elements from the list.
+    """
+    first: Int
+
+    """
+    Returns the last n elements from the list.
+    """
+    last: Int
+  ): EntryConnection
   entryFeed(
     """
     Returns the elements in the list that come after the specified cursor
@@ -976,8 +997,52 @@ type Query {
     """
     Node id is of format: __typename:id
     """
-    id: ID
+    id: String
   ): Node
+  session(
+    """
+    Returns the elements in the list that come after the specified cursor
+    """
+    after: String
+
+    """
+    Returns the elements in the list that come before the specified cursor
+    """
+    before: String
+
+    """
+    Returns the first n elements from the list.
+    """
+    first: Int
+
+    """
+    Returns the last n elements from the list.
+    """
+    last: Int
+  ): SessionConnection
+  userAccount(
+    """
+    Returns the elements in the list that come after the specified cursor
+    """
+    after: String
+
+    """
+    Returns the elements in the list that come before the specified cursor
+    """
+    before: String
+
+    """
+    Returns the first n elements from the list.
+    """
+    first: Int
+
+    """
+    Returns the last n elements from the list.
+    """
+    last: Int
+  ): AccountConnection
+  userByEmail(email: String!): User
+  userById(id: String!): User
   userEntries(
     """
     Returns the elements in the list that come after the specified cursor
@@ -1021,7 +1086,7 @@ type Query {
     """
     last: Int
   ): UserConnection
-  viewer(id: String! = "621df7bfe79d1d9b7d728311"): Viewer
+  viewer(id: String! = "621f072e7334b29200fef517"): Viewer
 }
 
 enum QueryModeEnum {
@@ -1509,27 +1574,6 @@ type Viewer implements Node {
     last: Int
     searchString: String!
   ): EntryConnection
-  entries(
-    """
-    Returns the elements in the list that come after the specified cursor
-    """
-    after: String
-
-    """
-    Returns the elements in the list that come before the specified cursor
-    """
-    before: String
-
-    """
-    Returns the first n elements from the list.
-    """
-    first: Int
-
-    """
-    Returns the last n elements from the list.
-    """
-    last: Int
-  ): EntryConnection
   getUserByAccount(
     """
     Returns the elements in the list that come after the specified cursor
@@ -1576,51 +1620,7 @@ type Viewer implements Node {
     """
     last: Int
   ): ProfileConnection
-  session(
-    """
-    Returns the elements in the list that come after the specified cursor
-    """
-    after: String
-
-    """
-    Returns the elements in the list that come before the specified cursor
-    """
-    before: String
-
-    """
-    Returns the first n elements from the list.
-    """
-    first: Int
-
-    """
-    Returns the last n elements from the list.
-    """
-    last: Int
-  ): SessionConnection
   type: String
-  userAccount(
-    """
-    Returns the elements in the list that come after the specified cursor
-    """
-    after: String
-
-    """
-    Returns the elements in the list that come before the specified cursor
-    """
-    before: String
-
-    """
-    Returns the first n elements from the list.
-    """
-    first: Int
-
-    """
-    Returns the last n elements from the list.
-    """
-    last: Int
-  ): AccountConnection
-  userByEmail(email: String!): User
-  userById(id: String!): User
   verificationTokens(
     """
     Returns the elements in the list that come after the specified cursor

@@ -10,7 +10,7 @@ export interface Context extends Partial<Services> {
   prisma: PrismaClient;
 }
 
-export const createContext = ({ req, res, prisma }: Context) => ({
+export const createContext =  ({ req, res, prisma }: Context) => ({
   req,
   res,
   prisma,

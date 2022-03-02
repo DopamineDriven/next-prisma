@@ -4,7 +4,7 @@ import { CommentService } from "./comment";
 import { EntryService } from "./entry";
 import { PrismaClient } from "@prisma/client";
 import { AccountService } from "./account";
-import { VerificationToken } from "./verification-request";
+import { VerificationTokenService } from "./verification-request";
 import { ProfileService } from "./profile";
 
 export interface Services {
@@ -14,7 +14,7 @@ export interface Services {
   entry: EntryService;
   account: AccountService;
   profile: ProfileService;
-  verificationRequest: VerificationToken;
+  verificationRequest: VerificationTokenService;
 }
 
 export function buildServices(prisma: PrismaClient): Services {
@@ -25,6 +25,6 @@ export function buildServices(prisma: PrismaClient): Services {
     comment: new CommentService(prisma),
     account: new AccountService(prisma),
     profile: new ProfileService(prisma),
-    verificationRequest: new VerificationToken(prisma)
+    verificationRequest: new VerificationTokenService(prisma)
   };
 }
