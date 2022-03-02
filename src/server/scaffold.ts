@@ -45,47 +45,6 @@ export const LoadSchemaSync: GraphQLSchema = loadSchemaSync(
   }
 );
 
-export const schemaBuilder = new SchemaBuilder({
-  plugins: [
-    connectionPlugin({
-      includeNodesField: true,
-      strictArgs: true,
-      disableBackwardPagination: false,
-      disableForwardPagination: false,
-      cursorFromNode(node) {
-        return node.id;
-      }
-    }),
-    queryComplexityPlugin()
-  ],
-
-  sourceTypes: {
-    modules: [
-      {
-        module: join(process.cwd(), "/node_modules/.prisma/client/index.d.ts"),
-        alias: "types"
-      }
-    ]
-  },
-  features: {
-    abstractTypeStrategies: {
-      isTypeOf: true,
-      __typename: true,
-      resolveType: true
-    }
-  },
-  contextType: {
-    module: join(process.cwd(), "/src/server/Context/index.ts"),
-    export: "Context",
-    alias: "ctx"
-  },
-  prettierConfig: join(process.cwd(), "/.prettierrc.yaml"),
-  shouldGenerateArtifacts: true,
-  outputs: {
-    schema: join(process.cwd(), "/src/server/NexusSchema/schema.gql"),
-    typegen: join(process.cwd(), "/src/server/NexusSchema/nexus.ts")
-  }
-});
 export const schema = makeSchema({
   types: { ...types },
   plugins: [
@@ -97,8 +56,8 @@ export const schema = makeSchema({
       cursorFromNode(node) {
         return node.id;
       }
-    }),
-    queryComplexityPlugin()
+    })
+    // queryComplexityPlugin()
   ],
   sourceTypes: {
     modules: [
@@ -110,7 +69,7 @@ export const schema = makeSchema({
   },
   features: {
     abstractTypeStrategies: {
-      isTypeOf: true,
+      isTypeOf: false,
       __typename: true,
       resolveType: true
     }

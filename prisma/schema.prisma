@@ -5,32 +5,31 @@ datasource db {
 
 generator client {
   provider        = "prisma-client-js"
-  previewFeatures = ["mongodb"]
+  previewFeatures = ["mongoDb"]
 }
 
-
 model User {
-  id            String       @id @map("_id") @default(auto()) @db.ObjectId
+  id            String      @id @default(auto()) @map("_id") @db.ObjectId
   firstName     String?
   lastName      String?
-  email         String       @unique
-  image         String?      @default("https://dev-to-uploads.s3.amazonaws.com/uploads/articles/g4apn65eo8acy988pfhb.gif")
+  email         String      @unique
+  image         String?     @default("https://dev-to-uploads.s3.amazonaws.com/uploads/articles/g4apn65eo8acy988pfhb.gif")
   imageMeta     MediaItem?
-  role          Role?        @default(USER)
-  status        UserStatus?  @default(OFFLINE)
+  role          Role?       @default(USER)
+  status        UserStatus? @default(OFFLINE)
   password      String?
-  createdAt     DateTime     @default(now())
-  updatedAt     DateTime?    @updatedAt
+  createdAt     DateTime    @default(now())
+  updatedAt     DateTime?   @updatedAt
   emailVerified DateTime?
-  profile       Profile?     @relation("UserProfile")
-  accounts      Account[]    @relation("UserAccounts")
-  sessions      Session[]    @relation("UserSessions")
-  entries       Entry[]      @relation("Author")
-  comments      Comment[]    @relation("CommentAuthor")
+  profile       Profile?    @relation("UserProfile")
+  accounts      Account[]   @relation("UserAccounts")
+  sessions      Session[]   @relation("UserSessions")
+  entries       Entry[]     @relation("Author")
+  comments      Comment[]   @relation("CommentAuthor")
 }
 
 model Account {
-  id                String  @id @map("_id") @default(auto()) @db.ObjectId
+  id                String  @id @default(auto()) @map("_id") @db.ObjectId
   userId            String  @db.ObjectId
   type              String
   provider          String
@@ -42,29 +41,28 @@ model Account {
   scope             String?
   id_token          String?
   session_state     String?
-  user              User?    @relation("UserAccounts", fields: [userId], references: [id], onDelete: Cascade)
+  user              User?   @relation("UserAccounts", fields: [userId], references: [id], onDelete: Cascade)
 
   @@unique([provider, providerAccountId])
 }
 
-
 model Comment {
-  id        String             @id @map("_id") @default(auto()) @db.ObjectId
-  authorId  String             @db.ObjectId
-  entryId   String             @db.ObjectId
+  id        String     @id @default(auto()) @map("_id") @db.ObjectId
+  authorId  String     @db.ObjectId
+  entryId   String     @db.ObjectId
   body      String?
   position  String?
-  createdAt DateTime           @default(now())
-  updatedAt DateTime?          @updatedAt
+  createdAt DateTime   @default(now())
+  updatedAt DateTime?  @updatedAt
   reactions Reaction[]
-  entry     Entry?              @relation("EntryComments", fields: [entryId], references: [id], onDelete: Cascade)
-  author    User?               @relation("CommentAuthor", fields: [authorId], references: [id], onDelete: Cascade)
+  entry     Entry?     @relation("EntryComments", fields: [entryId], references: [id], onDelete: Cascade)
+  author    User?      @relation("CommentAuthor", fields: [authorId], references: [id], onDelete: Cascade)
+
   @@unique([authorId, entryId])
 }
 
-
 model Entry {
-  id            String      @id @map("_id") @default(auto()) @db.ObjectId
+  id            String     @id @default(auto()) @map("_id") @db.ObjectId
   title         String
   published     Boolean    @default(false)
   authorId      String     @db.ObjectId
@@ -74,19 +72,18 @@ model Entry {
   featuredImage MediaItem?
   reactions     Reaction[]
   categories    Category[]
-  author        User?       @relation("Author", fields: [authorId], references: [id], onDelete: Cascade)
+  author        User?      @relation("Author", fields: [authorId], references: [id], onDelete: Cascade)
   comments      Comment[]  @relation("EntryComments")
 }
 
-
 model Profile {
-  id             String    @id @map("_id") @default(auto()) @db.ObjectId
-  userId         String   @db.ObjectId
-  memberSince    DateTime  @default(now())
-  gender         Gender?   @default(OTHER)
-  pronouns       Pronouns? @default(NOT_LISTED)
+  id             String     @id @default(auto()) @map("_id") @db.ObjectId
+  userId         String     @db.ObjectId@unique
+  memberSince    DateTime   @default(now())
+  gender         Gender?    @default(OTHER)
+  pronouns       Pronouns?  @default(NOT_LISTED)
   coverPhoto     MediaItem?
-  lastSeen       DateTime? @updatedAt
+  lastSeen       DateTime?  @updatedAt
   dob            String?
   phoneNumber    String?
   occupation     String?
@@ -99,60 +96,59 @@ model Profile {
 }
 
 model Session {
-  id           String    @id @map("_id") @default(auto()) @db.ObjectId
+  id           String   @id @default(auto()) @map("_id") @db.ObjectId
   sessionToken String   @unique
   userId       String   @db.ObjectId
   expires      DateTime
-  user         User?      @relation("UserSessions", fields: [userId], references: [id], onDelete: Cascade)
+  user         User?    @relation("UserSessions", fields: [userId], references: [id], onDelete: Cascade)
 }
 
 /// Passwordless login for email providers
 model VerificationToken {
-  id         String   @id @map("_id") @default(auto()) @db.ObjectId
+  id         String   @id @default(auto()) @map("_id") @db.ObjectId
   identifier String
   token      String   @unique
   expires    DateTime
+
   @@unique([identifier, token])
 }
-
 
 type Category {
   creatorId String?
   createdAt DateTime? @default(now())
   updatedAt DateTime?
-  root      Boolean @default(true)
+  root      Boolean   @default(true)
   name      String
   entryId   String?
 }
 
 type Bio {
-  headline String
-  intro String?
-  body String?
-  status String?
-  createdAt DateTime @default(now())
+  headline  String
+  intro     String?
+  body      String?
+  status    String?
+  createdAt DateTime  @default(now())
   updatedAt DateTime?
 }
 
 type MediaItem {
-  mediaItemId String?
-  uploadedAt DateTime @default(now())
-  updatedAt DateTime?
-  filename String?
-  size String?
-  filetype MimeType?
-  destination MediaItemDestination?
+  mediaItemId      String?
+  uploadedAt       DateTime              @default(now())
+  updatedAt        DateTime?
+  filename         String?
+  size             String?
+  filetype         MimeType?
+  destination      MediaItemDestination?
   fileLastModified DateTime?
-  width Float
-  height Float
-  quality Int   @default(85)
-  src String?
-  srcSet String?
-  ariaLabel String?
-  title String?
-  caption String?
+  width            Float
+  height           Float
+  quality          Int                   @default(85)
+  src              String?
+  srcSet           String?
+  ariaLabel        String?
+  title            String?
+  caption          String?
 }
-
 
 enum UserStatus {
   ONLINE
@@ -202,6 +198,7 @@ enum Reaction {
   PARROT
   ROCKET
 }
+
 enum Pronouns {
   HE_HIM_HIS
   SHE_HER_HERS

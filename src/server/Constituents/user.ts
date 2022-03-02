@@ -29,9 +29,9 @@ import {
   UserStatus
 } from ".";
 
-export const UserExtended: core.NexusExtendTypeDef<"Viewer"> =
-  core.extendType<"Viewer">({
-    type: "Viewer",
+export const UserExtended: core.NexusExtendTypeDef<"Query"> =
+  core.extendType<"Query">({
+    type: "Query",
     definition(t) {
       t.field("userById", {
         type: "User",
