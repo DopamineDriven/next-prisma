@@ -62,10 +62,3 @@ export async function middleware(request: NextRequest) {
   };
   return cors(request, response, options);
 }
-
-// const CorsWrapper: NextApiHandler<typeof middleware> = (
-//   req: NextApiRequest,
-//   res: NextApiResponse<typeof middleware>
-// ) => CorsWrapper(req, res);
-
-// export default CorsWrapper;
