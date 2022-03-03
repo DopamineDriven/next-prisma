@@ -5,7 +5,6 @@ import type {
   GetStaticPropsContext
 } from "next";
 import type { AddressInfo } from "net";
-import { JSONObjectResolver, JSONResolver, GraphQLBigInt } from 'graphql-scalars';
 import { IncomingHttpHeaders } from "http";
 export type Enumerable<T> = T | Array<T>;
 export type HarvestNetworkDataProps = {
@@ -24,12 +23,6 @@ export declare function HarvestNetworkInfo<
   T extends HarvestNetworkDataProps extends infer U
     ? U
     : HarvestNetworkDataProps
-  // N extends GetStaticPropsContext extends keyof GetStaticPropsContext<
-  //   infer R
-  // >
-  //   ? keyof GetServerSidePropsContext<R>
-  //   : GetServerSidePropsContext
-  // >
 >(
   req:
     | GetServerSidePropsContext

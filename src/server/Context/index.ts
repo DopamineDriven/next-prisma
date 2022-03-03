@@ -19,11 +19,11 @@ export const createContext =  ({ req, res, prisma }: Context) => ({
 
 export function loggingMiddleware(): Prisma.Middleware {
   return async (params, next) => {
-    const before = Date.now();
+    const before = new Date(Date.now()).getMilliseconds();
 
     const result = await next(params);
 
-    const after = Date.now();
+    const after = new Date(Date.now().toLocaleString("")).getMilliseconds();
 
     console.log(
       `Prisma Query ${params.model}.${params.action} took ${after - before}ms`
