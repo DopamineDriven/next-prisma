@@ -1451,9 +1451,8 @@ export interface NexusGenArgTypes {
     CreateNewUser: {
       // args
       email: string; // String!
-      firstName?: string | null; // String
       image?: string | null; // String
-      lastName?: string | null; // String
+      name?: string | null; // String
       role: NexusGenEnums["Role"]; // Role!
     };
     DeleteUser: {

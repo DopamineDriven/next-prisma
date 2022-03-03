@@ -62,7 +62,7 @@ export const SessionQuery = core.extendType({
         return await ctx.prisma.session.findMany({
           orderBy: {
             user: {
-              firstName: "asc"
+              name: "asc"
             }
           }
         });
