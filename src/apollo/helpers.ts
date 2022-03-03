@@ -62,6 +62,7 @@ export type AccountEdgeFieldPolicy = {
 export type BioKeySpecifier = (
   | "body"
   | "createdAt"
+  | "headline"
   | "intro"
   | "status"
   | "updatedAt"
@@ -70,6 +71,7 @@ export type BioKeySpecifier = (
 export type BioFieldPolicy = {
   body?: FieldPolicy<any> | FieldReadFunction<any>;
   createdAt?: FieldPolicy<any> | FieldReadFunction<any>;
+  headline?: FieldPolicy<any> | FieldReadFunction<any>;
   intro?: FieldPolicy<any> | FieldReadFunction<any>;
   status?: FieldPolicy<any> | FieldReadFunction<any>;
   updatedAt?: FieldPolicy<any> | FieldReadFunction<any>;
@@ -101,7 +103,6 @@ export type CommentKeySpecifier = (
   | "id"
   | "position"
   | "reactions"
-  | "type"
   | "updatedAt"
   | CommentKeySpecifier
 )[];
@@ -115,7 +116,6 @@ export type CommentFieldPolicy = {
   id?: FieldPolicy<any> | FieldReadFunction<any>;
   position?: FieldPolicy<any> | FieldReadFunction<any>;
   reactions?: FieldPolicy<any> | FieldReadFunction<any>;
-  type?: FieldPolicy<any> | FieldReadFunction<any>;
   updatedAt?: FieldPolicy<any> | FieldReadFunction<any>;
 };
 export type CommentConnectionKeySpecifier = (
@@ -150,7 +150,6 @@ export type EntryKeySpecifier = (
   | "published"
   | "reactions"
   | "title"
-  | "type"
   | "updatedAt"
   | EntryKeySpecifier
 )[];
@@ -166,7 +165,6 @@ export type EntryFieldPolicy = {
   published?: FieldPolicy<any> | FieldReadFunction<any>;
   reactions?: FieldPolicy<any> | FieldReadFunction<any>;
   title?: FieldPolicy<any> | FieldReadFunction<any>;
-  type?: FieldPolicy<any> | FieldReadFunction<any>;
   updatedAt?: FieldPolicy<any> | FieldReadFunction<any>;
 };
 export type EntryConnectionKeySpecifier = (
@@ -239,10 +237,9 @@ export type MutationFieldPolicy = {
   createEntry?: FieldPolicy<any> | FieldReadFunction<any>;
   createProfile?: FieldPolicy<any> | FieldReadFunction<any>;
 };
-export type NodeKeySpecifier = ("id" | "type" | NodeKeySpecifier)[];
+export type NodeKeySpecifier = ("id" | NodeKeySpecifier)[];
 export type NodeFieldPolicy = {
   id?: FieldPolicy<any> | FieldReadFunction<any>;
-  type?: FieldPolicy<any> | FieldReadFunction<any>;
 };
 export type PageInfoKeySpecifier = (
   | "endCursor"
@@ -263,7 +260,6 @@ export type ProfileKeySpecifier = (
   | "id"
   | "memberSince"
   | "phoneNumber"
-  | "type"
   | "user"
   | "userId"
   | ProfileKeySpecifier
@@ -274,7 +270,6 @@ export type ProfileFieldPolicy = {
   id?: FieldPolicy<any> | FieldReadFunction<any>;
   memberSince?: FieldPolicy<any> | FieldReadFunction<any>;
   phoneNumber?: FieldPolicy<any> | FieldReadFunction<any>;
-  type?: FieldPolicy<any> | FieldReadFunction<any>;
   user?: FieldPolicy<any> | FieldReadFunction<any>;
   userId?: FieldPolicy<any> | FieldReadFunction<any>;
 };
@@ -300,44 +295,57 @@ export type ProfileEdgeFieldPolicy = {
 };
 export type QueryKeySpecifier = (
   | "FilterUsers"
+  | "GetAllEntries"
+  | "GetAllSessions"
+  | "GetEntry"
+  | "GetSession"
   | "SearchByUserEmail"
+  | "SearchEntriesByTitle"
   | "accounts"
   | "allAccounts"
   | "allEntries"
   | "entries"
   | "entryFeed"
+  | "getUserByAccount"
   | "node"
+  | "profiles"
   | "session"
   | "userAccount"
   | "userByEmail"
   | "userById"
   | "userEntries"
   | "usersQuery"
-  | "viewer"
+  | "verificationTokens"
   | QueryKeySpecifier
 )[];
 export type QueryFieldPolicy = {
   FilterUsers?: FieldPolicy<any> | FieldReadFunction<any>;
+  GetAllEntries?: FieldPolicy<any> | FieldReadFunction<any>;
+  GetAllSessions?: FieldPolicy<any> | FieldReadFunction<any>;
+  GetEntry?: FieldPolicy<any> | FieldReadFunction<any>;
+  GetSession?: FieldPolicy<any> | FieldReadFunction<any>;
   SearchByUserEmail?: FieldPolicy<any> | FieldReadFunction<any>;
+  SearchEntriesByTitle?: FieldPolicy<any> | FieldReadFunction<any>;
   accounts?: FieldPolicy<any> | FieldReadFunction<any>;
   allAccounts?: FieldPolicy<any> | FieldReadFunction<any>;
   allEntries?: FieldPolicy<any> | FieldReadFunction<any>;
   entries?: FieldPolicy<any> | FieldReadFunction<any>;
   entryFeed?: FieldPolicy<any> | FieldReadFunction<any>;
+  getUserByAccount?: FieldPolicy<any> | FieldReadFunction<any>;
   node?: FieldPolicy<any> | FieldReadFunction<any>;
+  profiles?: FieldPolicy<any> | FieldReadFunction<any>;
   session?: FieldPolicy<any> | FieldReadFunction<any>;
   userAccount?: FieldPolicy<any> | FieldReadFunction<any>;
   userByEmail?: FieldPolicy<any> | FieldReadFunction<any>;
   userById?: FieldPolicy<any> | FieldReadFunction<any>;
   userEntries?: FieldPolicy<any> | FieldReadFunction<any>;
   usersQuery?: FieldPolicy<any> | FieldReadFunction<any>;
-  viewer?: FieldPolicy<any> | FieldReadFunction<any>;
+  verificationTokens?: FieldPolicy<any> | FieldReadFunction<any>;
 };
 export type SessionKeySpecifier = (
   | "expires"
   | "id"
   | "sessionToken"
-  | "type"
   | "user"
   | "userId"
   | SessionKeySpecifier
@@ -346,7 +354,6 @@ export type SessionFieldPolicy = {
   expires?: FieldPolicy<any> | FieldReadFunction<any>;
   id?: FieldPolicy<any> | FieldReadFunction<any>;
   sessionToken?: FieldPolicy<any> | FieldReadFunction<any>;
-  type?: FieldPolicy<any> | FieldReadFunction<any>;
   user?: FieldPolicy<any> | FieldReadFunction<any>;
   userId?: FieldPolicy<any> | FieldReadFunction<any>;
 };
@@ -373,39 +380,35 @@ export type SessionEdgeFieldPolicy = {
 export type UserKeySpecifier = (
   | "_count"
   | "accounts"
+  | "comments"
   | "email"
   | "emailVerified"
   | "entries"
-  | "firstName"
   | "id"
   | "image"
   | "imageMeta"
-  | "lastName"
-  | "password"
+  | "name"
   | "profile"
   | "role"
   | "sessions"
   | "status"
-  | "type"
   | UserKeySpecifier
 )[];
 export type UserFieldPolicy = {
   _count?: FieldPolicy<any> | FieldReadFunction<any>;
   accounts?: FieldPolicy<any> | FieldReadFunction<any>;
+  comments?: FieldPolicy<any> | FieldReadFunction<any>;
   email?: FieldPolicy<any> | FieldReadFunction<any>;
   emailVerified?: FieldPolicy<any> | FieldReadFunction<any>;
   entries?: FieldPolicy<any> | FieldReadFunction<any>;
-  firstName?: FieldPolicy<any> | FieldReadFunction<any>;
   id?: FieldPolicy<any> | FieldReadFunction<any>;
   image?: FieldPolicy<any> | FieldReadFunction<any>;
   imageMeta?: FieldPolicy<any> | FieldReadFunction<any>;
-  lastName?: FieldPolicy<any> | FieldReadFunction<any>;
-  password?: FieldPolicy<any> | FieldReadFunction<any>;
+  name?: FieldPolicy<any> | FieldReadFunction<any>;
   profile?: FieldPolicy<any> | FieldReadFunction<any>;
   role?: FieldPolicy<any> | FieldReadFunction<any>;
   sessions?: FieldPolicy<any> | FieldReadFunction<any>;
   status?: FieldPolicy<any> | FieldReadFunction<any>;
-  type?: FieldPolicy<any> | FieldReadFunction<any>;
 };
 export type UserConnectionKeySpecifier = (
   | "edges"
@@ -441,7 +444,6 @@ export type VerificationTokenKeySpecifier = (
   | "id"
   | "identifier"
   | "token"
-  | "type"
   | VerificationTokenKeySpecifier
 )[];
 export type VerificationTokenFieldPolicy = {
@@ -449,7 +451,6 @@ export type VerificationTokenFieldPolicy = {
   id?: FieldPolicy<any> | FieldReadFunction<any>;
   identifier?: FieldPolicy<any> | FieldReadFunction<any>;
   token?: FieldPolicy<any> | FieldReadFunction<any>;
-  type?: FieldPolicy<any> | FieldReadFunction<any>;
 };
 export type VerificationTokenConnectionKeySpecifier = (
   | "edges"
@@ -470,31 +471,6 @@ export type VerificationTokenEdgeKeySpecifier = (
 export type VerificationTokenEdgeFieldPolicy = {
   cursor?: FieldPolicy<any> | FieldReadFunction<any>;
   node?: FieldPolicy<any> | FieldReadFunction<any>;
-};
-export type ViewerKeySpecifier = (
-  | "GetAllEntries"
-  | "GetAllSessions"
-  | "GetEntry"
-  | "GetSession"
-  | "SearchEntriesByTitle"
-  | "getUserByAccount"
-  | "id"
-  | "profiles"
-  | "type"
-  | "verificationTokens"
-  | ViewerKeySpecifier
-)[];
-export type ViewerFieldPolicy = {
-  GetAllEntries?: FieldPolicy<any> | FieldReadFunction<any>;
-  GetAllSessions?: FieldPolicy<any> | FieldReadFunction<any>;
-  GetEntry?: FieldPolicy<any> | FieldReadFunction<any>;
-  GetSession?: FieldPolicy<any> | FieldReadFunction<any>;
-  SearchEntriesByTitle?: FieldPolicy<any> | FieldReadFunction<any>;
-  getUserByAccount?: FieldPolicy<any> | FieldReadFunction<any>;
-  id?: FieldPolicy<any> | FieldReadFunction<any>;
-  profiles?: FieldPolicy<any> | FieldReadFunction<any>;
-  type?: FieldPolicy<any> | FieldReadFunction<any>;
-  verificationTokens?: FieldPolicy<any> | FieldReadFunction<any>;
 };
 export type StrictTypedTypePolicies = {
   Account?: Omit<TypePolicy, "fields" | "keyFields"> & {
@@ -690,13 +666,6 @@ export type StrictTypedTypePolicies = {
       | VerificationTokenEdgeKeySpecifier
       | (() => undefined | VerificationTokenEdgeKeySpecifier);
     fields?: VerificationTokenEdgeFieldPolicy;
-  };
-  Viewer?: Omit<TypePolicy, "fields" | "keyFields"> & {
-    keyFields?:
-      | false
-      | ViewerKeySpecifier
-      | (() => undefined | ViewerKeySpecifier);
-    fields?: ViewerFieldPolicy;
   };
 };
 export type TypedTypePolicies = StrictTypedTypePolicies & TypePolicies;

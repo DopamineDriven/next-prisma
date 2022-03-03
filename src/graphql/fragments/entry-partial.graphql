@@ -8,5 +8,4 @@ fragment EntryPartial on Entry {
   authorId
   createdAt
   updatedAt
-  __typename
 }

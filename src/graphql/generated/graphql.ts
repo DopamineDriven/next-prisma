@@ -114,6 +114,8 @@ export type AccountWhereInput = {
   expires_at?: InputMaybe<IntNullableFilter>;
   id?: InputMaybe<StringFilter>;
   id_token?: InputMaybe<StringNullableFilter>;
+  oauth_token?: InputMaybe<StringNullableFilter>;
+  oauth_token_secret?: InputMaybe<StringNullableFilter>;
   provider?: InputMaybe<StringFilter>;
   providerAccountId?: InputMaybe<StringFilter>;
   refresh_token?: InputMaybe<StringNullableFilter>;
@@ -129,9 +131,33 @@ export type Bio = {
   __typename?: "Bio";
   body?: Maybe<FieldWrapper<Scalars["String"]>>;
   createdAt?: Maybe<FieldWrapper<Scalars["DateTime"]>>;
+  headline?: Maybe<FieldWrapper<Scalars["String"]>>;
   intro?: Maybe<FieldWrapper<Scalars["String"]>>;
   status?: Maybe<FieldWrapper<Scalars["String"]>>;
   updatedAt?: Maybe<FieldWrapper<Scalars["DateTime"]>>;
+};
+
+export type BioListRelationFilter = {
+  every?: InputMaybe<BioWhereInput>;
+  none?: InputMaybe<BioWhereInput>;
+  some?: InputMaybe<BioWhereInput>;
+};
+
+export type BioRelationFilter = {
+  is?: InputMaybe<BioWhereInput>;
+  isNot?: InputMaybe<BioWhereInput>;
+};
+
+export type BioWhereInput = {
+  AND?: InputMaybe<Array<BioWhereInput>>;
+  NOT?: InputMaybe<Array<BioWhereInput>>;
+  OR?: InputMaybe<Array<BioWhereInput>>;
+  body?: InputMaybe<StringNullableFilter>;
+  createdAt?: InputMaybe<DateTimeFilter>;
+  headline?: InputMaybe<StringFilter>;
+  intro?: InputMaybe<StringNullableFilter>;
+  status?: InputMaybe<StringNullableFilter>;
+  updatedAt?: InputMaybe<DateTimeNullableFilter>;
 };
 
 export type BoolFilter = {
@@ -160,7 +186,6 @@ export type Comment = Node & {
   id: FieldWrapper<Scalars["String"]>;
   position?: Maybe<FieldWrapper<Scalars["String"]>>;
   reactions?: Maybe<Array<Maybe<FieldWrapper<Reaction>>>>;
-  type?: Maybe<FieldWrapper<Scalars["String"]>>;
   updatedAt?: Maybe<FieldWrapper<Scalars["DateTime"]>>;
 };
 
@@ -243,7 +268,6 @@ export type Entry = Node & {
   published?: Maybe<FieldWrapper<Scalars["Boolean"]>>;
   reactions?: Maybe<Array<Maybe<FieldWrapper<Reaction>>>>;
   title?: Maybe<FieldWrapper<Scalars["String"]>>;
-  type?: Maybe<FieldWrapper<Scalars["String"]>>;
   updatedAt?: Maybe<FieldWrapper<Scalars["DateTime"]>>;
 };
 
@@ -450,6 +474,12 @@ export type MediaItemInput = {
   width?: InputMaybe<Scalars["Float"]>;
 };
 
+export type MediaItemListRelationFilter = {
+  every?: InputMaybe<MediaItemWhereInput>;
+  none?: InputMaybe<MediaItemWhereInput>;
+  some?: InputMaybe<MediaItemWhereInput>;
+};
+
 export type MediaItemRelationFilter = {
   is?: InputMaybe<MediaItemWhereInput>;
   isNot?: InputMaybe<MediaItemWhereInput>;
@@ -501,10 +531,10 @@ export type Mutation = {
 
 export type MutationCreateNewUserArgs = {
   email: Scalars["String"];
-  firstName?: InputMaybe<Scalars["String"]>;
+  expires: Scalars["Date"];
   image?: InputMaybe<Scalars["String"]>;
-  lastName?: InputMaybe<Scalars["String"]>;
-  role?: Role;
+  name?: InputMaybe<Scalars["String"]>;
+  sessionToken: Scalars["String"];
 };
 
 export type MutationDeleteUserArgs = {
@@ -650,8 +680,7 @@ export type NestedStringNullableFilter = {
 };
 
 export type Node = {
-  id?: Maybe<FieldWrapper<Scalars["String"]>>;
-  type?: Maybe<FieldWrapper<Scalars["String"]>>;
+  id: FieldWrapper<Scalars["String"]>;
 };
 
 /** PageInfo cursor, as defined in https://facebook.github.io/relay/graphql/connections.htm#sec-undefined.PageInfo */
@@ -681,7 +710,6 @@ export type Profile = Node & {
   id: FieldWrapper<Scalars["String"]>;
   memberSince?: Maybe<FieldWrapper<Scalars["DateTime"]>>;
   phoneNumber?: Maybe<FieldWrapper<Scalars["PhoneNumber"]>>;
-  type?: Maybe<FieldWrapper<Scalars["String"]>>;
   user?: Maybe<FieldWrapper<User>>;
   userId?: Maybe<FieldWrapper<Scalars["String"]>>;
 };
@@ -787,20 +815,27 @@ export enum Pronouns {
 export type Query = {
   __typename?: "Query";
   FilterUsers?: Maybe<FieldWrapper<UserConnection>>;
+  GetAllEntries?: Maybe<FieldWrapper<EntryConnection>>;
+  GetAllSessions?: Maybe<FieldWrapper<SessionConnection>>;
+  GetEntry?: Maybe<FieldWrapper<Entry>>;
+  GetSession?: Maybe<FieldWrapper<Session>>;
   SearchByUserEmail?: Maybe<FieldWrapper<UserConnection>>;
+  SearchEntriesByTitle?: Maybe<FieldWrapper<EntryConnection>>;
   accounts?: Maybe<FieldWrapper<AccountConnection>>;
   allAccounts?: Maybe<FieldWrapper<AccountConnection>>;
   allEntries?: Maybe<FieldWrapper<EntryConnection>>;
   entries?: Maybe<FieldWrapper<EntryConnection>>;
   entryFeed?: Maybe<FieldWrapper<EntryConnection>>;
+  getUserByAccount?: Maybe<FieldWrapper<AccountConnection>>;
   node?: Maybe<FieldWrapper<Node>>;
+  profiles?: Maybe<FieldWrapper<ProfileConnection>>;
   session?: Maybe<FieldWrapper<SessionConnection>>;
   userAccount?: Maybe<FieldWrapper<AccountConnection>>;
   userByEmail?: Maybe<FieldWrapper<User>>;
   userById?: Maybe<FieldWrapper<User>>;
   userEntries?: Maybe<FieldWrapper<EntryConnection>>;
   usersQuery?: Maybe<FieldWrapper<UserConnection>>;
-  viewer?: Maybe<FieldWrapper<Viewer>>;
+  verificationTokens?: Maybe<FieldWrapper<VerificationTokenConnection>>;
 };
 
 export type QueryFilterUsersArgs = {
@@ -811,12 +846,45 @@ export type QueryFilterUsersArgs = {
   searchString: Scalars["String"];
 };
 
+export type QueryGetAllEntriesArgs = {
+  after?: InputMaybe<Scalars["String"]>;
+  before?: InputMaybe<Scalars["String"]>;
+  first?: InputMaybe<Scalars["Int"]>;
+  last?: InputMaybe<Scalars["Int"]>;
+  searchString: Scalars["String"];
+  take?: InputMaybe<Scalars["Int"]>;
+};
+
+export type QueryGetAllSessionsArgs = {
+  after?: InputMaybe<Scalars["String"]>;
+  before?: InputMaybe<Scalars["String"]>;
+  first?: InputMaybe<Scalars["Int"]>;
+  last?: InputMaybe<Scalars["Int"]>;
+  orderBy: SessionOrderBy;
+};
+
+export type QueryGetEntryArgs = {
+  id: Scalars["String"];
+};
+
+export type QueryGetSessionArgs = {
+  id: Scalars["String"];
+};
+
 export type QuerySearchByUserEmailArgs = {
   after?: InputMaybe<Scalars["String"]>;
   before?: InputMaybe<Scalars["String"]>;
   first?: InputMaybe<Scalars["Int"]>;
   last?: InputMaybe<Scalars["Int"]>;
   search?: Scalars["String"];
+};
+
+export type QuerySearchEntriesByTitleArgs = {
+  after?: InputMaybe<Scalars["String"]>;
+  before?: InputMaybe<Scalars["String"]>;
+  first?: InputMaybe<Scalars["Int"]>;
+  last?: InputMaybe<Scalars["Int"]>;
+  searchString: Scalars["String"];
 };
 
 export type QueryaccountsArgs = {
@@ -860,8 +928,25 @@ export type QueryentryFeedArgs = {
   take?: InputMaybe<Scalars["Int"]>;
 };
 
+export type QuerygetUserByAccountArgs = {
+  after?: InputMaybe<Scalars["String"]>;
+  before?: InputMaybe<Scalars["String"]>;
+  first?: InputMaybe<Scalars["Int"]>;
+  id: Scalars["String"];
+  last?: InputMaybe<Scalars["Int"]>;
+  provider: Scalars["String"];
+  providerAccountId: Scalars["String"];
+};
+
 export type QuerynodeArgs = {
-  id?: InputMaybe<Scalars["String"]>;
+  id: Scalars["String"];
+};
+
+export type QueryprofilesArgs = {
+  after?: InputMaybe<Scalars["String"]>;
+  before?: InputMaybe<Scalars["String"]>;
+  first?: InputMaybe<Scalars["Int"]>;
+  last?: InputMaybe<Scalars["Int"]>;
 };
 
 export type QuerysessionArgs = {
@@ -901,8 +986,11 @@ export type QueryusersQueryArgs = {
   last?: InputMaybe<Scalars["Int"]>;
 };
 
-export type QueryviewerArgs = {
-  id?: Scalars["String"];
+export type QueryverificationTokensArgs = {
+  after?: InputMaybe<Scalars["String"]>;
+  before?: InputMaybe<Scalars["String"]>;
+  first?: InputMaybe<Scalars["Int"]>;
+  last?: InputMaybe<Scalars["Int"]>;
 };
 
 export enum QueryModeEnum {
@@ -938,7 +1026,6 @@ export type Session = Node & {
   expires?: Maybe<FieldWrapper<Scalars["DateTime"]>>;
   id: FieldWrapper<Scalars["String"]>;
   sessionToken?: Maybe<FieldWrapper<Scalars["String"]>>;
-  type?: Maybe<FieldWrapper<Scalars["String"]>>;
   user?: Maybe<FieldWrapper<User>>;
   userId?: Maybe<FieldWrapper<Scalars["String"]>>;
 };
@@ -982,17 +1069,9 @@ export type SessionWhereInput = {
   AND?: InputMaybe<Array<SessionWhereInput>>;
   NOT?: InputMaybe<Array<SessionWhereInput>>;
   OR?: InputMaybe<Array<SessionWhereInput>>;
-  accessToken?: InputMaybe<StringNullableFilter>;
-  alg?: InputMaybe<StringNullableFilter>;
-  exp?: InputMaybe<IntNullableFilter>;
-  iat?: InputMaybe<IntNullableFilter>;
-  id?: InputMaybe<StringFilter>;
-  lastVerified?: InputMaybe<DateTimeNullableFilter>;
-  provider?: InputMaybe<StringNullableFilter>;
-  refreshToken?: InputMaybe<StringNullableFilter>;
-  scopes?: InputMaybe<StringNullableListFilter>;
-  signature?: InputMaybe<StringNullableFilter>;
-  tokenState?: InputMaybe<StringNullableFilter>;
+  expires?: InputMaybe<DateTimeNullableFilter>;
+  id: StringFilter;
+  sessionToken?: InputMaybe<StringNullableFilter>;
   user?: InputMaybe<UserRelationFilter>;
   userId?: InputMaybe<StringNullableFilter>;
 };
@@ -1047,23 +1126,28 @@ export type User = Node & {
   __typename?: "User";
   _count: FieldWrapper<UserCount>;
   accounts?: Maybe<FieldWrapper<AccountConnection>>;
+  comments?: Maybe<FieldWrapper<CommentConnection>>;
   email?: Maybe<FieldWrapper<Scalars["String"]>>;
   emailVerified?: Maybe<FieldWrapper<Scalars["DateTime"]>>;
   entries?: Maybe<FieldWrapper<EntryConnection>>;
-  firstName?: Maybe<FieldWrapper<Scalars["String"]>>;
   id: FieldWrapper<Scalars["String"]>;
   image?: Maybe<FieldWrapper<Scalars["String"]>>;
   imageMeta?: Maybe<FieldWrapper<MediaItem>>;
-  lastName?: Maybe<FieldWrapper<Scalars["String"]>>;
-  password?: Maybe<FieldWrapper<Scalars["String"]>>;
+  name?: Maybe<FieldWrapper<Scalars["String"]>>;
   profile?: Maybe<FieldWrapper<Profile>>;
   role?: Maybe<FieldWrapper<Role>>;
   sessions?: Maybe<FieldWrapper<SessionConnection>>;
   status?: Maybe<FieldWrapper<UserStatus>>;
-  type?: Maybe<FieldWrapper<Scalars["String"]>>;
 };
 
 export type UseraccountsArgs = {
+  after?: InputMaybe<Scalars["String"]>;
+  before?: InputMaybe<Scalars["String"]>;
+  first?: InputMaybe<Scalars["Int"]>;
+  last?: InputMaybe<Scalars["Int"]>;
+};
+
+export type UsercommentsArgs = {
   after?: InputMaybe<Scalars["String"]>;
   before?: InputMaybe<Scalars["String"]>;
   first?: InputMaybe<Scalars["Int"]>;
@@ -1133,11 +1217,9 @@ export type UserOrderByWithRelationAndSearchRelevanceInput = {
   email?: InputMaybe<SortOrderEnum>;
   emailVerified?: InputMaybe<SortOrderEnum>;
   entries?: InputMaybe<EntryOrderByRelationAggregateInput>;
-  firstName?: InputMaybe<SortOrderEnum>;
   id?: InputMaybe<SortOrderEnum>;
   image?: InputMaybe<SortOrderEnum>;
-  lastName?: InputMaybe<SortOrderEnum>;
-  password?: InputMaybe<SortOrderEnum>;
+  name?: InputMaybe<SortOrderEnum>;
   profile?: InputMaybe<ProfileOrderByWithRelationAndSearchRelevanceInput>;
   role?: InputMaybe<SortOrderEnum>;
   sessions?: InputMaybe<SessionOrderByRelationAggregateInput>;
@@ -1184,12 +1266,10 @@ export type UserWhereInput = {
   email?: InputMaybe<StringFilter>;
   emailVerified?: InputMaybe<DateTimeNullableFilter>;
   entries?: InputMaybe<EntryListRelationFilter>;
-  firstName?: InputMaybe<StringNullableFilter>;
   id?: InputMaybe<StringFilter>;
   image?: InputMaybe<StringNullableFilter>;
   imageMeta?: InputMaybe<MediaItemRelationFilter>;
-  lastName?: InputMaybe<StringNullableFilter>;
-  password?: InputMaybe<StringFilter>;
+  name?: InputMaybe<StringNullableFilter>;
   profile?: InputMaybe<ProfileRelationFilter>;
   role?: InputMaybe<EnumRoleNullableFilter>;
   sessions?: InputMaybe<SessionListRelationFilter>;
@@ -1208,7 +1288,6 @@ export type VerificationToken = Node & {
   id: FieldWrapper<Scalars["String"]>;
   identifier?: Maybe<FieldWrapper<Scalars["String"]>>;
   token?: Maybe<FieldWrapper<Scalars["String"]>>;
-  type?: Maybe<FieldWrapper<Scalars["String"]>>;
 };
 
 export type VerificationTokenConnection = {
@@ -1229,77 +1308,6 @@ export type VerificationTokenEdge = {
   node?: Maybe<FieldWrapper<VerificationToken>>;
 };
 
-export type Viewer = Node & {
-  __typename?: "Viewer";
-  GetAllEntries?: Maybe<FieldWrapper<EntryConnection>>;
-  GetAllSessions?: Maybe<FieldWrapper<SessionConnection>>;
-  GetEntry?: Maybe<FieldWrapper<Entry>>;
-  GetSession?: Maybe<FieldWrapper<Session>>;
-  SearchEntriesByTitle?: Maybe<FieldWrapper<EntryConnection>>;
-  getUserByAccount?: Maybe<FieldWrapper<AccountConnection>>;
-  id?: Maybe<FieldWrapper<Scalars["String"]>>;
-  profiles?: Maybe<FieldWrapper<ProfileConnection>>;
-  type?: Maybe<FieldWrapper<Scalars["String"]>>;
-  verificationTokens?: Maybe<FieldWrapper<VerificationTokenConnection>>;
-};
-
-export type ViewerGetAllEntriesArgs = {
-  after?: InputMaybe<Scalars["String"]>;
-  before?: InputMaybe<Scalars["String"]>;
-  first?: InputMaybe<Scalars["Int"]>;
-  last?: InputMaybe<Scalars["Int"]>;
-  searchString: Scalars["String"];
-  take?: InputMaybe<Scalars["Int"]>;
-};
-
-export type ViewerGetAllSessionsArgs = {
-  after?: InputMaybe<Scalars["String"]>;
-  before?: InputMaybe<Scalars["String"]>;
-  first?: InputMaybe<Scalars["Int"]>;
-  last?: InputMaybe<Scalars["Int"]>;
-  orderBy: SessionOrderBy;
-};
-
-export type ViewerGetEntryArgs = {
-  id: Scalars["String"];
-};
-
-export type ViewerGetSessionArgs = {
-  id: Scalars["String"];
-};
-
-export type ViewerSearchEntriesByTitleArgs = {
-  after?: InputMaybe<Scalars["String"]>;
-  before?: InputMaybe<Scalars["String"]>;
-  first?: InputMaybe<Scalars["Int"]>;
-  last?: InputMaybe<Scalars["Int"]>;
-  searchString: Scalars["String"];
-};
-
-export type ViewergetUserByAccountArgs = {
-  after?: InputMaybe<Scalars["String"]>;
-  before?: InputMaybe<Scalars["String"]>;
-  first?: InputMaybe<Scalars["Int"]>;
-  id: Scalars["String"];
-  last?: InputMaybe<Scalars["Int"]>;
-  provider: Scalars["String"];
-  providerAccountId: Scalars["String"];
-};
-
-export type ViewerprofilesArgs = {
-  after?: InputMaybe<Scalars["String"]>;
-  before?: InputMaybe<Scalars["String"]>;
-  first?: InputMaybe<Scalars["Int"]>;
-  last?: InputMaybe<Scalars["Int"]>;
-};
-
-export type ViewerverificationTokensArgs = {
-  after?: InputMaybe<Scalars["String"]>;
-  before?: InputMaybe<Scalars["String"]>;
-  first?: InputMaybe<Scalars["Int"]>;
-  last?: InputMaybe<Scalars["Int"]>;
-};
-
 export const EntryPartial = gql`
   fragment EntryPartial on Entry {
     id
@@ -1311,7 +1319,6 @@ export const EntryPartial = gql`
     authorId
     createdAt
     updatedAt
-    __typename
   }
 `;
 export const MediaItemPartial = gql`
@@ -1475,6 +1482,11 @@ export type ResolversTypes = ResolversObject<{
   >;
   AccountWhereInput: ResolverTypeWrapper<DeepPartial<AccountWhereInput>>;
   Bio: ResolverTypeWrapper<DeepPartial<Bio>>;
+  BioListRelationFilter: ResolverTypeWrapper<
+    DeepPartial<BioListRelationFilter>
+  >;
+  BioRelationFilter: ResolverTypeWrapper<DeepPartial<BioRelationFilter>>;
+  BioWhereInput: ResolverTypeWrapper<DeepPartial<BioWhereInput>>;
   BoolFilter: ResolverTypeWrapper<DeepPartial<BoolFilter>>;
   Boolean: ResolverTypeWrapper<DeepPartial<Scalars["Boolean"]>>;
   Category: ResolverTypeWrapper<DeepPartial<Category>>;
@@ -1539,6 +1551,9 @@ export type ResolversTypes = ResolversObject<{
   MediaItem: ResolverTypeWrapper<DeepPartial<MediaItem>>;
   MediaItemDestination: ResolverTypeWrapper<DeepPartial<MediaItemDestination>>;
   MediaItemInput: ResolverTypeWrapper<DeepPartial<MediaItemInput>>;
+  MediaItemListRelationFilter: ResolverTypeWrapper<
+    DeepPartial<MediaItemListRelationFilter>
+  >;
   MediaItemRelationFilter: ResolverTypeWrapper<
     DeepPartial<MediaItemRelationFilter>
   >;
@@ -1585,8 +1600,7 @@ export type ResolversTypes = ResolversObject<{
     | ResolversTypes["Profile"]
     | ResolversTypes["Session"]
     | ResolversTypes["User"]
-    | ResolversTypes["VerificationToken"]
-    | ResolversTypes["Viewer"];
+    | ResolversTypes["VerificationToken"];
   PageInfo: ResolverTypeWrapper<DeepPartial<PageInfo>>;
   PaginationArgsInput: ResolverTypeWrapper<DeepPartial<PaginationArgsInput>>;
   PhoneNumber: ResolverTypeWrapper<DeepPartial<Scalars["PhoneNumber"]>>;
@@ -1658,7 +1672,6 @@ export type ResolversTypes = ResolversObject<{
   VerificationTokenEdge: ResolverTypeWrapper<
     DeepPartial<VerificationTokenEdge>
   >;
-  Viewer: ResolverTypeWrapper<DeepPartial<Viewer>>;
 }>;
 
 /** Mapping between all available schema types and the resolvers parents */
@@ -1671,6 +1684,9 @@ export type ResolversParentTypes = ResolversObject<{
   AccountOrderByRelationAggregateInput: DeepPartial<AccountOrderByRelationAggregateInput>;
   AccountWhereInput: DeepPartial<AccountWhereInput>;
   Bio: DeepPartial<Bio>;
+  BioListRelationFilter: DeepPartial<BioListRelationFilter>;
+  BioRelationFilter: DeepPartial<BioRelationFilter>;
+  BioWhereInput: DeepPartial<BioWhereInput>;
   BoolFilter: DeepPartial<BoolFilter>;
   Boolean: DeepPartial<Scalars["Boolean"]>;
   Category: DeepPartial<Category>;
@@ -1707,6 +1723,7 @@ export type ResolversParentTypes = ResolversObject<{
   Json: DeepPartial<Scalars["Json"]>;
   MediaItem: DeepPartial<MediaItem>;
   MediaItemInput: DeepPartial<MediaItemInput>;
+  MediaItemListRelationFilter: DeepPartial<MediaItemListRelationFilter>;
   MediaItemRelationFilter: DeepPartial<MediaItemRelationFilter>;
   MediaItemWhereInput: DeepPartial<MediaItemWhereInput>;
   Mutation: {};
@@ -1730,8 +1747,7 @@ export type ResolversParentTypes = ResolversObject<{
     | ResolversParentTypes["Profile"]
     | ResolversParentTypes["Session"]
     | ResolversParentTypes["User"]
-    | ResolversParentTypes["VerificationToken"]
-    | ResolversParentTypes["Viewer"];
+    | ResolversParentTypes["VerificationToken"];
   PageInfo: DeepPartial<PageInfo>;
   PaginationArgsInput: DeepPartial<PaginationArgsInput>;
   PhoneNumber: DeepPartial<Scalars["PhoneNumber"]>;
@@ -1770,7 +1786,6 @@ export type ResolversParentTypes = ResolversObject<{
   VerificationToken: DeepPartial<VerificationToken>;
   VerificationTokenConnection: DeepPartial<VerificationTokenConnection>;
   VerificationTokenEdge: DeepPartial<VerificationTokenEdge>;
-  Viewer: DeepPartial<Viewer>;
 }>;
 
 export type AccountResolvers<
@@ -1860,6 +1875,7 @@ export type BioResolvers<
     ParentType,
     ContextType
   >;
+  headline?: Resolver<Maybe<ResolversTypes["String"]>, ParentType, ContextType>;
   intro?: Resolver<Maybe<ResolversTypes["String"]>, ParentType, ContextType>;
   status?: Resolver<Maybe<ResolversTypes["String"]>, ParentType, ContextType>;
   updatedAt?: Resolver<
@@ -1912,7 +1928,6 @@ export type CommentResolvers<
     ParentType,
     ContextType
   >;
-  type?: Resolver<Maybe<ResolversTypes["String"]>, ParentType, ContextType>;
   updatedAt?: Resolver<
     Maybe<ResolversTypes["DateTime"]>,
     ParentType,
@@ -1998,7 +2013,6 @@ export type EntryResolvers<
     ContextType
   >;
   title?: Resolver<Maybe<ResolversTypes["String"]>, ParentType, ContextType>;
-  type?: Resolver<Maybe<ResolversTypes["String"]>, ParentType, ContextType>;
   updatedAt?: Resolver<
     Maybe<ResolversTypes["DateTime"]>,
     ParentType,
@@ -2098,7 +2112,10 @@ export type MutationResolvers<
     Maybe<ResolversTypes["User"]>,
     ParentType,
     ContextType,
-    RequireFields<MutationCreateNewUserArgs, "email" | "role">
+    RequireFields<
+      MutationCreateNewUserArgs,
+      "email" | "expires" | "sessionToken"
+    >
   >;
   DeleteUser?: Resolver<
     Maybe<ResolversTypes["User"]>,
@@ -2131,13 +2148,11 @@ export type NodeResolvers<
     | "Profile"
     | "Session"
     | "User"
-    | "VerificationToken"
-    | "Viewer",
+    | "VerificationToken",
     ParentType,
     ContextType
   >;
-  id?: Resolver<Maybe<ResolversTypes["String"]>, ParentType, ContextType>;
-  type?: Resolver<Maybe<ResolversTypes["String"]>, ParentType, ContextType>;
+  id?: Resolver<ResolversTypes["String"], ParentType, ContextType>;
 }>;
 
 export type PageInfoResolvers<
@@ -2189,7 +2204,6 @@ export type ProfileResolvers<
     ParentType,
     ContextType
   >;
-  type?: Resolver<Maybe<ResolversTypes["String"]>, ParentType, ContextType>;
   user?: Resolver<Maybe<ResolversTypes["User"]>, ParentType, ContextType>;
   userId?: Resolver<Maybe<ResolversTypes["String"]>, ParentType, ContextType>;
   __isTypeOf?: IsTypeOfResolverFn<ParentType, ContextType>;
@@ -2232,11 +2246,41 @@ export type QueryResolvers<
     ContextType,
     RequireFields<QueryFilterUsersArgs, "searchString">
   >;
+  GetAllEntries?: Resolver<
+    Maybe<ResolversTypes["EntryConnection"]>,
+    ParentType,
+    ContextType,
+    RequireFields<QueryGetAllEntriesArgs, "searchString">
+  >;
+  GetAllSessions?: Resolver<
+    Maybe<ResolversTypes["SessionConnection"]>,
+    ParentType,
+    ContextType,
+    RequireFields<QueryGetAllSessionsArgs, "orderBy">
+  >;
+  GetEntry?: Resolver<
+    Maybe<ResolversTypes["Entry"]>,
+    ParentType,
+    ContextType,
+    RequireFields<QueryGetEntryArgs, "id">
+  >;
+  GetSession?: Resolver<
+    Maybe<ResolversTypes["Session"]>,
+    ParentType,
+    ContextType,
+    RequireFields<QueryGetSessionArgs, "id">
+  >;
   SearchByUserEmail?: Resolver<
     Maybe<ResolversTypes["UserConnection"]>,
     ParentType,
     ContextType,
     RequireFields<QuerySearchByUserEmailArgs, "search">
+  >;
+  SearchEntriesByTitle?: Resolver<
+    Maybe<ResolversTypes["EntryConnection"]>,
+    ParentType,
+    ContextType,
+    RequireFields<QuerySearchEntriesByTitleArgs, "searchString">
   >;
   accounts?: Resolver<
     Maybe<ResolversTypes["AccountConnection"]>,
@@ -2268,11 +2312,26 @@ export type QueryResolvers<
     ContextType,
     RequireFields<QueryentryFeedArgs, "searchString" | "skip" | "take">
   >;
+  getUserByAccount?: Resolver<
+    Maybe<ResolversTypes["AccountConnection"]>,
+    ParentType,
+    ContextType,
+    RequireFields<
+      QuerygetUserByAccountArgs,
+      "id" | "provider" | "providerAccountId"
+    >
+  >;
   node?: Resolver<
     Maybe<ResolversTypes["Node"]>,
     ParentType,
     ContextType,
-    Partial<QuerynodeArgs>
+    RequireFields<QuerynodeArgs, "id">
+  >;
+  profiles?: Resolver<
+    Maybe<ResolversTypes["ProfileConnection"]>,
+    ParentType,
+    ContextType,
+    Partial<QueryprofilesArgs>
   >;
   session?: Resolver<
     Maybe<ResolversTypes["SessionConnection"]>,
@@ -2310,11 +2369,11 @@ export type QueryResolvers<
     ContextType,
     Partial<QueryusersQueryArgs>
   >;
-  viewer?: Resolver<
-    Maybe<ResolversTypes["Viewer"]>,
+  verificationTokens?: Resolver<
+    Maybe<ResolversTypes["VerificationTokenConnection"]>,
     ParentType,
     ContextType,
-    RequireFields<QueryviewerArgs, "id">
+    Partial<QueryverificationTokensArgs>
   >;
 }>;
 
@@ -2333,7 +2392,6 @@ export type SessionResolvers<
     ParentType,
     ContextType
   >;
-  type?: Resolver<Maybe<ResolversTypes["String"]>, ParentType, ContextType>;
   user?: Resolver<Maybe<ResolversTypes["User"]>, ParentType, ContextType>;
   userId?: Resolver<Maybe<ResolversTypes["String"]>, ParentType, ContextType>;
   __isTypeOf?: IsTypeOfResolverFn<ParentType, ContextType>;
@@ -2392,6 +2450,12 @@ export type UserResolvers<
     ContextType,
     Partial<UseraccountsArgs>
   >;
+  comments?: Resolver<
+    Maybe<ResolversTypes["CommentConnection"]>,
+    ParentType,
+    ContextType,
+    Partial<UsercommentsArgs>
+  >;
   email?: Resolver<Maybe<ResolversTypes["String"]>, ParentType, ContextType>;
   emailVerified?: Resolver<
     Maybe<ResolversTypes["DateTime"]>,
@@ -2404,11 +2468,6 @@ export type UserResolvers<
     ContextType,
     Partial<UserentriesArgs>
   >;
-  firstName?: Resolver<
-    Maybe<ResolversTypes["String"]>,
-    ParentType,
-    ContextType
-  >;
   id?: Resolver<ResolversTypes["String"], ParentType, ContextType>;
   image?: Resolver<Maybe<ResolversTypes["String"]>, ParentType, ContextType>;
   imageMeta?: Resolver<
@@ -2416,8 +2475,7 @@ export type UserResolvers<
     ParentType,
     ContextType
   >;
-  lastName?: Resolver<Maybe<ResolversTypes["String"]>, ParentType, ContextType>;
-  password?: Resolver<Maybe<ResolversTypes["String"]>, ParentType, ContextType>;
+  name?: Resolver<Maybe<ResolversTypes["String"]>, ParentType, ContextType>;
   profile?: Resolver<Maybe<ResolversTypes["Profile"]>, ParentType, ContextType>;
   role?: Resolver<Maybe<ResolversTypes["Role"]>, ParentType, ContextType>;
   sessions?: Resolver<
@@ -2431,7 +2489,6 @@ export type UserResolvers<
     ParentType,
     ContextType
   >;
-  type?: Resolver<Maybe<ResolversTypes["String"]>, ParentType, ContextType>;
   __isTypeOf?: IsTypeOfResolverFn<ParentType, ContextType>;
 }>;
 
@@ -2489,7 +2546,6 @@ export type VerificationTokenResolvers<
     ContextType
   >;
   token?: Resolver<Maybe<ResolversTypes["String"]>, ParentType, ContextType>;
-  type?: Resolver<Maybe<ResolversTypes["String"]>, ParentType, ContextType>;
   __isTypeOf?: IsTypeOfResolverFn<ParentType, ContextType>;
 }>;
 
@@ -2520,66 +2576,6 @@ export type VerificationTokenEdgeResolvers<
     Maybe<ResolversTypes["VerificationToken"]>,
     ParentType,
     ContextType
-  >;
-  __isTypeOf?: IsTypeOfResolverFn<ParentType, ContextType>;
-}>;
-
-export type ViewerResolvers<
-  ContextType = any,
-  ParentType extends ResolversParentTypes["Viewer"] = ResolversParentTypes["Viewer"]
-> = ResolversObject<{
-  GetAllEntries?: Resolver<
-    Maybe<ResolversTypes["EntryConnection"]>,
-    ParentType,
-    ContextType,
-    RequireFields<ViewerGetAllEntriesArgs, "searchString">
-  >;
-  GetAllSessions?: Resolver<
-    Maybe<ResolversTypes["SessionConnection"]>,
-    ParentType,
-    ContextType,
-    RequireFields<ViewerGetAllSessionsArgs, "orderBy">
-  >;
-  GetEntry?: Resolver<
-    Maybe<ResolversTypes["Entry"]>,
-    ParentType,
-    ContextType,
-    RequireFields<ViewerGetEntryArgs, "id">
-  >;
-  GetSession?: Resolver<
-    Maybe<ResolversTypes["Session"]>,
-    ParentType,
-    ContextType,
-    RequireFields<ViewerGetSessionArgs, "id">
-  >;
-  SearchEntriesByTitle?: Resolver<
-    Maybe<ResolversTypes["EntryConnection"]>,
-    ParentType,
-    ContextType,
-    RequireFields<ViewerSearchEntriesByTitleArgs, "searchString">
-  >;
-  getUserByAccount?: Resolver<
-    Maybe<ResolversTypes["AccountConnection"]>,
-    ParentType,
-    ContextType,
-    RequireFields<
-      ViewergetUserByAccountArgs,
-      "id" | "provider" | "providerAccountId"
-    >
-  >;
-  id?: Resolver<Maybe<ResolversTypes["String"]>, ParentType, ContextType>;
-  profiles?: Resolver<
-    Maybe<ResolversTypes["ProfileConnection"]>,
-    ParentType,
-    ContextType,
-    Partial<ViewerprofilesArgs>
-  >;
-  type?: Resolver<Maybe<ResolversTypes["String"]>, ParentType, ContextType>;
-  verificationTokens?: Resolver<
-    Maybe<ResolversTypes["VerificationTokenConnection"]>,
-    ParentType,
-    ContextType,
-    Partial<ViewerverificationTokensArgs>
   >;
   __isTypeOf?: IsTypeOfResolverFn<ParentType, ContextType>;
 }>;
@@ -2621,7 +2617,6 @@ export type Resolvers<ContextType = any> = ResolversObject<{
   VerificationToken?: VerificationTokenResolvers<ContextType>;
   VerificationTokenConnection?: VerificationTokenConnectionResolvers<ContextType>;
   VerificationTokenEdge?: VerificationTokenEdgeResolvers<ContextType>;
-  Viewer?: ViewerResolvers<ContextType>;
 }>;
 
 export type EntryPartialFragment = {
@@ -2675,7 +2670,6 @@ export const EntryPartialFragmentDoc = gql`
     authorId
     createdAt
     updatedAt
-    __typename
   }
 `;
 export const MediaItemPartialFragmentDoc = gql`

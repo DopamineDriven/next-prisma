@@ -7,8 +7,7 @@ export type PossibleTypesResultData = {
       "Profile",
       "Session",
       "User",
-      "VerificationToken",
-      "Viewer"
+      "VerificationToken"
     ];
   };
 };
@@ -21,8 +20,7 @@ const result: PossibleTypesResultData = {
       "Profile",
       "Session",
       "User",
-      "VerificationToken",
-      "Viewer"
+      "VerificationToken"
     ]
   }
 };

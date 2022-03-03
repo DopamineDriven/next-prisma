@@ -160,7 +160,10 @@ export const UserExtended: core.NexusExtendTypeDef<"Query"> =
             include: {
               accounts: true,
               entries: true,
-              sessions: true
+              sessions: true,
+              comments: true,
+              _count: true,
+              profile: true
             }
           });
         }

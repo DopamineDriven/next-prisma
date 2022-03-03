@@ -47,6 +47,7 @@ module.exports = withSuperjson()({
       }
     ];
   },
+  reactStrictMode: true,
   swcMinify: true,
   webpack5: true,
   sourceMaps: {
@@ -54,6 +55,16 @@ module.exports = withSuperjson()({
   },
   experimental: {
     outputStandalone: true
+  },
+  i18n: {
+    locales: ["en-US"],
+    defaultLocale: "en-US",
+    domains: [
+      {
+        domain: "www.andrewross.app",
+        defaultLocale: "en-US"
+      }
+    ]
   },
   images: {
     formats: ["image/avif", "image/webp"],
@@ -82,17 +93,6 @@ module.exports = withSuperjson()({
       "i1.wp.com",
       "i2.wp.com",
       "www.facebook.com"
-    ]
-  },
-  reactStrictMode: true,
-  i18n: {
-    locales: ["en-US"],
-    defaultLocale: "en-US",
-    domains: [
-      {
-        domain: "www.andrewross.app",
-        defaultLocale: "en-US"
-      }
     ]
   }
 });
