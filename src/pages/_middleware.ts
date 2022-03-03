@@ -3,7 +3,7 @@ import cors, { CorsOptions } from "@/lib/cors";
 
 // (next: () => NextResponse)
 
-export async function middleware(req: NextRequest) {
+export async function middleware(request: NextRequest) {
   const response = NextResponse.next();
   response.headers.set("Referrer-Policy", "Origin-When-Cross-Origin");
   response.headers.set(
@@ -60,12 +60,5 @@ export async function middleware(req: NextRequest) {
     credentials: true,
     exposedHeaders: ["*", "Authorization"] // Authorization must be explicitly set
   };
-  return cors(req, response, options);
+  return cors(request, response, options);
 }
-
-// const CorsWrapper: NextApiHandler<typeof middleware> = (
-//   req: NextApiRequest,
-//   res: NextApiResponse<typeof middleware>
-// ) => CorsWrapper(req, res);
-
-// export default CorsWrapper;
