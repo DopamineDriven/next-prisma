@@ -1,4 +1,5 @@
 export * from "./accounts";
+export * from "./bio";
 export * from "./category";
 export * from "./comment";
 export * from "./entries";
@@ -15,4 +16,3 @@ export * from "./sessions";
 export * from "./user";
 export * from "./utils";
 export * from "./verification-request";
-export * from "./viewer";

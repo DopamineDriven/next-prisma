@@ -159,6 +159,8 @@ export interface NexusGenInputs {
     expires_at?: NexusGenInputs["IntNullableFilter"] | null; // IntNullableFilter
     id?: NexusGenInputs["StringFilter"] | null; // StringFilter
     id_token?: NexusGenInputs["StringNullableFilter"] | null; // StringNullableFilter
+    oauth_token?: NexusGenInputs["StringNullableFilter"] | null; // StringNullableFilter
+    oauth_token_secret?: NexusGenInputs["StringNullableFilter"] | null; // StringNullableFilter
     provider?: NexusGenInputs["StringFilter"] | null; // StringFilter
     providerAccountId?: NexusGenInputs["StringFilter"] | null; // StringFilter
     refresh_token?: NexusGenInputs["StringNullableFilter"] | null; // StringNullableFilter
@@ -168,6 +170,29 @@ export interface NexusGenInputs {
     type?: NexusGenInputs["StringFilter"] | null; // StringFilter
     user?: NexusGenInputs["UserRelationFilter"] | null; // UserRelationFilter
     userId?: NexusGenInputs["StringFilter"] | null; // StringFilter
+  };
+  BioListRelationFilter: {
+    // input type
+    every?: NexusGenInputs["BioWhereInput"] | null; // BioWhereInput
+    none?: NexusGenInputs["BioWhereInput"] | null; // BioWhereInput
+    some?: NexusGenInputs["BioWhereInput"] | null; // BioWhereInput
+  };
+  BioRelationFilter: {
+    // input type
+    is?: NexusGenInputs["BioWhereInput"] | null; // BioWhereInput
+    isNot?: NexusGenInputs["BioWhereInput"] | null; // BioWhereInput
+  };
+  BioWhereInput: {
+    // input type
+    AND?: NexusGenInputs["BioWhereInput"][] | null; // [BioWhereInput!]
+    NOT?: NexusGenInputs["BioWhereInput"][] | null; // [BioWhereInput!]
+    OR?: NexusGenInputs["BioWhereInput"][] | null; // [BioWhereInput!]
+    body?: NexusGenInputs["StringNullableFilter"] | null; // StringNullableFilter
+    createdAt?: NexusGenInputs["DateTimeFilter"] | null; // DateTimeFilter
+    headline?: NexusGenInputs["StringFilter"] | null; // StringFilter
+    intro?: NexusGenInputs["StringNullableFilter"] | null; // StringNullableFilter
+    status?: NexusGenInputs["StringNullableFilter"] | null; // StringNullableFilter
+    updatedAt?: NexusGenInputs["DateTimeNullableFilter"] | null; // DateTimeNullableFilter
   };
   BoolFilter: {
     // input type
@@ -360,6 +385,12 @@ export interface NexusGenInputs {
     updatedAt?: NexusGenScalars["DateTime"] | null; // DateTime
     uploadedAt?: NexusGenScalars["DateTime"] | null; // DateTime
     width?: number | null; // Float
+  };
+  MediaItemListRelationFilter: {
+    // input type
+    every?: NexusGenInputs["MediaItemWhereInput"] | null; // MediaItemWhereInput
+    none?: NexusGenInputs["MediaItemWhereInput"] | null; // MediaItemWhereInput
+    some?: NexusGenInputs["MediaItemWhereInput"] | null; // MediaItemWhereInput
   };
   MediaItemRelationFilter: {
     // input type
@@ -601,17 +632,9 @@ export interface NexusGenInputs {
     AND?: NexusGenInputs["SessionWhereInput"][] | null; // [SessionWhereInput!]
     NOT?: NexusGenInputs["SessionWhereInput"][] | null; // [SessionWhereInput!]
     OR?: NexusGenInputs["SessionWhereInput"][] | null; // [SessionWhereInput!]
-    accessToken?: NexusGenInputs["StringNullableFilter"] | null; // StringNullableFilter
-    alg?: NexusGenInputs["StringNullableFilter"] | null; // StringNullableFilter
-    exp?: NexusGenInputs["IntNullableFilter"] | null; // IntNullableFilter
-    iat?: NexusGenInputs["IntNullableFilter"] | null; // IntNullableFilter
-    id?: NexusGenInputs["StringFilter"] | null; // StringFilter
-    lastVerified?: NexusGenInputs["DateTimeNullableFilter"] | null; // DateTimeNullableFilter
-    provider?: NexusGenInputs["StringNullableFilter"] | null; // StringNullableFilter
-    refreshToken?: NexusGenInputs["StringNullableFilter"] | null; // StringNullableFilter
-    scopes?: NexusGenInputs["StringNullableListFilter"] | null; // StringNullableListFilter
-    signature?: NexusGenInputs["StringNullableFilter"] | null; // StringNullableFilter
-    tokenState?: NexusGenInputs["StringNullableFilter"] | null; // StringNullableFilter
+    expires?: NexusGenInputs["DateTimeNullableFilter"] | null; // DateTimeNullableFilter
+    id: NexusGenInputs["StringFilter"]; // StringFilter!
+    sessionToken?: NexusGenInputs["StringNullableFilter"] | null; // StringNullableFilter
     user?: NexusGenInputs["UserRelationFilter"] | null; // UserRelationFilter
     userId?: NexusGenInputs["StringNullableFilter"] | null; // StringNullableFilter
   };
@@ -673,7 +696,6 @@ export interface NexusGenInputs {
     id?: NexusGenEnums["SortOrderEnum"] | null; // SortOrderEnum
     image?: NexusGenEnums["SortOrderEnum"] | null; // SortOrderEnum
     name?: NexusGenEnums["SortOrderEnum"] | null; // SortOrderEnum
-    password?: NexusGenEnums["SortOrderEnum"] | null; // SortOrderEnum
     profile?:
       | NexusGenInputs["ProfileOrderByWithRelationAndSearchRelevanceInput"]
       | null; // ProfileOrderByWithRelationAndSearchRelevanceInput
@@ -702,7 +724,6 @@ export interface NexusGenInputs {
     image?: NexusGenInputs["StringNullableFilter"] | null; // StringNullableFilter
     imageMeta?: NexusGenInputs["MediaItemRelationFilter"] | null; // MediaItemRelationFilter
     name?: NexusGenInputs["StringNullableFilter"] | null; // StringNullableFilter
-    password?: NexusGenInputs["StringFilter"] | null; // StringFilter
     profile?: NexusGenInputs["ProfileRelationFilter"] | null; // ProfileRelationFilter
     role?: NexusGenInputs["EnumRoleNullableFilter"] | null; // EnumRoleNullableFilter
     sessions?: NexusGenInputs["SessionListRelationFilter"] | null; // SessionListRelationFilter
@@ -878,7 +899,6 @@ export interface NexusGenObjects {
     cursor: string; // String!
     node?: NexusGenRootTypes["VerificationToken"] | null; // VerificationToken
   };
-  Viewer: {};
 }
 
 export interface NexusGenInterfaces {
@@ -889,8 +909,7 @@ export interface NexusGenInterfaces {
     | core.Discriminate<"Profile", "required">
     | core.Discriminate<"Session", "required">
     | core.Discriminate<"User", "required">
-    | core.Discriminate<"VerificationToken", "required">
-    | core.Discriminate<"Viewer", "required">;
+    | core.Discriminate<"VerificationToken", "required">;
 }
 
 export interface NexusGenUnions {}
@@ -935,6 +954,7 @@ export interface NexusGenFieldTypes {
     // field return type
     body: string | null; // String
     createdAt: NexusGenScalars["DateTime"] | null; // DateTime
+    headline: string | null; // String
     intro: string | null; // String
     status: string | null; // String
     updatedAt: NexusGenScalars["DateTime"] | null; // DateTime
@@ -959,7 +979,6 @@ export interface NexusGenFieldTypes {
     id: string; // String!
     position: string | null; // String
     reactions: Array<NexusGenEnums["Reaction"] | null> | null; // [Reaction]
-    type: string | null; // String
     updatedAt: NexusGenScalars["DateTime"] | null; // DateTime
   };
   CommentConnection: {
@@ -986,7 +1005,6 @@ export interface NexusGenFieldTypes {
     published: boolean | null; // Boolean
     reactions: Array<NexusGenEnums["Reaction"] | null> | null; // [Reaction]
     title: string | null; // String
-    type: string | null; // String
     updatedAt: NexusGenScalars["DateTime"] | null; // DateTime
   };
   EntryConnection: {
@@ -1040,7 +1058,6 @@ export interface NexusGenFieldTypes {
     id: string; // String!
     memberSince: NexusGenScalars["DateTime"] | null; // DateTime
     phoneNumber: NexusGenScalars["PhoneNumber"] | null; // PhoneNumber
-    type: string | null; // String
     user: NexusGenRootTypes["User"] | null; // User
     userId: string | null; // String
   };
@@ -1058,27 +1075,33 @@ export interface NexusGenFieldTypes {
   Query: {
     // field return type
     FilterUsers: NexusGenRootTypes["UserConnection"] | null; // UserConnection
+    GetAllEntries: NexusGenRootTypes["EntryConnection"] | null; // EntryConnection
+    GetAllSessions: NexusGenRootTypes["SessionConnection"] | null; // SessionConnection
+    GetEntry: NexusGenRootTypes["Entry"] | null; // Entry
+    GetSession: NexusGenRootTypes["Session"] | null; // Session
     SearchByUserEmail: NexusGenRootTypes["UserConnection"] | null; // UserConnection
+    SearchEntriesByTitle: NexusGenRootTypes["EntryConnection"] | null; // EntryConnection
     accounts: NexusGenRootTypes["AccountConnection"] | null; // AccountConnection
     allAccounts: NexusGenRootTypes["AccountConnection"] | null; // AccountConnection
     allEntries: NexusGenRootTypes["EntryConnection"] | null; // EntryConnection
     entries: NexusGenRootTypes["EntryConnection"] | null; // EntryConnection
     entryFeed: NexusGenRootTypes["EntryConnection"] | null; // EntryConnection
+    getUserByAccount: NexusGenRootTypes["AccountConnection"] | null; // AccountConnection
     node: NexusGenRootTypes["Node"] | null; // Node
+    profiles: NexusGenRootTypes["ProfileConnection"] | null; // ProfileConnection
     session: NexusGenRootTypes["SessionConnection"] | null; // SessionConnection
     userAccount: NexusGenRootTypes["AccountConnection"] | null; // AccountConnection
     userByEmail: NexusGenRootTypes["User"] | null; // User
     userById: NexusGenRootTypes["User"] | null; // User
     userEntries: NexusGenRootTypes["EntryConnection"] | null; // EntryConnection
     usersQuery: NexusGenRootTypes["UserConnection"] | null; // UserConnection
-    viewer: NexusGenRootTypes["Viewer"] | null; // Viewer
+    verificationTokens: NexusGenRootTypes["VerificationTokenConnection"] | null; // VerificationTokenConnection
   };
   Session: {
     // field return type
     expires: NexusGenScalars["DateTime"] | null; // DateTime
     id: string; // String!
     sessionToken: string | null; // String
-    type: string | null; // String
     user: NexusGenRootTypes["User"] | null; // User
     userId: string | null; // String
   };
@@ -1097,6 +1120,7 @@ export interface NexusGenFieldTypes {
     // field return type
     _count: NexusGenRootTypes["UserCount"]; // UserCount!
     accounts: NexusGenRootTypes["AccountConnection"] | null; // AccountConnection
+    comments: NexusGenRootTypes["CommentConnection"] | null; // CommentConnection
     email: string | null; // String
     emailVerified: NexusGenScalars["DateTime"] | null; // DateTime
     entries: NexusGenRootTypes["EntryConnection"] | null; // EntryConnection
@@ -1104,12 +1128,10 @@ export interface NexusGenFieldTypes {
     image: string | null; // String
     imageMeta: NexusGenRootTypes["MediaItem"] | null; // MediaItem
     name: string | null; // String
-    password: string | null; // String
     profile: NexusGenRootTypes["Profile"] | null; // Profile
     role: NexusGenEnums["Role"] | null; // Role
     sessions: NexusGenRootTypes["SessionConnection"] | null; // SessionConnection
     status: NexusGenEnums["UserStatus"] | null; // UserStatus
-    type: string | null; // String
   };
   UserConnection: {
     // field return type
@@ -1135,7 +1157,6 @@ export interface NexusGenFieldTypes {
     id: string; // String!
     identifier: string | null; // String
     token: string | null; // String
-    type: string | null; // String
   };
   VerificationTokenConnection: {
     // field return type
@@ -1148,23 +1169,9 @@ export interface NexusGenFieldTypes {
     cursor: string; // String!
     node: NexusGenRootTypes["VerificationToken"] | null; // VerificationToken
   };
-  Viewer: {
-    // field return type
-    GetAllEntries: NexusGenRootTypes["EntryConnection"] | null; // EntryConnection
-    GetAllSessions: NexusGenRootTypes["SessionConnection"] | null; // SessionConnection
-    GetEntry: NexusGenRootTypes["Entry"] | null; // Entry
-    GetSession: NexusGenRootTypes["Session"] | null; // Session
-    SearchEntriesByTitle: NexusGenRootTypes["EntryConnection"] | null; // EntryConnection
-    getUserByAccount: NexusGenRootTypes["AccountConnection"] | null; // AccountConnection
-    id: string | null; // String
-    profiles: NexusGenRootTypes["ProfileConnection"] | null; // ProfileConnection
-    type: string | null; // String
-    verificationTokens: NexusGenRootTypes["VerificationTokenConnection"] | null; // VerificationTokenConnection
-  };
   Node: {
     // field return type
-    id: string | null; // String
-    type: string | null; // String
+    id: string; // String!
   };
 }
 
@@ -1202,6 +1209,7 @@ export interface NexusGenFieldTypeNames {
     // field return type name
     body: "String";
     createdAt: "DateTime";
+    headline: "String";
     intro: "String";
     status: "String";
     updatedAt: "DateTime";
@@ -1226,7 +1234,6 @@ export interface NexusGenFieldTypeNames {
     id: "String";
     position: "String";
     reactions: "Reaction";
-    type: "String";
     updatedAt: "DateTime";
   };
   CommentConnection: {
@@ -1253,7 +1260,6 @@ export interface NexusGenFieldTypeNames {
     published: "Boolean";
     reactions: "Reaction";
     title: "String";
-    type: "String";
     updatedAt: "DateTime";
   };
   EntryConnection: {
@@ -1307,7 +1313,6 @@ export interface NexusGenFieldTypeNames {
     id: "String";
     memberSince: "DateTime";
     phoneNumber: "PhoneNumber";
-    type: "String";
     user: "User";
     userId: "String";
   };
@@ -1325,27 +1330,33 @@ export interface NexusGenFieldTypeNames {
   Query: {
     // field return type name
     FilterUsers: "UserConnection";
+    GetAllEntries: "EntryConnection";
+    GetAllSessions: "SessionConnection";
+    GetEntry: "Entry";
+    GetSession: "Session";
     SearchByUserEmail: "UserConnection";
+    SearchEntriesByTitle: "EntryConnection";
     accounts: "AccountConnection";
     allAccounts: "AccountConnection";
     allEntries: "EntryConnection";
     entries: "EntryConnection";
     entryFeed: "EntryConnection";
+    getUserByAccount: "AccountConnection";
     node: "Node";
+    profiles: "ProfileConnection";
     session: "SessionConnection";
     userAccount: "AccountConnection";
     userByEmail: "User";
     userById: "User";
     userEntries: "EntryConnection";
     usersQuery: "UserConnection";
-    viewer: "Viewer";
+    verificationTokens: "VerificationTokenConnection";
   };
   Session: {
     // field return type name
     expires: "DateTime";
     id: "String";
     sessionToken: "String";
-    type: "String";
     user: "User";
     userId: "String";
   };
@@ -1364,6 +1375,7 @@ export interface NexusGenFieldTypeNames {
     // field return type name
     _count: "UserCount";
     accounts: "AccountConnection";
+    comments: "CommentConnection";
     email: "String";
     emailVerified: "DateTime";
     entries: "EntryConnection";
@@ -1371,12 +1383,10 @@ export interface NexusGenFieldTypeNames {
     image: "String";
     imageMeta: "MediaItem";
     name: "String";
-    password: "String";
     profile: "Profile";
     role: "Role";
     sessions: "SessionConnection";
     status: "UserStatus";
-    type: "String";
   };
   UserConnection: {
     // field return type name
@@ -1402,7 +1412,6 @@ export interface NexusGenFieldTypeNames {
     id: "String";
     identifier: "String";
     token: "String";
-    type: "String";
   };
   VerificationTokenConnection: {
     // field return type name
@@ -1415,23 +1424,9 @@ export interface NexusGenFieldTypeNames {
     cursor: "String";
     node: "VerificationToken";
   };
-  Viewer: {
-    // field return type name
-    GetAllEntries: "EntryConnection";
-    GetAllSessions: "SessionConnection";
-    GetEntry: "Entry";
-    GetSession: "Session";
-    SearchEntriesByTitle: "EntryConnection";
-    getUserByAccount: "AccountConnection";
-    id: "String";
-    profiles: "ProfileConnection";
-    type: "String";
-    verificationTokens: "VerificationTokenConnection";
-  };
   Node: {
     // field return type name
     id: "String";
-    type: "String";
   };
 }
 
@@ -1451,9 +1446,10 @@ export interface NexusGenArgTypes {
     CreateNewUser: {
       // args
       email: string; // String!
+      expires: NexusGenScalars["Date"]; // Date!
       image?: string | null; // String
       name?: string | null; // String
-      role: NexusGenEnums["Role"]; // Role!
+      sessionToken: string; // String!
     };
     DeleteUser: {
       // args
@@ -1486,6 +1482,31 @@ export interface NexusGenArgTypes {
       last?: number | null; // Int
       searchString: string; // String!
     };
+    GetAllEntries: {
+      // args
+      after?: string | null; // String
+      before?: string | null; // String
+      first?: number | null; // Int
+      last?: number | null; // Int
+      searchString: string; // String!
+      take?: number | null; // Int
+    };
+    GetAllSessions: {
+      // args
+      after?: string | null; // String
+      before?: string | null; // String
+      first?: number | null; // Int
+      last?: number | null; // Int
+      orderBy: NexusGenInputs["SessionOrderBy"]; // SessionOrderBy!
+    };
+    GetEntry: {
+      // args
+      id: string; // String!
+    };
+    GetSession: {
+      // args
+      id: string; // String!
+    };
     SearchByUserEmail: {
       // args
       after?: string | null; // String
@@ -1493,6 +1514,14 @@ export interface NexusGenArgTypes {
       first?: number | null; // Int
       last?: number | null; // Int
       search: string; // String!
+    };
+    SearchEntriesByTitle: {
+      // args
+      after?: string | null; // String
+      before?: string | null; // String
+      first?: number | null; // Int
+      last?: number | null; // Int
+      searchString: string; // String!
     };
     accounts: {
       // args
@@ -1535,9 +1564,26 @@ export interface NexusGenArgTypes {
       skip?: number | null; // Int
       take: number | null; // Int
     };
+    getUserByAccount: {
+      // args
+      after?: string | null; // String
+      before?: string | null; // String
+      first?: number | null; // Int
+      id: string; // String!
+      last?: number | null; // Int
+      provider: string; // String!
+      providerAccountId: string; // String!
+    };
     node: {
       // args
-      id?: string | null; // String
+      id: string; // String!
+    };
+    profiles: {
+      // args
+      after?: string | null; // String
+      before?: string | null; // String
+      first?: number | null; // Int
+      last?: number | null; // Int
     };
     session: {
       // args
@@ -1576,13 +1622,23 @@ export interface NexusGenArgTypes {
       first?: number | null; // Int
       last?: number | null; // Int
     };
-    viewer: {
+    verificationTokens: {
       // args
-      id: string; // String!
+      after?: string | null; // String
+      before?: string | null; // String
+      first?: number | null; // Int
+      last?: number | null; // Int
     };
   };
   User: {
     accounts: {
+      // args
+      after?: string | null; // String
+      before?: string | null; // String
+      first?: number | null; // Int
+      last?: number | null; // Int
+    };
+    comments: {
       // args
       after?: string | null; // String
       before?: string | null; // String
@@ -1604,65 +1660,6 @@ export interface NexusGenArgTypes {
       last?: number | null; // Int
     };
   };
-  Viewer: {
-    GetAllEntries: {
-      // args
-      after?: string | null; // String
-      before?: string | null; // String
-      first?: number | null; // Int
-      last?: number | null; // Int
-      searchString: string; // String!
-      take?: number | null; // Int
-    };
-    GetAllSessions: {
-      // args
-      after?: string | null; // String
-      before?: string | null; // String
-      first?: number | null; // Int
-      last?: number | null; // Int
-      orderBy: NexusGenInputs["SessionOrderBy"]; // SessionOrderBy!
-    };
-    GetEntry: {
-      // args
-      id: string; // String!
-    };
-    GetSession: {
-      // args
-      id: string; // String!
-    };
-    SearchEntriesByTitle: {
-      // args
-      after?: string | null; // String
-      before?: string | null; // String
-      first?: number | null; // Int
-      last?: number | null; // Int
-      searchString: string; // String!
-    };
-    getUserByAccount: {
-      // args
-      after?: string | null; // String
-      before?: string | null; // String
-      first?: number | null; // Int
-      id: string; // String!
-      last?: number | null; // Int
-      provider: string; // String!
-      providerAccountId: string; // String!
-    };
-    profiles: {
-      // args
-      after?: string | null; // String
-      before?: string | null; // String
-      first?: number | null; // Int
-      last?: number | null; // Int
-    };
-    verificationTokens: {
-      // args
-      after?: string | null; // String
-      before?: string | null; // String
-      first?: number | null; // Int
-      last?: number | null; // Int
-    };
-  };
 }
 
 export interface NexusGenAbstractTypeMembers {
@@ -1673,8 +1670,7 @@ export interface NexusGenAbstractTypeMembers {
     | "Profile"
     | "Session"
     | "User"
-    | "VerificationToken"
-    | "Viewer";
+    | "VerificationToken";
 }
 
 export interface NexusGenTypeInterfaces {
@@ -1685,7 +1681,6 @@ export interface NexusGenTypeInterfaces {
   Session: "Node";
   User: "Node";
   VerificationToken: "Node";
-  Viewer: "Node";
 }
 
 export type NexusGenObjectNames = keyof NexusGenObjects;

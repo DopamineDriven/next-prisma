@@ -11,6 +11,7 @@ import {
   UserRelationFilter,
   StringFilter,
   StringNullableFilter,
+  BioObjectType,
   DateTimeFilter,
   DateTimeNullableFilter,
   ProfileOrderByRelevanceFieldEnum,
@@ -25,7 +26,6 @@ export const Profile: core.NexusObjectTypeDef<"Profile"> =
     name: "Profile",
     definition(t) {
       t.implements("Node");
-      t.nonNull.string("id");
       t.string("userId");
       t.field("memberSince", {type: "DateTime"})
       t.field("coverImage", {type: "MediaItem"});
@@ -58,8 +58,8 @@ export const ProfileOrderByArgs: core.NexusArgDef<"ProfileOrderBy"> =
     default: { memberSince: "asc" }
   });
 
-export const ProfileQuery = extendType({
-  type: "Viewer",
+export const ProfileQuery = extendType<"Query">({
+  type: "Query",
   definition(t) {
     t.connectionField("profiles", {
       type: "Profile",
@@ -91,19 +91,8 @@ export const dateTimeArg = (opts: core.SourceTypesConfigOptions) =>
     createdAt: Date;
     updatedAt: Date | null;
  */
-export const BioObjectType: core.NexusObjectTypeDef<"Bio"> =
-  core.objectType<"Bio">({
-    name: "Bio",
-    definition(t) {
-      t.nullable.string("intro");
-      t.nullable.string("body");
-      t.nullable.string("status");
-      t.DateTime("createdAt");
-      t.nullable.DateTime("updatedAt");
-    }
-  });
 
-export const PorfileMutations: core.NexusExtendTypeDef<"Mutation"> = extendType(
+export const ProfileMutation: core.NexusExtendTypeDef<"Mutation"> = extendType(
   {
     type: "Mutation",
     definition(t) {

@@ -986,7 +986,6 @@ export async function seed<T extends import("@prisma/client").PrismaClient>(
         role: roleTemplate(0, 10),
         email: `${seedFirstName.toLowerCase()}.${seedSurname.toLowerCase()}@gmail.com`,
         image: userAvatarString,
-        password: hashedPassword,
         id: seedUserId,
         status: userStatusTemplate(0, 11),
         name: seedFirstName + " " + seedSurname,

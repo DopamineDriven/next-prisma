@@ -1,7 +1,8 @@
 import { core } from "nexus";
-import { MediaItemDestination, MimeType } from ".";
 import {
   DateTimeNullableFilter,
+  MediaItemDestination,
+  MimeType,
   DateTimeFilter,
   StringFilter,
   StringNullableFilter,
@@ -10,27 +11,28 @@ import {
   UserRelationFilter
 } from ".";
 
-export const MediaItem: core.NexusObjectTypeDef<"MediaItem"> = core.objectType({
-  name: "MediaItem",
-  definition(t) {
-    t.nullable.string("mediaItemId");
-    t.DateTime("uploadedAt");
-    t.nullable.DateTime("updatedAt");
-    t.nullable.string("filename");
-    t.nullable.string("size");
-    t.nullable.field("filetype", { type: MimeType });
-    t.nullable.field("destination", { type: MediaItemDestination });
-    t.nullable.DateTime("fileLastModified");
-    t.nonNull.float("width");
-    t.nonNull.float("height");
-    t.nonNull.int("quality");
-    t.nullable.string("src");
-    t.nullable.string("srcSet");
-    t.nullable.string("ariaLabel");
-    t.nullable.string("caption");
-    t.nullable.string("title");
-  }
-});
+export const MediaItem: core.NexusObjectTypeDef<"MediaItem"> =
+  core.objectType<"MediaItem">({
+    name: "MediaItem",
+    definition(t) {
+      t.nullable.string("mediaItemId");
+      t.DateTime("uploadedAt");
+      t.nullable.DateTime("updatedAt");
+      t.nullable.string("filename");
+      t.nullable.string("size");
+      t.nullable.field("filetype", { type: MimeType });
+      t.nullable.field("destination", { type: MediaItemDestination });
+      t.nullable.DateTime("fileLastModified");
+      t.nonNull.float("width");
+      t.nonNull.float("height");
+      t.nonNull.int("quality");
+      t.nullable.string("src");
+      t.nullable.string("srcSet");
+      t.nullable.string("ariaLabel");
+      t.nullable.string("caption");
+      t.nullable.string("title");
+    }
+  });
 
 export const EnumMediaItemDestinationNullableFilter = core.inputObjectType({
   name: "EnumMediaItemDestinationNullableFilter",
@@ -53,24 +55,26 @@ export const NestedEnumMediaItemDestinationNullableFilter =
     }
   });
 
-  export const NestedEnumMimeTypeNullableFilter = core.inputObjectType({
-    name: "NestedEnumMimeTypeNullableFilter",
-    definition(t) {
-      t.field("equals", { type: MimeType })
-      t.list.nonNull.field("in", { type: MimeType })
-      t.field("not", { type: NestedEnumMimeTypeNullableFilter })
-      t.list.nonNull.field("notIn", { type: MimeType })
-    }
-  });
-  export const EnumMimeTypeNullableFilter = core.inputObjectType({
-    name: "EnumMimeTypeNullableFilter",
-    definition(t) {
-      t.field("equals", { type: MimeType })
-      t.list.nonNull.field("in", { type: MimeType })
-      t.field("not", { type: NestedEnumMimeTypeNullableFilter })
-      t.list.nonNull.field("notIn", { type: MimeType })
-    }
-  });
+export const NestedEnumMimeTypeNullableFilter = core.inputObjectType({
+  name: "NestedEnumMimeTypeNullableFilter",
+  definition(t) {
+    t.field("equals", { type: MimeType });
+    t.list.nonNull.field("in", { type: MimeType });
+    t.field("not", { type: NestedEnumMimeTypeNullableFilter });
+    t.list.nonNull.field("notIn", { type: MimeType });
+  }
+});
+
+export const EnumMimeTypeNullableFilter = core.inputObjectType({
+  name: "EnumMimeTypeNullableFilter",
+  definition(t) {
+    t.field("equals", { type: MimeType });
+    t.list.nonNull.field("in", { type: MimeType });
+    t.field("not", { type: NestedEnumMimeTypeNullableFilter });
+    t.list.nonNull.field("notIn", { type: MimeType });
+  }
+});
+
 export const MediaItemWhereInput = core.inputObjectType({
   name: "MediaItemWhereInput",
   definition(t) {
@@ -101,28 +105,38 @@ export const MediaItemWhereInput = core.inputObjectType({
 export const MediaItemInput = core.inputObjectType({
   name: "MediaItemInput",
   definition(t) {
-    t.string("ariaLabel")
-    t.string("caption")
-    t.field("destination", { type: MediaItemDestination })
-    t.field("fileLastModified", { type: "DateTime" })
-    t.float("height")
-    t.nullable.string("mediaItemId")
-    t.string("filename")
-    t.int("quality")
-    t.string("size")
-    t.string("src")
-    t.string("srcSet")
-    t.string("title")
-    t.field("filetype", { type: MimeType })
-    t.field("updatedAt", { type: "DateTime" })
-    t.field("uploadedAt", { type: "DateTime" })
-    t.float("width")
+    t.string("ariaLabel");
+    t.string("caption");
+    t.field("destination", { type: MediaItemDestination });
+    t.field("fileLastModified", { type: "DateTime" });
+    t.float("height");
+    t.nullable.string("mediaItemId");
+    t.string("filename");
+    t.int("quality");
+    t.string("size");
+    t.string("src");
+    t.string("srcSet");
+    t.string("title");
+    t.field("filetype", { type: MimeType });
+    t.field("updatedAt", { type: "DateTime" });
+    t.field("uploadedAt", { type: "DateTime" });
+    t.float("width");
   }
 });
+
 export const MediaItemRelationFilter = core.inputObjectType({
   name: "MediaItemRelationFilter",
   definition(t) {
-    t.field("is", { type: MediaItemWhereInput })
-    t.field("isNot", { type: MediaItemWhereInput })
+    t.field("is", { type: MediaItemWhereInput });
+    t.field("isNot", { type: MediaItemWhereInput });
+  }
+});
+
+export const MediaItemListRelationFilter = core.inputObjectType({
+  name: "MediaItemListRelationFilter",
+  definition(t) {
+    t.field("every", { type: MediaItemWhereInput });
+    t.field("some", { type: MediaItemWhereInput });
+    t.field("none", { type: MediaItemWhereInput });
   }
 });

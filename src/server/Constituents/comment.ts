@@ -15,7 +15,6 @@ export const Comment: core.NexusObjectTypeDef<"Comment"> =
     name: "Comment",
     definition(t) {
       t.implements("Node");
-      t.nonNull.string("id");
       t.string("authorId");
       t.string("entryId");
       t.nullable.string("body");

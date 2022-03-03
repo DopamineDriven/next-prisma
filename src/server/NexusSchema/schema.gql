@@ -71,6 +71,8 @@ input AccountWhereInput {
   expires_at: IntNullableFilter
   id: StringFilter
   id_token: StringNullableFilter
+  oauth_token: StringNullableFilter
+  oauth_token_secret: StringNullableFilter
   provider: StringFilter
   providerAccountId: StringFilter
   refresh_token: StringNullableFilter
@@ -85,9 +87,33 @@ input AccountWhereInput {
 type Bio {
   body: String
   createdAt: DateTime
+  headline: String
   intro: String
   status: String
   updatedAt: DateTime
+}
+
+input BioListRelationFilter {
+  every: BioWhereInput
+  none: BioWhereInput
+  some: BioWhereInput
+}
+
+input BioRelationFilter {
+  is: BioWhereInput
+  isNot: BioWhereInput
+}
+
+input BioWhereInput {
+  AND: [BioWhereInput!]
+  NOT: [BioWhereInput!]
+  OR: [BioWhereInput!]
+  body: StringNullableFilter
+  createdAt: DateTimeFilter
+  headline: StringFilter
+  intro: StringNullableFilter
+  status: StringNullableFilter
+  updatedAt: DateTimeNullableFilter
 }
 
 input BoolFilter {
@@ -114,7 +140,6 @@ type Comment implements Node {
   id: String!
   position: String
   reactions: [Reaction]
-  type: String
   updatedAt: DateTime
 }
 
@@ -239,7 +264,6 @@ type Entry implements Node {
   published: Boolean
   reactions: [Reaction]
   title: String
-  type: String
   updatedAt: DateTime
 }
 
@@ -464,6 +488,12 @@ input MediaItemInput {
   width: Float
 }
 
+input MediaItemListRelationFilter {
+  every: MediaItemWhereInput
+  none: MediaItemWhereInput
+  some: MediaItemWhereInput
+}
+
 input MediaItemRelationFilter {
   is: MediaItemWhereInput
   isNot: MediaItemWhereInput
@@ -510,9 +540,10 @@ enum MimeType {
 type Mutation {
   CreateNewUser(
     email: String!
+    expires: Date!
     image: String
     name: String
-    role: Role! = USER
+    sessionToken: String!
   ): User
   DeleteUser(id: String!): User
   createEntry(
@@ -673,8 +704,7 @@ input NestedStringNullableFilter {
 }
 
 interface Node {
-  id: String
-  type: String
+  id: String!
 }
 
 """
@@ -720,7 +750,6 @@ type Profile implements Node {
   id: String!
   memberSince: DateTime
   phoneNumber: PhoneNumber
-  type: String
   user: User
   userId: String
 }
@@ -859,6 +888,53 @@ type Query {
     last: Int
     searchString: String!
   ): UserConnection
+  GetAllEntries(
+    """
+    Returns the elements in the list that come after the specified cursor
+    """
+    after: String
+
+    """
+    Returns the elements in the list that come before the specified cursor
+    """
+    before: String
+
+    """
+    Returns the first n elements from the list.
+    """
+    first: Int
+
+    """
+    Returns the last n elements from the list.
+    """
+    last: Int
+    searchString: String!
+    take: Int
+  ): EntryConnection
+  GetAllSessions(
+    """
+    Returns the elements in the list that come after the specified cursor
+    """
+    after: String
+
+    """
+    Returns the elements in the list that come before the specified cursor
+    """
+    before: String
+
+    """
+    Returns the first n elements from the list.
+    """
+    first: Int
+
+    """
+    Returns the last n elements from the list.
+    """
+    last: Int
+    orderBy: SessionOrderBy!
+  ): SessionConnection
+  GetEntry(id: String!): Entry
+  GetSession(id: String!): Session
   SearchByUserEmail(
     """
     Returns the elements in the list that come after the specified cursor
@@ -881,6 +957,28 @@ type Query {
     last: Int
     search: String! = ""
   ): UserConnection
+  SearchEntriesByTitle(
+    """
+    Returns the elements in the list that come after the specified cursor
+    """
+    after: String
+
+    """
+    Returns the elements in the list that come before the specified cursor
+    """
+    before: String
+
+    """
+    Returns the first n elements from the list.
+    """
+    first: Int
+
+    """
+    Returns the last n elements from the list.
+    """
+    last: Int
+    searchString: String!
+  ): EntryConnection
   accounts(
     """
     Returns the elements in the list that come after the specified cursor
@@ -992,12 +1090,52 @@ type Query {
     skip: Int = 0
     take: Int = 10
   ): EntryConnection
-  node(
+  getUserByAccount(
     """
-    Node id is of format: __typename:id
+    Returns the elements in the list that come after the specified cursor
     """
-    id: String
-  ): Node
+    after: String
+
+    """
+    Returns the elements in the list that come before the specified cursor
+    """
+    before: String
+
+    """
+    Returns the first n elements from the list.
+    """
+    first: Int
+    id: String!
+
+    """
+    Returns the last n elements from the list.
+    """
+    last: Int
+    provider: String!
+    providerAccountId: String!
+  ): AccountConnection
+  node(id: String!): Node
+  profiles(
+    """
+    Returns the elements in the list that come after the specified cursor
+    """
+    after: String
+
+    """
+    Returns the elements in the list that come before the specified cursor
+    """
+    before: String
+
+    """
+    Returns the first n elements from the list.
+    """
+    first: Int
+
+    """
+    Returns the last n elements from the list.
+    """
+    last: Int
+  ): ProfileConnection
   session(
     """
     Returns the elements in the list that come after the specified cursor
@@ -1085,7 +1223,27 @@ type Query {
     """
     last: Int
   ): UserConnection
-  viewer(id: String! = "62201c666641dae57ed33ed5"): Viewer
+  verificationTokens(
+    """
+    Returns the elements in the list that come after the specified cursor
+    """
+    after: String
+
+    """
+    Returns the elements in the list that come before the specified cursor
+    """
+    before: String
+
+    """
+    Returns the first n elements from the list.
+    """
+    first: Int
+
+    """
+    Returns the last n elements from the list.
+    """
+    last: Int
+  ): VerificationTokenConnection
 }
 
 enum QueryModeEnum {
@@ -1124,7 +1282,6 @@ type Session implements Node {
   expires: DateTime
   id: String!
   sessionToken: String
-  type: String
   user: User
   userId: String
 }
@@ -1179,17 +1336,9 @@ input SessionWhereInput {
   AND: [SessionWhereInput!]
   NOT: [SessionWhereInput!]
   OR: [SessionWhereInput!]
-  accessToken: StringNullableFilter
-  alg: StringNullableFilter
-  exp: IntNullableFilter
-  iat: IntNullableFilter
-  id: StringFilter
-  lastVerified: DateTimeNullableFilter
-  provider: StringNullableFilter
-  refreshToken: StringNullableFilter
-  scopes: StringNullableListFilter
-  signature: StringNullableFilter
-  tokenState: StringNullableFilter
+  expires: DateTimeNullableFilter
+  id: StringFilter!
+  sessionToken: StringNullableFilter
   user: UserRelationFilter
   userId: StringNullableFilter
 }
@@ -1280,6 +1429,27 @@ type User implements Node {
     """
     last: Int
   ): AccountConnection
+  comments(
+    """
+    Returns the elements in the list that come after the specified cursor
+    """
+    after: String
+
+    """
+    Returns the elements in the list that come before the specified cursor
+    """
+    before: String
+
+    """
+    Returns the first n elements from the list.
+    """
+    first: Int
+
+    """
+    Returns the last n elements from the list.
+    """
+    last: Int
+  ): CommentConnection
   email: String
   emailVerified: DateTime
   entries(
@@ -1307,7 +1477,6 @@ type User implements Node {
   image: String
   imageMeta: MediaItem
   name: String
-  password: String
   profile: Profile
   role: Role
   sessions(
@@ -1332,7 +1501,6 @@ type User implements Node {
     last: Int
   ): SessionConnection
   status: UserStatus
-  type: String
 }
 
 type UserConnection {
@@ -1397,7 +1565,6 @@ input UserOrderByWithRelationAndSearchRelevanceInput {
   id: SortOrderEnum
   image: SortOrderEnum
   name: SortOrderEnum
-  password: SortOrderEnum
   profile: ProfileOrderByWithRelationAndSearchRelevanceInput
   role: SortOrderEnum
   sessions: SessionOrderByRelationAggregateInput
@@ -1450,7 +1617,6 @@ input UserWhereInput {
   image: StringNullableFilter
   imageMeta: MediaItemRelationFilter
   name: StringNullableFilter
-  password: StringFilter
   profile: ProfileRelationFilter
   role: EnumRoleNullableFilter
   sessions: SessionListRelationFilter
@@ -1468,7 +1634,6 @@ type VerificationToken implements Node {
   id: String!
   identifier: String
   token: String
-  type: String
 }
 
 type VerificationTokenConnection {
@@ -1498,144 +1663,4 @@ type VerificationTokenEdge {
   https://facebook.github.io/relay/graphql/connections.htm#sec-Node
   """
   node: VerificationToken
-}
-
-type Viewer implements Node {
-  GetAllEntries(
-    """
-    Returns the elements in the list that come after the specified cursor
-    """
-    after: String
-
-    """
-    Returns the elements in the list that come before the specified cursor
-    """
-    before: String
-
-    """
-    Returns the first n elements from the list.
-    """
-    first: Int
-
-    """
-    Returns the last n elements from the list.
-    """
-    last: Int
-    searchString: String!
-    take: Int
-  ): EntryConnection
-  GetAllSessions(
-    """
-    Returns the elements in the list that come after the specified cursor
-    """
-    after: String
-
-    """
-    Returns the elements in the list that come before the specified cursor
-    """
-    before: String
-
-    """
-    Returns the first n elements from the list.
-    """
-    first: Int
-
-    """
-    Returns the last n elements from the list.
-    """
-    last: Int
-    orderBy: SessionOrderBy!
-  ): SessionConnection
-  GetEntry(id: String!): Entry
-  GetSession(id: String!): Session
-  SearchEntriesByTitle(
-    """
-    Returns the elements in the list that come after the specified cursor
-    """
-    after: String
-
-    """
-    Returns the elements in the list that come before the specified cursor
-    """
-    before: String
-
-    """
-    Returns the first n elements from the list.
-    """
-    first: Int
-
-    """
-    Returns the last n elements from the list.
-    """
-    last: Int
-    searchString: String!
-  ): EntryConnection
-  getUserByAccount(
-    """
-    Returns the elements in the list that come after the specified cursor
-    """
-    after: String
-
-    """
-    Returns the elements in the list that come before the specified cursor
-    """
-    before: String
-
-    """
-    Returns the first n elements from the list.
-    """
-    first: Int
-    id: String!
-
-    """
-    Returns the last n elements from the list.
-    """
-    last: Int
-    provider: String!
-    providerAccountId: String!
-  ): AccountConnection
-  id: String
-  profiles(
-    """
-    Returns the elements in the list that come after the specified cursor
-    """
-    after: String
-
-    """
-    Returns the elements in the list that come before the specified cursor
-    """
-    before: String
-
-    """
-    Returns the first n elements from the list.
-    """
-    first: Int
-
-    """
-    Returns the last n elements from the list.
-    """
-    last: Int
-  ): ProfileConnection
-  type: String
-  verificationTokens(
-    """
-    Returns the elements in the list that come after the specified cursor
-    """
-    after: String
-
-    """
-    Returns the elements in the list that come before the specified cursor
-    """
-    before: String
-
-    """
-    Returns the first n elements from the list.
-    """
-    first: Int
-
-    """
-    Returns the last n elements from the list.
-    """
-    last: Int
-  ): VerificationTokenConnection
 }

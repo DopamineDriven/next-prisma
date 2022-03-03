@@ -26,7 +26,6 @@ export const Entry: core.NexusObjectTypeDef<"Entry"> = objectType({
   name: "Entry",
   definition(t) {
     t.implements("Node");
-    t.nonNull.string("id");
     t.string("title");
     t.nullable.string("content");
     t.nullable.field("featuredImage", { type: MediaItem });
@@ -85,7 +84,7 @@ export const AllEntriesOrderByArg = AllEntriesOrderBy.asArg({
 }) as core.NexusArgDef<"EntryOrderBy">;
 
 export const EntryQuery = extendType({
-  type: "Viewer",
+  type: "Query",
   definition(t) {
     t.field("GetEntry", {
       type: "Entry",

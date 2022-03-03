@@ -1,5 +1,6 @@
 import { queryField, stringArg, arg, core, nonNull, intArg } from "nexus";
 import { Role } from ".";
+import {findManyCursorConnection} from '@devoxa/prisma-relay-cursor-connection'
 
 export const Query = queryField(t => {
   t.connectionField("accounts", {
@@ -104,29 +105,13 @@ export const Query = queryField(t => {
       });
     }
   });
-
-  // t.connectionField("ActiveFilter", {
-  //   type: "Account",
-  //   additionalArgs: {
-  //     id: stringArg()
-  //   },
-  //   nodes(_parent, { id }, ctx) {
-  //     return ctx.prisma.account
-  //       .findUnique({
-  //         where: { id: String(id) }
-  //       })
-  //       .user()
-  //       .accounts();
-  //   }
-  // });
-
   t.connectionField("FilterUsers", {
     type: "User",
     inheritAdditionalArgs: true,
     additionalArgs: {
       searchString: nonNull(stringArg())
     },
-    nodes(_root, args, ctx, info) {
+   async nodes(_root, args, ctx, info) {
       const or = args.searchString
         ? {
             OR: [
@@ -135,10 +120,10 @@ export const Query = queryField(t => {
             ]
           }
         : {};
-      return ctx.prisma.user.findMany({
+      return await ctx.prisma.user.findMany({
         where: {
           ...or
-        } // include: { accounts: true }
+        }
       });
     }
   });
