@@ -5,15 +5,14 @@ export const VerificationToken: NexusObjectTypeDef<"VerificationToken"> =
     name: "VerificationToken",
     definition(t) {
       t.implements("Node");
-      t.nonNull.string("id");
       t.string("identifier");
       t.string("token");
       t.DateTime("expires");
     }
   });
 
-export const VerificationRequestQuery = extendType<"Viewer">({
-  type: "Viewer",
+export const VerificationRequestQuery = extendType<"Query">({
+  type: "Query",
   definition(t) {
     t.connectionField("verificationTokens", {
       type: "VerificationToken",

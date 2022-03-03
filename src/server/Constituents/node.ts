@@ -7,53 +7,26 @@ import {
   nonNull
 } from "nexus";
 import { toGlobalId, fromGlobalId } from "graphql-relay";
-import { Account } from ".";
+import { decode } from "jsonwebtoken";
 
 // TypeName:ID -> base64
 
 export const Node = interfaceType({
   name: "Node",
-  // resolveType(root: { id: string; type: string;}, ctx, info, abstractTypeMembers){
-  //   return "User" in
-  //     ? "User"
-  //     : "Account" in root
-  //     ? "Account"
-  //     : "Session" in root
-  //     ? "Session"
-  //     : "Entry" in root
-  //     ? "Entry"
-  //     : "Profile" in root
-  //     ? "Profile"
-  //     : "Viewer" in root
-  //     ? "Viewer"
-  //     : "VerificationToken" in root
-  //     ? "VerificationToken"
-  //     : "Account" ||
-  //       "Entry" ||
-  //       "Session" ||
-  //       "User" ||
-  //       "Viewer" ||
-  //       "Profile" ||
-  //       "VerificationToken";
-  // },
   definition(t) {
-    t.string("id", {
+    t.nonNull.field("id", {
+      type: "String",
       resolve: (root, _args, _ctx, info) => {
         return toGlobalId(
           info.parentType.name,
-         root as string
+          //@ts-ignore
+          root.id! as string
         );
       }
     });
-    t.field("type", {
-      type: "String",
-      resolve: (root, args, ctx, info) => {
-        return (<"Node">root).includes("__typename") ? root : info.rootValue
-      }
-    });
+    t.typeName
   }
 });
-
 
 function assertAllTypesCovered(_x: never, id: string): never {
   throw new Error("could not find any resource with id: " + id);
@@ -63,22 +36,23 @@ export const NodeField = queryField(t => {
   t.field("node", {
     type: "Node",
     args: {
-      id: stringArg({ description: "Node id is of format: __typename:id" })
+      id: nonNull(stringArg())
     },
     // @ts-ignore
     async resolve(_root, args, ctx, _info) {
-      const { type } = fromGlobalId(String(args.id)) as {
+      const { type } = fromGlobalId(args.id) as {
         type: core.GetGen2<"abstractTypeMembers", "Node">;
         id: string;
       };
 
-      if (type === "Viewer") {
-        return { id: args.id, __typename: "Viewer" };
-      }
+      // if (type === "Viewer") {
+      //   // const viewer = await ctx.req.headers.authorization
+      //   return { id: args.id, __typename: "Viewer" };
+      // }
 
       if (type === "Profile") {
         const profile = await ctx.prisma.profile.findUnique({
-          where: { id: String(args.id) }
+          where: { id: args.id }
         });
         return { ...profile, __typename: type };
       }
@@ -86,7 +60,7 @@ export const NodeField = queryField(t => {
       if (type === "VerificationToken") {
         const verificationToken = await ctx.prisma.verificationToken.findUnique(
           {
-            where: { id: String(args.id) }
+            where: { id: args.id }
           }
         );
         return { ...verificationToken, __typename: type };
@@ -94,40 +68,40 @@ export const NodeField = queryField(t => {
 
       if (type === "Account") {
         const account = await ctx.prisma.account.findUnique({
-          where: { id: String(args.id) }
+          where: { id: args.id }
         });
         return { ...account, __typename: type };
       }
 
       if (type === "Entry") {
         const entry = await ctx.prisma.entry.findUnique({
-          where: { id: String(args.id) }
+          where: { id: args.id }
         });
         return { ...entry, __typename: type };
       }
 
       if (type === "Comment") {
         const comment = await ctx.prisma.comment.findUnique({
-          where: { id: String(args.id) }
+          where: { id: args.id }
         });
         return { ...comment, __typename: type };
       }
 
       if (type === "Session") {
         const session = await ctx.prisma.session.findUnique({
-          where: { id: String(args.id) }
+          where: { id: args.id }
         });
         return { ...session, __typename: type };
       }
 
       if (type === "User") {
         const user = await ctx.prisma.user.findUnique({
-          where: { id: String(args.id) }
+          where: { id: args.id }
         });
         return { ...user, __typename: type };
       }
 
-      return assertAllTypesCovered(type as unknown as never, String(args.id));
+      return assertAllTypesCovered(type, args.id);
     }
   });
 });

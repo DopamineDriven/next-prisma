@@ -15,7 +15,6 @@ export const Session: core.NexusObjectTypeDef<"Session"> =
     name: "Session",
     definition(t) {
       t.implements("Node");
-      t.nonNull.string("id");
       t.string("userId");
       t.DateTime("expires");
       t.string("sessionToken");
@@ -24,6 +23,7 @@ export const Session: core.NexusObjectTypeDef<"Session"> =
         async resolve(parent, args, ctx, info) {
           return await ctx.prisma.session
             .findFirst({
+              include: { user: true },
               where: {
                 user: { id: parent.userId }
               }
@@ -40,8 +40,8 @@ export const AllSessionsOrderBy: core.NexusInputObjectTypeDef<"SessionOrderBy"> 
 export const SessionsOrderByArg: core.NexusArgDef<"SessionOrderBy"> =
   AllSessionsOrderBy.asArg();
 
-export const SessionQuery = core.extendType({
-  type: "Viewer",
+export const SessionQuery = core.extendType<"Query">({
+  type: "Query",
   definition(t) {
     t.field("GetSession", {
       type: "Session",
@@ -95,18 +95,10 @@ export const SessionWhereInput = core.inputObjectType({
     t.list.nonNull.field("AND", { type: SessionWhereInput });
     t.list.nonNull.field("NOT", { type: SessionWhereInput });
     t.list.nonNull.field("OR", { type: SessionWhereInput });
-    t.field("accessToken", { type: StringNullableFilter });
-    t.field("alg", { type: StringNullableFilter });
-    t.field("exp", { type: IntNullableFilter });
-    t.field("iat", { type: IntNullableFilter });
-    t.field("id", { type: StringFilter });
-    t.field("lastVerified", { type: DateTimeNullableFilter });
-    t.field("provider", { type: StringNullableFilter });
-    t.field("refreshToken", { type: StringNullableFilter });
-    t.field("scopes", { type: StringNullableListFilter });
-    t.field("signature", { type: StringNullableFilter });
-    t.field("tokenState", { type: StringNullableFilter });
-    t.field("user", { type: UserRelationFilter });
+    t.nonNull.field("id", { type: StringFilter })
+    t.field("sessionToken", { type: StringNullableFilter });
     t.field("userId", { type: StringNullableFilter });
+    t.field("expires", { type: DateTimeNullableFilter });
+    t.field("user", { type: UserRelationFilter });
   }
 });
