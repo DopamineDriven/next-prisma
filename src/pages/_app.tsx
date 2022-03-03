@@ -12,7 +12,7 @@ import {
   ApolloProvider,
   NormalizedCacheObject
 } from "@apollo/client";
-import { Props } from "@/components/Layout/layout";
+import Layout, { Props } from "@/components/Layout/layout";
 const Noop: FC = ({ children }) => <>{children}</>;
 
 export const Page: FC<HTMLAttributes<HTMLElement>> = ({
@@ -100,8 +100,11 @@ export default function NextPrismaApp({ Component, pageProps }: AppProps) {
   return (
     <ApolloProvider client={apolloClient}>
       <SessionProvider session={pageProps.session}>
+
         <LayoutGlobal {...pageProps}>
-          <Component {...pageProps} />
+          <Layout>
+            <Component {...pageProps} />
+          </Layout>
         </LayoutGlobal>
       </SessionProvider>
     </ApolloProvider>
