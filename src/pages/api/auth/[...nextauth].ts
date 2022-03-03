@@ -1,5 +1,5 @@
 import { NextApiHandler } from "next";
-import NextAuth, { CookieOption, NextAuthOptions } from "next-auth";
+import NextAuth, {  NextAuthOptions } from "next-auth";
 import GitHubProvider from "next-auth/providers/github";
 import GoogleProvider from "next-auth/providers/google";
 import { PrismaAdapter } from "@next-auth/prisma-adapter/dist/index";
@@ -23,6 +23,7 @@ const options: NextAuthOptions = {
     })
   ],
   debug: true,
+  logger: { debug: (code, metadata) => ({ code, metadata }) },
   adapter: PrismaAdapter(prisma),
   session: {
     updateAge: 120,
