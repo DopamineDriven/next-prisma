@@ -1,14 +1,9 @@
 import { NextRequest, NextResponse } from "next/server";
-
-import { INTERNALS } from "next/dist/server/web/spec-extension/request";
 import cors, { CorsOptions } from "@/lib/cors";
 
 // (next: () => NextResponse)
 
 export async function middleware(req: NextRequest) {
-  const nextInternals = req[INTERNALS].page?.params;
-  req.cookies;
-  console.log(JSON.stringify(req.cookies ?? {}, null, 2));
   const response = NextResponse.next();
   response.headers.set("Referrer-Policy", "Origin-When-Cross-Origin");
   response.headers.set(
