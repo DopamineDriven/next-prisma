@@ -1,20 +1,16 @@
 import { NextApiHandler } from "next";
-import NextAuth, { CookieOption, NextAuthOptions } from "next-auth";
+import NextAuth, {  NextAuthOptions } from "next-auth";
 import GitHubProvider from "next-auth/providers/github";
 import GoogleProvider from "next-auth/providers/google";
 import { PrismaAdapter } from "@next-auth/prisma-adapter/dist/index";
 import prisma from "../../../server/Context/prisma";
 import { JWTOptions } from "next-auth/jwt";
-import { PrismaClient } from "@prisma/client";
 
 const authHandler: NextApiHandler<NextAuthOptions> = (req, res) =>
   NextAuth(req, res, options);
 
 export default authHandler;
-const prismaConditional =
-  process.env.NODE_ENV === "production"
-    ? new PrismaClient({ errorFormat: "pretty", log: ["error", "warn"] })
-    : prisma;
+
 const options: NextAuthOptions = {
   providers: [
     GitHubProvider({
@@ -28,7 +24,7 @@ const options: NextAuthOptions = {
   ],
   debug: true,
   logger: { debug: (code, metadata) => ({ code, metadata }) },
-  adapter: PrismaAdapter(prismaConditional),
+  adapter: PrismaAdapter(prisma),
   session: {
     updateAge: 120,
     strategy: "jwt",

@@ -8,7 +8,7 @@ import { RequestHandler } from "micro";
 import {
   ApolloServerPluginInlineTrace,
   ApolloServerPluginLandingPageGraphQLPlayground,
-  ApolloServerPluginUsageReporting,
+  ApolloServerPluginUsageReporting,ContextFunction,
   Context as ContextObject
 } from "apollo-server-core";
 import { createContext, Context } from "../../../server/Context/index";
@@ -43,7 +43,7 @@ const configg: Config<ContextObject<Context>> = {
   context: (req: MicroRequest, res: ServerResponse) => ({
     ...createContext({ req, res, prisma })
   }),
-  plugins: [
+  plugins: process.env.NODE_ENV === "production" ? [] : [
     ApolloServerPluginLandingPageGraphQLPlayground({ endpoint: "/api/graphql" })
   ]
 };

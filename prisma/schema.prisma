@@ -78,7 +78,7 @@ model Entry {
 
 model Profile {
   id             String     @id @default(auto()) @map("_id") @db.ObjectId
-  userId         String     @db.ObjectId@unique
+  userId         String     @db.ObjectId
   memberSince    DateTime   @default(now())
   gender         Gender?    @default(OTHER)
   pronouns       Pronouns?  @default(NOT_LISTED)
