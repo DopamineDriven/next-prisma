@@ -93,7 +93,7 @@ module.exports = withSuperjson()({
     defaultLocale: "en-US",
     domains: [
       {
-        domain: "andrewross.app",
+        domain: "www.andrewross.app",
         defaultLocale: "en-US"
       }
     ]
