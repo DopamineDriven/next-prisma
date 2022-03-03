@@ -43,7 +43,7 @@ const configg: Config<ContextObject<Context>> = {
   context: (req: MicroRequest, res: ServerResponse) => ({
     ...createContext({ req, res, prisma })
   }),
-  plugins: process.env.NODE_ENV === "production" ? [] : [
+  plugins: [
     ApolloServerPluginLandingPageGraphQLPlayground({ endpoint: "/api/graphql" })
   ]
 };
