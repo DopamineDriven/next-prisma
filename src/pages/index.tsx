@@ -145,7 +145,7 @@ export default function Index<T extends typeof getServerSideProps>({
           <div className='fit font-sans py-10'>
             <main>
               {session ? (
-                <Inspector>{session.user ? session.user : session}</Inspector>
+                <Inspector>{session.user ? session.user.image : "waiting..."}</Inspector>
               ) : <div>loading...</div> ? (
                 // ) : !called ? (
                 //   <button

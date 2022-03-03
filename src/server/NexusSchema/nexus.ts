@@ -670,10 +670,9 @@ export interface NexusGenInputs {
     email?: NexusGenEnums["SortOrderEnum"] | null; // SortOrderEnum
     emailVerified?: NexusGenEnums["SortOrderEnum"] | null; // SortOrderEnum
     entries?: NexusGenInputs["EntryOrderByRelationAggregateInput"] | null; // EntryOrderByRelationAggregateInput
-    firstName?: NexusGenEnums["SortOrderEnum"] | null; // SortOrderEnum
     id?: NexusGenEnums["SortOrderEnum"] | null; // SortOrderEnum
     image?: NexusGenEnums["SortOrderEnum"] | null; // SortOrderEnum
-    lastName?: NexusGenEnums["SortOrderEnum"] | null; // SortOrderEnum
+    name?: NexusGenEnums["SortOrderEnum"] | null; // SortOrderEnum
     password?: NexusGenEnums["SortOrderEnum"] | null; // SortOrderEnum
     profile?:
       | NexusGenInputs["ProfileOrderByWithRelationAndSearchRelevanceInput"]
@@ -699,11 +698,10 @@ export interface NexusGenInputs {
     email?: NexusGenInputs["StringFilter"] | null; // StringFilter
     emailVerified?: NexusGenInputs["DateTimeNullableFilter"] | null; // DateTimeNullableFilter
     entries?: NexusGenInputs["EntryListRelationFilter"] | null; // EntryListRelationFilter
-    firstName?: NexusGenInputs["StringNullableFilter"] | null; // StringNullableFilter
     id?: NexusGenInputs["StringFilter"] | null; // StringFilter
     image?: NexusGenInputs["StringNullableFilter"] | null; // StringNullableFilter
     imageMeta?: NexusGenInputs["MediaItemRelationFilter"] | null; // MediaItemRelationFilter
-    lastName?: NexusGenInputs["StringNullableFilter"] | null; // StringNullableFilter
+    name?: NexusGenInputs["StringNullableFilter"] | null; // StringNullableFilter
     password?: NexusGenInputs["StringFilter"] | null; // StringFilter
     profile?: NexusGenInputs["ProfileRelationFilter"] | null; // ProfileRelationFilter
     role?: NexusGenInputs["EnumRoleNullableFilter"] | null; // EnumRoleNullableFilter
@@ -1102,11 +1100,10 @@ export interface NexusGenFieldTypes {
     email: string | null; // String
     emailVerified: NexusGenScalars["DateTime"] | null; // DateTime
     entries: NexusGenRootTypes["EntryConnection"] | null; // EntryConnection
-    firstName: string | null; // String
     id: string; // String!
     image: string | null; // String
     imageMeta: NexusGenRootTypes["MediaItem"] | null; // MediaItem
-    lastName: string | null; // String
+    name: string | null; // String
     password: string | null; // String
     profile: NexusGenRootTypes["Profile"] | null; // Profile
     role: NexusGenEnums["Role"] | null; // Role
@@ -1370,11 +1367,10 @@ export interface NexusGenFieldTypeNames {
     email: "String";
     emailVerified: "DateTime";
     entries: "EntryConnection";
-    firstName: "String";
     id: "String";
     image: "String";
     imageMeta: "MediaItem";
-    lastName: "String";
+    name: "String";
     password: "String";
     profile: "Profile";
     role: "Role";

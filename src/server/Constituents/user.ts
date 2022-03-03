@@ -130,16 +130,9 @@ export const User: core.NexusObjectTypeDef<"User"> = core.objectType({
     t.nonNull.string("id");
     t.string("email");
     t.nullable.string("image");
-    t.nullable.field("firstName", {
-      type: "String",
-      resolve(user) {
-        return user.firstName;
-      }
-    });
-    t.nullable.field("lastName", {
-      type: "String",
-      resolve(user) {
-        return user.firstName;
+    t.nullable.string("name", {
+      resolve(root) {
+        return root.name;
       }
     });
     t.nullable.DateTime("emailVerified", {
@@ -292,10 +285,9 @@ export const UserOrderByWithRelationAndSearchRelevanceInput =
       t.field("email", { type: SortOrderEnum });
       t.field("emailVerified", { type: SortOrderEnum });
       t.field("entries", { type: EntryOrderByRelationAggregateInput });
-      t.field("firstName", { type: SortOrderEnum });
+      t.field("name", { type: SortOrderEnum });
       t.field("id", { type: SortOrderEnum });
       t.field("image", { type: SortOrderEnum });
-      t.field("lastName", { type: SortOrderEnum });
       t.field("password", { type: SortOrderEnum });
       t.field("profile", {
         type: ProfileOrderByWithRelationAndSearchRelevanceInput
@@ -337,11 +329,10 @@ export const UserWhereInput = core.inputObjectType({
     t.field("email", { type: StringFilter });
     t.field("emailVerified", { type: DateTimeNullableFilter });
     t.field("entries", { type: EntryListRelationFilter });
-    t.field("firstName", { type: StringNullableFilter });
+    t.field("name", { type: StringNullableFilter });
     t.field("id", { type: StringFilter });
     t.field("image", { type: StringNullableFilter });
     t.field("imageMeta", { type: MediaItemRelationFilter });
-    t.field("lastName", { type: StringNullableFilter });
     t.field("password", { type: StringFilter });
     t.field("profile", { type: ProfileRelationFilter });
     t.field("role", { type: EnumRoleNullableFilter });
