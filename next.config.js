@@ -69,14 +69,11 @@ module.exports = withSuperjson()({
       "gravatar.com",
       "images.unsplash.com",
       "lh3.googleusercontent.com",
-      "cortinahealth.com",
       "wpengine.com",
       "placeimage.com",
+      "andrewross.app",
+      "www.andrewross.app",
       "placeimg.com",
-      "getcortina.com",
-      "www.getcortina.com",
-      "cortinaai.wpengine.com",
-      "cortinacare.com",
       "github.githubassets.com",
       "api.github.com",
       "dev-to-uploads.s3.amazonaws.com",
@@ -101,10 +98,3 @@ module.exports = withSuperjson()({
 });
 
 console.log("[next.config.js]: ", JSON.stringify(module.exports, null, 2));
-
-/**
-// Fixes npm packages that depend on `fs` module
-config.node = {
-  fs: 'empty',
-}
- */
