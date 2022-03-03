@@ -1,8 +1,8 @@
 import { asNexusMethod } from "nexus";
 import { TimeResolver, TimeMock } from "graphql-scalars";
-import { GraphQLScalarType, GraphQLScalarTypeConfig } from "graphql";
+import { GraphQLScalarType } from "graphql";
 
-export const timeScalar: GraphQLScalarTypeConfig<Date, string> = asNexusMethod(
+export const timeScalar = asNexusMethod(
   new GraphQLScalarType({
     ...TimeResolver,
     name: "Time"
