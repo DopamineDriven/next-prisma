@@ -1086,7 +1086,7 @@ type Query {
     """
     last: Int
   ): UserConnection
-  viewer(id: String! = "621f119530ca877b3dc0b9aa"): Viewer
+  viewer(id: String! = "62200fbff87af2fadc9d131f"): Viewer
 }
 
 enum QueryModeEnum {
@@ -1304,11 +1304,10 @@ type User implements Node {
     """
     last: Int
   ): EntryConnection
-  firstName: String
   id: String!
   image: String
   imageMeta: MediaItem
-  lastName: String
+  name: String
   password: String
   profile: Profile
   role: Role
@@ -1396,10 +1395,9 @@ input UserOrderByWithRelationAndSearchRelevanceInput {
   email: SortOrderEnum
   emailVerified: SortOrderEnum
   entries: EntryOrderByRelationAggregateInput
-  firstName: SortOrderEnum
   id: SortOrderEnum
   image: SortOrderEnum
-  lastName: SortOrderEnum
+  name: SortOrderEnum
   password: SortOrderEnum
   profile: ProfileOrderByWithRelationAndSearchRelevanceInput
   role: SortOrderEnum
@@ -1449,11 +1447,10 @@ input UserWhereInput {
   email: StringFilter
   emailVerified: DateTimeNullableFilter
   entries: EntryListRelationFilter
-  firstName: StringNullableFilter
   id: StringFilter
   image: StringNullableFilter
   imageMeta: MediaItemRelationFilter
-  lastName: StringNullableFilter
+  name: StringNullableFilter
   password: StringFilter
   profile: ProfileRelationFilter
   role: EnumRoleNullableFilter

@@ -1,7 +1,6 @@
 export async function seed<T extends import("@prisma/client").PrismaClient>(
   prisma: T
 ) {
-
   enum Gender {
     MALE = "MALE",
     FEMALE = "FEMALE",
@@ -887,107 +886,110 @@ export async function seed<T extends import("@prisma/client").PrismaClient>(
       Reaction.PARROT
     ][n(min, max)] as keyof typeof Reaction;
 
-  const roleTemplate = (min: number, max: number) => [
-    Role.USER,
-    Role.USER,
-    Role.MAINTAINER,
-    Role.USER,
-    Role.USER,
-    Role.ADMIN,
-    Role.USER,
-    Role.USER,
-    Role.USER,
-    Role.ADMIN,
-    Role.USER,
-    Role.USER
-  ][n(min, max)] as keyof typeof Role;
+  const roleTemplate = (min: number, max: number) =>
+    [
+      Role.USER,
+      Role.USER,
+      Role.MAINTAINER,
+      Role.USER,
+      Role.USER,
+      Role.ADMIN,
+      Role.USER,
+      Role.USER,
+      Role.USER,
+      Role.ADMIN,
+      Role.USER,
+      Role.USER
+    ][n(min, max)] as keyof typeof Role;
 
-  const userStatusTemplate = (min: number, max: number) => [
-    UserStatus.ONLINE,
-    UserStatus.OFFLINE,
-    UserStatus.ONLINE,
-    UserStatus.DEACTIVATED,
-    UserStatus.ONLINE,
-    UserStatus.OFFLINE,
-    UserStatus.ONLINE,
-    UserStatus.OFFLINE,
-    UserStatus.ONLINE,
-    UserStatus.OFFLINE,
-    UserStatus.ONLINE,
-    UserStatus.ONLINE,
-    UserStatus.OFFLINE
-  ][n(min, max)] as keyof typeof UserStatus
+  const userStatusTemplate = (min: number, max: number) =>
+    [
+      UserStatus.ONLINE,
+      UserStatus.OFFLINE,
+      UserStatus.ONLINE,
+      UserStatus.DEACTIVATED,
+      UserStatus.ONLINE,
+      UserStatus.OFFLINE,
+      UserStatus.ONLINE,
+      UserStatus.OFFLINE,
+      UserStatus.ONLINE,
+      UserStatus.OFFLINE,
+      UserStatus.ONLINE,
+      UserStatus.ONLINE,
+      UserStatus.OFFLINE
+    ][n(min, max)] as keyof typeof UserStatus;
 
-  const genderTemplate = (min: number, max: number) => [
-    Gender.FEMALE,
-    Gender.MALE,
-    Gender.MALE,
-    Gender.FEMALE,
-    Gender.MALE,
-    Gender.FEMALE,
-    Gender.OTHER,
-    Gender.UNCERTAIN,
-    Gender.FEMALE,
-    Gender.FEMALE,
-    Gender.MALE,
-    Gender.MALE
-  ][n(min, max)] as keyof typeof Gender
+  const genderTemplate = (min: number, max: number) =>
+    [
+      Gender.FEMALE,
+      Gender.MALE,
+      Gender.MALE,
+      Gender.FEMALE,
+      Gender.MALE,
+      Gender.FEMALE,
+      Gender.OTHER,
+      Gender.UNCERTAIN,
+      Gender.FEMALE,
+      Gender.FEMALE,
+      Gender.MALE,
+      Gender.MALE
+    ][n(min, max)] as keyof typeof Gender;
 
-  const countryTemplate = (min: number, max: number) => [
-    UnitedStates,
-    UnitedKingdom,
-    Australia,
-    Germany,
-    SouthAfrica,
-    Bahamas,
-    Taiwan,
-    Japan,
-    Vietnam,
-    India,
-    Norway,
-    Canada,
-    Mexico,
-    Chile,
-    SaudiArabia,
-    Argentina,
-    Italy,
-    Poland,
-    RussianFederation,
-    France
-  ][n(min, max)];
+  const countryTemplate = (min: number, max: number) =>
+    [
+      UnitedStates,
+      UnitedKingdom,
+      Australia,
+      Germany,
+      SouthAfrica,
+      Bahamas,
+      Taiwan,
+      Japan,
+      Vietnam,
+      India,
+      Norway,
+      Canada,
+      Mexico,
+      Chile,
+      SaudiArabia,
+      Argentina,
+      Italy,
+      Poland,
+      RussianFederation,
+      France
+    ][n(min, max)];
 
-  const pronounsTemplate = (min: number, max: number) => [
-    Pronouns.HE_HIM_HIS,
-    Pronouns.SHE_HER_HERS,
-    Pronouns.HE_HIM_HIS,
-    Pronouns.SHE_HER_HERS,
-    Pronouns.HE_HIM_HIS,
-    Pronouns.SHE_HER_HERS,
-    Pronouns.HE_HIM_HIS,
-    Pronouns.SHE_HER_HERS,
-    Pronouns.THEY_THEM_THEIRS,
-    Pronouns.NOT_LISTED,
-    Pronouns.PREFER_NOT_TO_SAY,
-    Pronouns.HE_HIM_HIS,
-    Pronouns.SHE_HER_HERS,
-    Pronouns.HE_HIM_HIS,
-    Pronouns.SHE_HER_HERS
-  ][n(min, max)]
-
+  const pronounsTemplate = (min: number, max: number) =>
+    [
+      Pronouns.HE_HIM_HIS,
+      Pronouns.SHE_HER_HERS,
+      Pronouns.HE_HIM_HIS,
+      Pronouns.SHE_HER_HERS,
+      Pronouns.HE_HIM_HIS,
+      Pronouns.SHE_HER_HERS,
+      Pronouns.HE_HIM_HIS,
+      Pronouns.SHE_HER_HERS,
+      Pronouns.THEY_THEM_THEIRS,
+      Pronouns.NOT_LISTED,
+      Pronouns.PREFER_NOT_TO_SAY,
+      Pronouns.HE_HIM_HIS,
+      Pronouns.SHE_HER_HERS,
+      Pronouns.HE_HIM_HIS,
+      Pronouns.SHE_HER_HERS
+    ][n(min, max)];
 
   const seedUser = async () => {
     return await prisma.user.create({
       data: {
         imageMeta: userAvatar,
         createdAt: new Date(Date.now()),
-        role: roleTemplate(0,10),
+        role: roleTemplate(0, 10),
         email: `${seedFirstName.toLowerCase()}.${seedSurname.toLowerCase()}@gmail.com`,
         image: userAvatarString,
         password: hashedPassword,
         id: seedUserId,
-        status: userStatusTemplate(0,11),
-        firstName: seedFirstName,
-        lastName: seedSurname,
+        status: userStatusTemplate(0, 11),
+        name: seedFirstName + " " + seedSurname,
         emailVerified: new Date(Date.now()),
         updatedAt: new Date(Date.now()),
         profile: {
@@ -1003,14 +1005,14 @@ export async function seed<T extends import("@prisma/client").PrismaClient>(
             } as SetBio,
             city: userCity,
             dob: dobGenerated,
-            gender: genderTemplate(0,11),
+            gender: genderTemplate(0, 11),
             id: seedProfileId,
-            country: countryTemplate(0,20),
+            country: countryTemplate(0, 20),
             phoneNumber: standardE164,
             memberSince: new Date(Date.now()),
             lastSeen: new Date(Date.now()),
             activiyFeed: `feed: No new activity to show`,
-            pronouns: pronounsTemplate(0,14),
+            pronouns: pronounsTemplate(0, 14),
             coverPhoto: coverImage,
             occupation: faker.lorem.words(2),
             recentActivity: `createdProfile -- ${new Date(Date.now())}`.trim()
@@ -1109,7 +1111,7 @@ type SeedPropsInferred<U> = UnwrapPromise<
 >;
 
 async function main() {
-  const prisma = (await import("../server/Context/prisma"));
+  const prisma = await import("../server/Context/prisma");
   try {
     await prisma.default
       .$connect()
@@ -1132,7 +1134,7 @@ async function main() {
     console.error(err);
     process.exitCode = 1;
   } finally {
-    return  await prisma.default
+    return await prisma.default
       .$disconnect()
       .then(() => console.log(`[seeding]: db connection closed`));
   }
