@@ -510,9 +510,8 @@ enum MimeType {
 type Mutation {
   CreateNewUser(
     email: String!
-    firstName: String
     image: String
-    lastName: String
+    name: String
     role: Role! = USER
   ): User
   DeleteUser(id: String!): User
@@ -1086,7 +1085,7 @@ type Query {
     """
     last: Int
   ): UserConnection
-  viewer(id: String! = "622015ed79eba3755a66f210"): Viewer
+  viewer(id: String! = "622016aefa7b42e6adbd7e47"): Viewer
 }
 
 enum QueryModeEnum {
