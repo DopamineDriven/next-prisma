@@ -1149,7 +1149,6 @@ type Query {
     """
     last: Int
     orderBy: SortOrderEnum!
-    where: [ProfileWhereInput]
   ): ProfileConnection
   session(
     """

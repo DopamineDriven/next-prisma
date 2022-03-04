@@ -75,7 +75,7 @@ export const schema = makeSchema({
       resolveType: true
     }
   },
-  shouldExitAfterGenerateArtifacts: true,
+  // shouldExitAfterGenerateArtifacts: true,
   contextType: {
     module: join(process.cwd(), "/src/server/Context/index.ts"),
     export: "Context",

@@ -169,7 +169,6 @@ export type Category = {
   __typename?: "Category";
   createdAt?: Maybe<FieldWrapper<Scalars["DateTime"]>>;
   creatorId?: Maybe<FieldWrapper<Scalars["String"]>>;
-  entryId?: Maybe<FieldWrapper<Scalars["String"]>>;
   name?: Maybe<FieldWrapper<Scalars["String"]>>;
   root?: Maybe<FieldWrapper<Scalars["Boolean"]>>;
   updatedAt?: Maybe<FieldWrapper<Scalars["DateTime"]>>;
@@ -177,6 +176,7 @@ export type Category = {
 
 export type Comment = Node & {
   __typename?: "Comment";
+  attachment?: Maybe<FieldWrapper<MediaItem>>;
   author?: Maybe<FieldWrapper<User>>;
   authorId?: Maybe<FieldWrapper<Scalars["String"]>>;
   body?: Maybe<FieldWrapper<Scalars["String"]>>;
@@ -221,6 +221,7 @@ export type CommentWhereInput = {
   AND?: InputMaybe<Array<CommentWhereInput>>;
   NOT?: InputMaybe<Array<CommentWhereInput>>;
   OR?: InputMaybe<Array<CommentWhereInput>>;
+  attachment?: InputMaybe<MediaItemRelationFilter>;
   author?: InputMaybe<UserRelationFilter>;
   authorId?: InputMaybe<StringNullableFilter>;
   body?: InputMaybe<StringNullableFilter>;
@@ -257,6 +258,7 @@ export type DateTimeNullableFilter = {
 
 export type Entry = Node & {
   __typename?: "Entry";
+  attachments?: Maybe<Array<Maybe<FieldWrapper<MediaItem>>>>;
   author?: Maybe<FieldWrapper<User>>;
   authorId?: Maybe<FieldWrapper<Scalars["String"]>>;
   categories?: Maybe<Array<Maybe<FieldWrapper<Category>>>>;
@@ -323,13 +325,14 @@ export type EntryWhereInput = {
   AND?: InputMaybe<Array<EntryWhereInput>>;
   NOT?: InputMaybe<Array<EntryWhereInput>>;
   OR?: InputMaybe<Array<EntryWhereInput>>;
+  attachments?: InputMaybe<MediaItemListRelationFilter>;
   author?: InputMaybe<UserRelationFilter>;
   authorId?: InputMaybe<StringNullableFilter>;
   categoryId?: InputMaybe<StringNullableFilter>;
   comments?: InputMaybe<CommentListRelationFilter>;
   content?: InputMaybe<StringNullableFilter>;
   createdAt?: InputMaybe<DateTimeFilter>;
-  featuredImage?: InputMaybe<Scalars["String"]>;
+  featuredImage?: InputMaybe<MediaItemRelationFilter>;
   id?: InputMaybe<StringFilter>;
   published?: InputMaybe<BoolFilter>;
   title?: InputMaybe<StringFilter>;
@@ -430,12 +433,13 @@ export type MediaItem = {
   __typename?: "MediaItem";
   ariaLabel?: Maybe<FieldWrapper<Scalars["String"]>>;
   caption?: Maybe<FieldWrapper<Scalars["String"]>>;
+  description?: Maybe<FieldWrapper<Scalars["String"]>>;
   destination?: Maybe<FieldWrapper<MediaItemDestination>>;
   fileLastModified?: Maybe<FieldWrapper<Scalars["DateTime"]>>;
   filename?: Maybe<FieldWrapper<Scalars["String"]>>;
   filetype?: Maybe<FieldWrapper<MimeType>>;
   height: FieldWrapper<Scalars["Float"]>;
-  mediaItemId?: Maybe<FieldWrapper<Scalars["String"]>>;
+  id?: Maybe<FieldWrapper<Scalars["String"]>>;
   quality: FieldWrapper<Scalars["Int"]>;
   size?: Maybe<FieldWrapper<Scalars["String"]>>;
   src?: Maybe<FieldWrapper<Scalars["String"]>>;
@@ -458,12 +462,13 @@ export enum MediaItemDestination {
 export type MediaItemInput = {
   ariaLabel?: InputMaybe<Scalars["String"]>;
   caption?: InputMaybe<Scalars["String"]>;
+  description?: InputMaybe<Scalars["String"]>;
   destination?: InputMaybe<MediaItemDestination>;
   fileLastModified?: InputMaybe<Scalars["DateTime"]>;
   filename?: InputMaybe<Scalars["String"]>;
   filetype?: InputMaybe<MimeType>;
   height?: InputMaybe<Scalars["Float"]>;
-  mediaItemId?: InputMaybe<Scalars["String"]>;
+  id?: InputMaybe<Scalars["String"]>;
   quality?: InputMaybe<Scalars["Int"]>;
   size?: InputMaybe<Scalars["String"]>;
   src?: InputMaybe<Scalars["String"]>;
@@ -491,12 +496,13 @@ export type MediaItemWhereInput = {
   OR?: InputMaybe<Array<MediaItemWhereInput>>;
   ariaLabel?: InputMaybe<StringNullableFilter>;
   caption?: InputMaybe<StringNullableFilter>;
+  description?: InputMaybe<StringNullableFilter>;
   destination?: InputMaybe<EnumMediaItemDestinationNullableFilter>;
   fileLastModified?: InputMaybe<DateTimeNullableFilter>;
   filename?: InputMaybe<StringNullableFilter>;
   filetype?: InputMaybe<EnumMimeTypeNullableFilter>;
   height?: InputMaybe<FloatNullableFilter>;
-  mediaItemId?: InputMaybe<StringFilter>;
+  id?: InputMaybe<StringFilter>;
   quality?: InputMaybe<IntNullableFilter>;
   size?: InputMaybe<StringNullableFilter>;
   src?: InputMaybe<StringNullableFilter>;
@@ -550,8 +556,6 @@ export type MutationcreateEntryArgs = {
 };
 
 export type MutationcreateProfileArgs = {
-  bio?: InputMaybe<Scalars["String"]>;
-  coverImage?: InputMaybe<Scalars["String"]>;
   dob?: InputMaybe<Scalars["String"]>;
   email: Scalars["String"];
   phoneNumber?: InputMaybe<Scalars["String"]>;
@@ -705,11 +709,20 @@ export type PaginationArgsInput = {
 
 export type Profile = Node & {
   __typename?: "Profile";
-  coverImage?: Maybe<FieldWrapper<MediaItem>>;
+  activityFeed?: Maybe<FieldWrapper<Scalars["String"]>>;
+  bio?: Maybe<FieldWrapper<Bio>>;
+  city?: Maybe<FieldWrapper<Scalars["String"]>>;
+  country?: Maybe<FieldWrapper<Scalars["String"]>>;
+  coverPhoto?: Maybe<FieldWrapper<MediaItem>>;
   dob?: Maybe<FieldWrapper<Scalars["Date"]>>;
+  gender?: Maybe<FieldWrapper<Gender>>;
   id: FieldWrapper<Scalars["String"]>;
+  lastSeen?: Maybe<FieldWrapper<Scalars["DateTime"]>>;
   memberSince?: Maybe<FieldWrapper<Scalars["DateTime"]>>;
+  occupation?: Maybe<FieldWrapper<Scalars["String"]>>;
   phoneNumber?: Maybe<FieldWrapper<Scalars["PhoneNumber"]>>;
+  pronouns?: Maybe<FieldWrapper<Pronouns>>;
+  recentActivity?: Maybe<FieldWrapper<Scalars["String"]>>;
   user?: Maybe<FieldWrapper<User>>;
   userId?: Maybe<FieldWrapper<Scalars["String"]>>;
 };
@@ -765,7 +778,7 @@ export type ProfileOrderByWithRelationAndSearchRelevanceInput = {
   coverPhoto?: InputMaybe<SortOrderEnum>;
   dob?: InputMaybe<SortOrderEnum>;
   gender?: InputMaybe<SortOrderEnum>;
-  id?: InputMaybe<SortOrderEnum>;
+  id: SortOrderEnum;
   lastSeen?: InputMaybe<SortOrderEnum>;
   memberSince?: InputMaybe<SortOrderEnum>;
   occupation?: InputMaybe<SortOrderEnum>;
@@ -786,10 +799,10 @@ export type ProfileWhereInput = {
   NOT?: InputMaybe<Array<ProfileWhereInput>>;
   OR?: InputMaybe<Array<ProfileWhereInput>>;
   activiyFeed?: InputMaybe<StringNullableFilter>;
-  bio?: InputMaybe<StringNullableFilter>;
+  bio?: InputMaybe<BioRelationFilter>;
   city?: InputMaybe<StringNullableFilter>;
   country?: InputMaybe<StringNullableFilter>;
-  coverPhoto?: InputMaybe<StringNullableFilter>;
+  coverPhoto?: InputMaybe<MediaItemRelationFilter>;
   dob?: InputMaybe<StringNullableFilter>;
   gender?: InputMaybe<EnumGenderNullableFilter>;
   id?: InputMaybe<StringFilter>;
@@ -947,6 +960,7 @@ export type QueryprofilesArgs = {
   before?: InputMaybe<Scalars["String"]>;
   first?: InputMaybe<Scalars["Int"]>;
   last?: InputMaybe<Scalars["Int"]>;
+  orderBy: SortOrderEnum;
 };
 
 export type QuerysessionArgs = {
@@ -1308,10 +1322,34 @@ export type VerificationTokenEdge = {
   node?: Maybe<FieldWrapper<VerificationToken>>;
 };
 
+export const AccountPartial = gql`
+  fragment AccountPartial on Account {
+    id
+    userId
+    type
+    provider
+    providerAccountId
+    refresh_token
+    access_token
+    expires_at
+    token_type
+    scope
+    id_token
+    session_state
+    oauth_token_secret
+    oauth_token
+    __typename
+  }
+`;
+export const AccountEdgePartial = gql`
+  fragment AccountEdgePartial on AccountEdge {
+    cursor
+    __typename
+  }
+`;
 export const EntryPartial = gql`
   fragment EntryPartial on Entry {
     id
-    __typename
     title
     content
     published
@@ -1319,12 +1357,20 @@ export const EntryPartial = gql`
     authorId
     createdAt
     updatedAt
+    __typename
+  }
+`;
+export const EntryEdgePartial = gql`
+  fragment EntryEdgePartial on EntryEdge {
+    cursor
+    __typename
   }
 `;
 export const MediaItemPartial = gql`
   fragment MediaItemPartial on MediaItem {
     ariaLabel
-    mediaItemId
+    id
+    description
     uploadedAt
     updatedAt
     filename
@@ -1348,6 +1394,48 @@ export const PageInfoPartial = gql`
     hasNextPage
     hasPreviousPage
     startCursor
+    __typename
+  }
+`;
+export const SessionPartial = gql`
+  fragment SessionPartial on Session {
+    id
+    userId
+    expires
+    sessionToken
+    __typename
+  }
+`;
+export const SessionEdgePartial = gql`
+  fragment SessionEdgePartial on SessionEdge {
+    cursor
+    __typename
+  }
+`;
+export const UserCountPartial = gql`
+  fragment UserCountPartial on UserCount {
+    accounts
+    comments
+    entries
+    sessions
+    __typename
+  }
+`;
+export const UserEdgePartial = gql`
+  fragment UserEdgePartial on UserEdge {
+    cursor
+    __typename
+  }
+`;
+export const UserPartial = gql`
+  fragment UserPartial on User {
+    id
+    name
+    email
+    image
+    emailVerified
+    role
+    status
     __typename
   }
 `;
@@ -1900,7 +1988,6 @@ export type CategoryResolvers<
     ParentType,
     ContextType
   >;
-  entryId?: Resolver<Maybe<ResolversTypes["String"]>, ParentType, ContextType>;
   name?: Resolver<Maybe<ResolversTypes["String"]>, ParentType, ContextType>;
   root?: Resolver<Maybe<ResolversTypes["Boolean"]>, ParentType, ContextType>;
   updatedAt?: Resolver<
@@ -1915,6 +2002,11 @@ export type CommentResolvers<
   ContextType = any,
   ParentType extends ResolversParentTypes["Comment"] = ResolversParentTypes["Comment"]
 > = ResolversObject<{
+  attachment?: Resolver<
+    Maybe<ResolversTypes["MediaItem"]>,
+    ParentType,
+    ContextType
+  >;
   author?: Resolver<Maybe<ResolversTypes["User"]>, ParentType, ContextType>;
   authorId?: Resolver<Maybe<ResolversTypes["String"]>, ParentType, ContextType>;
   body?: Resolver<Maybe<ResolversTypes["String"]>, ParentType, ContextType>;
@@ -1977,6 +2069,11 @@ export type EntryResolvers<
   ContextType = any,
   ParentType extends ResolversParentTypes["Entry"] = ResolversParentTypes["Entry"]
 > = ResolversObject<{
+  attachments?: Resolver<
+    Maybe<Array<Maybe<ResolversTypes["MediaItem"]>>>,
+    ParentType,
+    ContextType
+  >;
   author?: Resolver<Maybe<ResolversTypes["User"]>, ParentType, ContextType>;
   authorId?: Resolver<Maybe<ResolversTypes["String"]>, ParentType, ContextType>;
   categories?: Resolver<
@@ -2063,6 +2160,11 @@ export type MediaItemResolvers<
     ContextType
   >;
   caption?: Resolver<Maybe<ResolversTypes["String"]>, ParentType, ContextType>;
+  description?: Resolver<
+    Maybe<ResolversTypes["String"]>,
+    ParentType,
+    ContextType
+  >;
   destination?: Resolver<
     Maybe<ResolversTypes["MediaItemDestination"]>,
     ParentType,
@@ -2080,11 +2182,7 @@ export type MediaItemResolvers<
     ContextType
   >;
   height?: Resolver<ResolversTypes["Float"], ParentType, ContextType>;
-  mediaItemId?: Resolver<
-    Maybe<ResolversTypes["String"]>,
-    ParentType,
-    ContextType
-  >;
+  id?: Resolver<Maybe<ResolversTypes["String"]>, ParentType, ContextType>;
   quality?: Resolver<ResolversTypes["Int"], ParentType, ContextType>;
   size?: Resolver<Maybe<ResolversTypes["String"]>, ParentType, ContextType>;
   src?: Resolver<Maybe<ResolversTypes["String"]>, ParentType, ContextType>;
@@ -2187,20 +2285,49 @@ export type ProfileResolvers<
   ContextType = any,
   ParentType extends ResolversParentTypes["Profile"] = ResolversParentTypes["Profile"]
 > = ResolversObject<{
-  coverImage?: Resolver<
+  activityFeed?: Resolver<
+    Maybe<ResolversTypes["String"]>,
+    ParentType,
+    ContextType
+  >;
+  bio?: Resolver<Maybe<ResolversTypes["Bio"]>, ParentType, ContextType>;
+  city?: Resolver<Maybe<ResolversTypes["String"]>, ParentType, ContextType>;
+  country?: Resolver<Maybe<ResolversTypes["String"]>, ParentType, ContextType>;
+  coverPhoto?: Resolver<
     Maybe<ResolversTypes["MediaItem"]>,
     ParentType,
     ContextType
   >;
   dob?: Resolver<Maybe<ResolversTypes["Date"]>, ParentType, ContextType>;
+  gender?: Resolver<Maybe<ResolversTypes["Gender"]>, ParentType, ContextType>;
   id?: Resolver<ResolversTypes["String"], ParentType, ContextType>;
+  lastSeen?: Resolver<
+    Maybe<ResolversTypes["DateTime"]>,
+    ParentType,
+    ContextType
+  >;
   memberSince?: Resolver<
     Maybe<ResolversTypes["DateTime"]>,
     ParentType,
     ContextType
   >;
+  occupation?: Resolver<
+    Maybe<ResolversTypes["String"]>,
+    ParentType,
+    ContextType
+  >;
   phoneNumber?: Resolver<
     Maybe<ResolversTypes["PhoneNumber"]>,
+    ParentType,
+    ContextType
+  >;
+  pronouns?: Resolver<
+    Maybe<ResolversTypes["Pronouns"]>,
+    ParentType,
+    ContextType
+  >;
+  recentActivity?: Resolver<
+    Maybe<ResolversTypes["String"]>,
     ParentType,
     ContextType
   >;
@@ -2331,7 +2458,7 @@ export type QueryResolvers<
     Maybe<ResolversTypes["ProfileConnection"]>,
     ParentType,
     ContextType,
-    Partial<QueryprofilesArgs>
+    RequireFields<QueryprofilesArgs, "orderBy">
   >;
   session?: Resolver<
     Maybe<ResolversTypes["SessionConnection"]>,
@@ -2619,6 +2746,29 @@ export type Resolvers<ContextType = any> = ResolversObject<{
   VerificationTokenEdge?: VerificationTokenEdgeResolvers<ContextType>;
 }>;
 
+export type AccountPartialFragment = {
+  __typename: "Account";
+  id: string;
+  userId?: string | null;
+  type?: string | null;
+  provider?: string | null;
+  providerAccountId?: string | null;
+  refresh_token?: string | null;
+  access_token?: string | null;
+  expires_at?: number | null;
+  token_type?: string | null;
+  scope?: string | null;
+  id_token?: string | null;
+  session_state?: string | null;
+  oauth_token_secret?: string | null;
+  oauth_token?: string | null;
+};
+
+export type AccountEdgePartialFragment = {
+  __typename: "AccountEdge";
+  cursor: string;
+};
+
 export type EntryPartialFragment = {
   __typename: "Entry";
   id: string;
@@ -2631,10 +2781,16 @@ export type EntryPartialFragment = {
   updatedAt?: Date | null;
 };
 
+export type EntryEdgePartialFragment = {
+  __typename: "EntryEdge";
+  cursor: string;
+};
+
 export type MediaItemPartialFragment = {
   __typename: "MediaItem";
   ariaLabel?: string | null;
-  mediaItemId?: string | null;
+  id?: string | null;
+  description?: string | null;
   uploadedAt?: Date | null;
   updatedAt?: Date | null;
   filename?: string | null;
@@ -2659,10 +2815,71 @@ export type PageInfoPartialFragment = {
   startCursor?: string | null;
 };
 
+export type SessionPartialFragment = {
+  __typename: "Session";
+  id: string;
+  userId?: string | null;
+  expires?: Date | null;
+  sessionToken?: string | null;
+};
+
+export type SessionEdgePartialFragment = {
+  __typename: "SessionEdge";
+  cursor: string;
+};
+
+export type UserCountPartialFragment = {
+  __typename: "UserCount";
+  accounts: number;
+  comments: number;
+  entries: number;
+  sessions: number;
+};
+
+export type UserEdgePartialFragment = {
+  __typename: "UserEdge";
+  cursor: string;
+};
+
+export type UserPartialFragment = {
+  __typename: "User";
+  id: string;
+  name?: string | null;
+  email?: string | null;
+  image?: string | null;
+  emailVerified?: Date | null;
+  role?: Role | null;
+  status?: UserStatus | null;
+};
+
+export const AccountPartialFragmentDoc = gql`
+  fragment AccountPartial on Account {
+    id
+    userId
+    type
+    provider
+    providerAccountId
+    refresh_token
+    access_token
+    expires_at
+    token_type
+    scope
+    id_token
+    session_state
+    oauth_token_secret
+    oauth_token
+    __typename
+  }
+`;
+export const AccountEdgePartialFragmentDoc = gql`
+  fragment AccountEdgePartial on AccountEdge {
+    cursor
+    __typename
+  }
+`;
 export const EntryPartialFragmentDoc = gql`
   fragment EntryPartial on Entry {
     id
-    __typename
     title
     content
     published
@@ -2670,12 +2887,20 @@ export const EntryPartialFragmentDoc = gql`
     authorId
     createdAt
     updatedAt
+    __typename
+  }
+`;
+export const EntryEdgePartialFragmentDoc = gql`
+  fragment EntryEdgePartial on EntryEdge {
+    cursor
+    __typename
   }
 `;
 export const MediaItemPartialFragmentDoc = gql`
   fragment MediaItemPartial on MediaItem {
     ariaLabel
-    mediaItemId
+    id
+    description
     uploadedAt
     updatedAt
     filename
@@ -2702,10 +2927,60 @@ export const PageInfoPartialFragmentDoc = gql`
     __typename
   }
 `;
+export const SessionPartialFragmentDoc = gql`
+  fragment SessionPartial on Session {
+    id
+    userId
+    expires
+    sessionToken
+    __typename
+  }
+`;
+export const SessionEdgePartialFragmentDoc = gql`
+  fragment SessionEdgePartial on SessionEdge {
+    cursor
+    __typename
+  }
+`;
+export const UserCountPartialFragmentDoc = gql`
+  fragment UserCountPartial on UserCount {
+    accounts
+    comments
+    entries
+    sessions
+    __typename
+  }
+`;
+export const UserEdgePartialFragmentDoc = gql`
+  fragment UserEdgePartial on UserEdge {
+    cursor
+    __typename
+  }
+`;
+export const UserPartialFragmentDoc = gql`
+  fragment UserPartial on User {
+    id
+    name
+    email
+    image
+    emailVerified
+    role
+    status
+    __typename
+  }
+`;
 export const namedOperations = {
   Fragment: {
+    AccountPartial: "AccountPartial",
+    AccountEdgePartial: "AccountEdgePartial",
     EntryPartial: "EntryPartial",
+    EntryEdgePartial: "EntryEdgePartial",
     MediaItemPartial: "MediaItemPartial",
-    PageInfoPartial: "PageInfoPartial"
+    PageInfoPartial: "PageInfoPartial",
+    SessionPartial: "SessionPartial",
+    SessionEdgePartial: "SessionEdgePartial",
+    UserCountPartial: "UserCountPartial",
+    UserEdgePartial: "UserEdgePartial",
+    UserPartial: "UserPartial"
   }
 };

@@ -1609,7 +1609,6 @@ export interface NexusGenArgTypes {
       first?: number | null; // Int
       last?: number | null; // Int
       orderBy: NexusGenEnums["SortOrderEnum"]; // SortOrderEnum!
-      where?: Array<NexusGenInputs["ProfileWhereInput"] | null> | null; // [ProfileWhereInput]
     };
     session: {
       // args
