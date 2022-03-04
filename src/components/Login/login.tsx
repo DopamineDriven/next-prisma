@@ -5,6 +5,8 @@ import css from "./login.module.css";
 import { Google, GitHub, Vercel } from "@/components/Icons";
 import { signIn } from "node_modules/next-auth/react";
 import { useRouter } from "next/router";
+import { GoogleProfile } from "next-auth/providers/google";
+import { RedirectableProviderType } from "next-auth/providers";
 
 export default function Login() {
   const router = useRouter();
@@ -31,14 +33,14 @@ export default function Login() {
                   <div>
                     <Link
                       href='/api/auth/[...nextauth]'
-                      as='/api/auth/signin'
+                      as='/api/auth/signin/google'
                       passHref={true}
                       scroll={true}>
                       <a
                         data-active={isActive("/signup")}
                         onClick={e => {
                           e.preventDefault();
-                          signIn();
+                          signIn<RedirectableProviderType>("google");
                         }}
                         className='w-full inline-flex justify-center py-2 px-4 border border-gray-300 rounded-md shadow-sm bg-white text-sm font-medium text-gray-500 hover:bg-gray-50'>
                         <span className='sr-only'>Sign in with Google</span>
@@ -50,14 +52,14 @@ export default function Login() {
                   <div>
                     <Link
                       href='/api/auth/[...nextauth]'
-                      as='/api/auth/signin'
+                      as='/api/auth/signin/github'
                       passHref={true}
                       scroll={true}>
                       <a
                         data-active={isActive("/signup")}
                         onClick={e => {
                           e.preventDefault();
-                          signIn();
+                          signIn<RedirectableProviderType>("github")
                         }}
                         className='w-full inline-flex justify-center py-2 px-4 border border-gray-300 rounded-md shadow-sm bg-white text-sm font-medium text-gray-500 hover:bg-gray-50'>
                         <span className='sr-only'>Sign in with GitHub</span>

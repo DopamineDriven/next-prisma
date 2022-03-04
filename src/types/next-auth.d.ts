@@ -36,3 +36,12 @@ declare module "next-auth" {
     userId?: string | null; // String}
   }
 }
+
+
+declare module "next-auth/jwt" {
+  interface JWT  {
+    idToken?: string;
+    id?: string | null; // ID
+    role?: keyof typeof Role
+  }
+}

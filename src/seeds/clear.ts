@@ -56,11 +56,10 @@ async function main() {
     console.error(err);
     process.exitCode = 1;
   } finally {
-    const checkUsers = await prisma.user.findMany();
-
     return await prisma
       .$disconnect()
       .then(() => console.log(`[clearing]: db connection closed`));
   }
 }
+
 main();

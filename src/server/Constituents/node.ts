@@ -8,6 +8,7 @@ import {
 } from "nexus";
 import { toGlobalId, fromGlobalId } from "graphql-relay";
 import { decode } from "jsonwebtoken";
+import { Entry } from ".";
 
 // TypeName:ID -> base64
 
@@ -24,7 +25,7 @@ export const Node = interfaceType({
         );
       }
     });
-    t.typeName
+    t.typeName;
   }
 });
 
@@ -93,6 +94,17 @@ export const NodeField = queryField(t => {
         });
         return { ...session, __typename: type };
       }
+
+      // if (type === "MediaItem") {
+      //   const mediaItem = await ctx.prisma.entry.findMany({
+      //     select: { attachments: { select: { id: true } } }
+      //   });
+      //   const forEachMediaItemId =
+      //     mediaItem.find(id => id.attachments)!.attachments.find(id => id)!.id === args.id
+      //       ? args.id
+      //       : mediaItem.find(id => id.attachments)!.attachments.find(id => id);
+      //   return { ...mediaItem, __typename: type };
+      // }
 
       if (type === "User") {
         const user = await ctx.prisma.user.findUnique({

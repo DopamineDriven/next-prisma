@@ -1,10 +1,4 @@
-import {
-  extendType,
-  objectType,
-  core,
-  nonNull,
-  stringArg
-} from "nexus";
+import { extendType, objectType, core, nonNull, stringArg, arg, list } from "nexus";
 import { buildOrderBy } from "./utils";
 import { ObjectId } from "bson";
 import {
@@ -13,13 +7,20 @@ import {
   StringNullableFilter,
   BioObjectType,
   DateTimeFilter,
+  MediaItem,
   DateTimeNullableFilter,
   ProfileOrderByRelevanceFieldEnum,
   SortOrderEnum,
   UserOrderByWithRelationAndSearchRelevanceInput,
   EnumGenderNullableFilter,
-  EnumPronounsNullableFilter
+  EnumPronounsNullableFilter,
+  Gender,
+  Pronouns,
+  MediaItemListRelationFilter,
+  MediaItemRelationFilter,
+  BioRelationFilter
 } from ".";
+import { SortOrder } from "./type-handling";
 
 export const Profile: core.NexusObjectTypeDef<"Profile"> =
   objectType<"Profile">({
@@ -27,10 +28,55 @@ export const Profile: core.NexusObjectTypeDef<"Profile"> =
     definition(t) {
       t.implements("Node");
       t.string("userId");
-      t.field("memberSince", {type: "DateTime"})
-      t.field("coverImage", {type: "MediaItem"});
+      t.nullable.field("bio", {
+        type: BioObjectType,
+        resolve(root) {
+          return root.bio;
+        }
+      });
+      t.field("memberSince", { type: "DateTime" });
+      t.nullable.field("coverPhoto", { type: MediaItem });
       t.field("dob", { type: "Date" });
       t.field("phoneNumber", { type: "PhoneNumber" });
+      t.field("gender", {
+        type: "Gender",
+        resolve(root) {
+          return root.gender;
+        }
+      });
+      t.field("pronouns", {
+        type: Pronouns,
+        resolve(root) {
+          return root.pronouns;
+        }
+      });
+      t.nullable.field("lastSeen", {
+        type: "DateTime",
+        resolve(root) {
+          return root.lastSeen;
+        }
+      });
+      t.nullable.string("occupation", {
+        resolve(root) {
+          return root.occupation;
+        }
+      });
+      t.nullable.string("city", {
+        resolve(root) {
+          return root.city;
+        }
+      });
+      t.nullable.string("country", {
+        resolve(root) {
+          return root.country;
+        }
+      });
+      t.nullable.string("activityFeed");
+      t.nullable.string("recentActivity", {
+        resolve(root) {
+          return root.recentActivity;
+        }
+      });
       t.field("user", {
         type: "User",
         async resolve(root, _args, ctx, _info) {
@@ -62,12 +108,13 @@ export const ProfileQuery = extendType<"Query">({
   type: "Query",
   definition(t) {
     t.connectionField("profiles", {
+      additionalArgs: {
+        orderBy: nonNull(arg({ type: "SortOrderEnum" }))
+      },
       type: "Profile",
       async nodes(root, args, ctx, info) {
         const profiles = await ctx.prisma.profile.findMany({
-          orderBy: {
-            memberSince: "asc"
-          },
+          orderBy: { dob: args.orderBy },
           include: {
             user: true
           }
@@ -77,7 +124,6 @@ export const ProfileQuery = extendType<"Query">({
     });
   }
 });
-
 
 export const dateArg = (opts: core.SourceTypesConfigOptions) =>
   core.arg({ ...opts, type: "Date" }) as core.NexusArgDef<"Date">;
@@ -92,52 +138,43 @@ export const dateTimeArg = (opts: core.SourceTypesConfigOptions) =>
     updatedAt: Date | null;
  */
 
-export const ProfileMutation: core.NexusExtendTypeDef<"Mutation"> = extendType(
-  {
-    type: "Mutation",
-    definition(t) {
-      t.field("createProfile", {
-        type: "Profile",
-        args: {
-          userId: stringArg(),
-          email: nonNull(stringArg()),
-          bio: stringArg(),
-          coverImage: stringArg(),
-          dob: stringArg(),
-          phoneNumber: stringArg({
-            description:
-              "compliant with standard E164 formatting (+15559871234)"
-          })
-        },
-        async resolve(_root, args, ctx, _info) {
-          const create = await ctx.prisma.profile.create({
-            data: {
-              id: new ObjectId().toHexString(),
-              user: {
-                connect: {
-                  email: args.email
-                }
-              },
-              bio: { set: { headline: "" } },
-              coverPhoto: {
-                // media item
-              },
-              // dob: new Date(args.).toISOString().split(/([T])/)[0],
-              memberSince: new Date(1631333289),
-              phoneNumber: args.phoneNumber
+export const ProfileMutation: core.NexusExtendTypeDef<"Mutation"> = extendType({
+  type: "Mutation",
+  definition(t) {
+    t.field("createProfile", {
+      type: "Profile",
+      args: {
+        userId: stringArg(),
+        email: nonNull(stringArg()),
+        dob: stringArg(),
+        phoneNumber: stringArg({
+          description: "compliant with standard E164 formatting (+15559871234)"
+        })
+      },
+      async resolve(_root, args, ctx, _info) {
+        const create = await ctx.prisma.profile.create({
+          data: {
+            id: new ObjectId().toHexString(),
+            user: {
+              connect: {
+                email: args.email
+              }
             },
-            include: {
-              user: true
-            }
-          });
-          return create;
-        }
-      } as core.NexusOutputFieldConfig<"Mutation", "createProfile">) as
-        | core.FieldResolver<"Mutation", "createProfile">
-        | undefined;
-    }
+            // dob: new Date(args.).toISOString().split(/([T])/)[0],
+            memberSince: new Date(1631333289),
+            phoneNumber: args.phoneNumber
+          },
+          include: {
+            user: true
+          }
+        });
+        return create;
+      }
+    } as core.NexusOutputFieldConfig<"Mutation", "createProfile">) as
+      | core.FieldResolver<"Mutation", "createProfile">
+      | undefined;
   }
-);
+});
 
 // Input Types
 export const ProfileOrderByRelevanceInput = core.inputObjectType({
@@ -151,6 +188,8 @@ export const ProfileOrderByRelevanceInput = core.inputObjectType({
   }
 });
 
+
+
 export const ProfileOrderByWithRelationAndSearchRelevanceInput =
   core.inputObjectType({
     name: "ProfileOrderByWithRelationAndSearchRelevanceInput",
@@ -163,7 +202,7 @@ export const ProfileOrderByWithRelationAndSearchRelevanceInput =
       t.field("coverPhoto", { type: SortOrderEnum });
       t.field("dob", { type: SortOrderEnum });
       t.field("gender", { type: SortOrderEnum });
-      t.field("id", { type: SortOrderEnum });
+      t.nonNull.field("id", { type: SortOrderEnum });
       t.field("lastSeen", { type: SortOrderEnum });
       t.field("memberSince", { type: SortOrderEnum });
       t.field("occupation", { type: SortOrderEnum });
@@ -175,36 +214,35 @@ export const ProfileOrderByWithRelationAndSearchRelevanceInput =
     }
   });
 
+export const ProfileRelationFilter = core.inputObjectType({
+  name: "ProfileRelationFilter",
+  definition(t) {
+    t.field("is", { type: ProfileWhereInput });
+    t.field("isNot", { type: ProfileWhereInput });
+  }
+});
 
-  export const ProfileRelationFilter = core.inputObjectType({
-    name: "ProfileRelationFilter",
-    definition(t) {
-      t.field("is", { type: ProfileWhereInput })
-      t.field("isNot", { type: ProfileWhereInput })
-    }
-  });
-
-  export const ProfileWhereInput = core.inputObjectType({
-    name: "ProfileWhereInput",
-    definition(t) {
-      t.list.nonNull.field("AND", { type: ProfileWhereInput })
-      t.list.nonNull.field("NOT", { type: ProfileWhereInput })
-      t.list.nonNull.field("OR", { type: ProfileWhereInput })
-      t.field("activiyFeed", { type: StringNullableFilter })
-      t.field("bio", { type: StringNullableFilter })
-      t.field("city", { type: StringNullableFilter })
-      t.field("country", { type: StringNullableFilter })
-      t.field("coverPhoto", { type: StringNullableFilter })
-      t.field("dob", { type: StringNullableFilter })
-      t.field("gender", { type: EnumGenderNullableFilter })
-      t.field("id", { type: StringFilter })
-      t.field("lastSeen", { type: DateTimeNullableFilter })
-      t.field("memberSince", { type: DateTimeFilter })
-      t.field("occupation", { type: StringNullableFilter })
-      t.field("phoneNumber", { type: StringNullableFilter })
-      t.field("pronouns", { type: EnumPronounsNullableFilter })
-      t.field("recentActivity", { type: StringNullableFilter })
-      t.field("user", { type: UserRelationFilter })
-      t.field("userId", { type: StringNullableFilter })
-    }
-  });
+export const ProfileWhereInput = core.inputObjectType({
+  name: "ProfileWhereInput",
+  definition(t) {
+    t.list.nonNull.field("AND", { type: ProfileWhereInput });
+    t.list.nonNull.field("NOT", { type: ProfileWhereInput });
+    t.list.nonNull.field("OR", { type: ProfileWhereInput });
+    t.field("activiyFeed", { type: StringNullableFilter });
+    t.field("bio", { type: BioRelationFilter });
+    t.field("city", { type: StringNullableFilter });
+    t.field("country", { type: StringNullableFilter });
+    t.field("coverPhoto", { type: MediaItemRelationFilter });
+    t.field("dob", { type: StringNullableFilter });
+    t.field("gender", { type: EnumGenderNullableFilter });
+    t.field("id", { type: StringFilter });
+    t.field("lastSeen", { type: DateTimeNullableFilter });
+    t.field("memberSince", { type: DateTimeFilter });
+    t.field("occupation", { type: StringNullableFilter });
+    t.field("phoneNumber", { type: StringNullableFilter });
+    t.field("pronouns", { type: EnumPronounsNullableFilter });
+    t.field("recentActivity", { type: StringNullableFilter });
+    t.field("user", { type: UserRelationFilter });
+    t.field("userId", { type: StringNullableFilter });
+  }
+});

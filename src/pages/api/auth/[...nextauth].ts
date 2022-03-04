@@ -4,7 +4,7 @@ import GitHubProvider from "next-auth/providers/github";
 import GoogleProvider from "next-auth/providers/google";
 import { PrismaAdapter } from "@next-auth/prisma-adapter/dist/index";
 import prisma from "../../../server/Context/prisma";
-import { JWTOptions } from "next-auth/jwt";
+
 
 const authHandler: NextApiHandler<NextAuthOptions> = (req, res) =>
   NextAuth(req, res, options);
@@ -31,8 +31,9 @@ const options: NextAuthOptions = {
     maxAge: 30 * 24 * 60 * 60
   },
   jwt: {
-    maxAge: 30 * 24 * 60 * 60
-  } as Partial<JWTOptions> | undefined,
+    maxAge: 30 * 24 * 60 * 60,
+       /** Override this method to control the NextAuth.js issued JWT encoding. */
+  },
   secret: process.env.NEXTAUTH_SECRET
 };
 // accessTokenUrl: "https://github.com/login/oauth/access_token",

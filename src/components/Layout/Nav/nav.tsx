@@ -4,6 +4,7 @@ import {
   Analytics,
   ChevronDown,
   Engagement,
+  GitHubNav,
   Hubspot,
   MenuIcon,
   TypeScript,
@@ -25,7 +26,7 @@ import { getSession, useSession } from "next-auth/react";
 type HubSpotProps = {
   name: string;
   href: string;
-  icon: ({ className }: SVGAttribs<"className">) => JSX.Element;
+  icon: ({ ...props }: SVGAttribs<"className" | "aria-hidden" | "fill" | "stroke">) => JSX.Element;
   description: string;
   current: boolean;
 };
@@ -67,14 +68,14 @@ const github: GitHubProps[] = [
 const hubspot: HubSpotProps[] = [
   {
     name: "Home",
-    href: "/hubspot",
-    icon: Hubspot,
-    description: "Overview of Cortina's HubSpot Integration",
+    href: "/github",
+    icon: GitHubNav,
+    description: "GitHub Integration",
     current: true
   },
   {
     name: "Contacts",
-    href: "/hubspot/contacts",
+    href: "/github/stars",
     icon: Engagement,
     description: "View Contacts, follow Leads, and more.",
     current: false
@@ -88,7 +89,7 @@ const hubspot: HubSpotProps[] = [
   },
   {
     name: "Analytics",
-    href: "/hubspot/analytics",
+    href: "/github",
     icon: Analytics,
     description: "View HubSpot-generated Analytics.",
     current: false

@@ -536,7 +536,7 @@ export async function seed<T extends import("@prisma/client").PrismaClient>(
   }
 
   type MediaItem = {
-    mediaItemId: string;
+    id: string;
     uploadedAt: Date;
     updatedAt?: Date;
     filename: string;
@@ -550,12 +550,17 @@ export async function seed<T extends import("@prisma/client").PrismaClient>(
     src: string;
     srcSet: string;
     ariaLabel: string;
+    description?: string;
     title: string;
     caption: string;
   };
 
   interface SetMediaItem {
     set: MediaItem;
+  }
+
+  interface SetMediaItems {
+    set: MediaItem[];
   }
 
   type Bio = {
@@ -577,7 +582,6 @@ export async function seed<T extends import("@prisma/client").PrismaClient>(
     updatedAt: Date;
     root: boolean;
     name: string;
-    entryId?: string;
   };
 
   interface SetCategory {
@@ -750,9 +754,7 @@ export async function seed<T extends import("@prisma/client").PrismaClient>(
 
   const featuredImage: SetMediaItem = {
     set: {
-      mediaItemId: toBase64(
-        `${featuredImageId}:${MediaItemDestination.FEATURED_IMAGE}`
-      ),
+      id: featuredImageId,
       uploadedAt: new Date(Date.now()),
       quality: 100,
       fileLastModified: featuredImageFileLastModified,
@@ -764,19 +766,15 @@ export async function seed<T extends import("@prisma/client").PrismaClient>(
       width: 2250,
       height: 1550,
       caption: faker.lorem.sentence(5),
+      description: faker.lorem.sentences(2),
       title: `${seedFirstName} ${seedSurname}'s Featured Image`,
       ariaLabel: "Accessibility label",
       destination: MediaItemDestination.FEATURED_IMAGE
     }
   };
 
-  const featuredImageString = faker.image.imageUrl(
-    2250,
-    1550,
-    "galaxy",
-    true,
-    true
-  );
+  const featuredImageString =
+    "https://images.unsplash.com/photo-1597773150796-e5c14ebecbf5?ixlib=rb-1.2.1&ixid=MnwxMjA3fDB8MHxleHBsb3JlLWZlZWR8MTh8fHxlbnwwfHx8fA%3D%3D&w=1000&q=80";
 
   const coverImageFileLastModified = faker.date.past(
     0.0821355,
@@ -785,23 +783,22 @@ export async function seed<T extends import("@prisma/client").PrismaClient>(
 
   const coverImageId = new ObjectId().toHexString();
 
-  const coverImageFilename = `${seedFirstName}s-killer-cover`;
+  const coverImageFilename = `${seedFirstName}s-galactic-cover`;
 
   const coverImage: SetMediaItem = {
     set: {
-      mediaItemId: toBase64(
-        `${coverImageId}:${MediaItemDestination.COVER_IMAGE}`
-      ),
+      id: coverImageId,
       uploadedAt: new Date(Date.now()),
       fileLastModified: coverImageFileLastModified,
       filename: coverImageFilename,
       src: featuredImageString,
       srcSet: "",
-      filetype: MimeType.JPEG,
+      filetype: MimeType.PNG,
       size: "1.25MB",
-      width: 2250,
-      quality: 100,
-      height: 1550,
+      width: 1000,
+      quality: 80,
+      height: 667,
+      description: faker.lorem.sentences(2),
       title: `${seedFirstName} ${seedSurname}'s Cover Image`,
       ariaLabel: "Accessibility label",
       caption: faker.lorem.sentence(5),
@@ -816,34 +813,125 @@ export async function seed<T extends import("@prisma/client").PrismaClient>(
 
   const userAvatarId = new ObjectId().toHexString();
 
-  const userAvatarIdEncoded = toBase64(
-    `${userAvatarId}:${MediaItemDestination.AVATAR}`
-  );
-
   const userAvatarFileName = `${seedFirstName}s-fresh-avatar`;
-
+  const userAvatarString = `https://dev-to-uploads.s3.amazonaws.com/uploads/articles/g4apn65eo8acy988pfhb.gif`;
   const userAvatar: SetMediaItem = {
     set: {
       updatedAt: undefined,
-      mediaItemId: userAvatarIdEncoded,
+      id: userAvatarId,
       uploadedAt: new Date(Date.now()),
       fileLastModified: userAvatarFileLastModified,
       quality: 100,
       filename: userAvatarFileName,
-      src: `https://dev-to-uploads.s3.amazonaws.com/uploads/articles/g4apn65eo8acy988pfhb.gif`,
+      src: userAvatarString,
       srcSet: "",
       filetype: MimeType.GIF,
       size: "0.25MB",
       width: 125,
       height: 125,
       caption: faker.lorem.sentence(5),
+      description: faker.lorem.sentences(2),
       title: `${seedFirstName} ${seedSurname}'s Avatar`,
       ariaLabel: "Accessibility label",
       destination: MediaItemDestination.AVATAR
     }
   };
 
-  const userAvatarString = `https://dev-to-uploads.s3.amazonaws.com/uploads/articles/g4apn65eo8acy988pfhb.gif`;
+  const commentAttachmentLastModified = faker.date.past(
+    0.0421355,
+    new Date(Date.now())
+  );
+
+  const commentFilename = "Something Something Danger Zone";
+  const commentAttachmentSrc = `https://c.tenor.com/OeBiYk-IfZEAAAAC/archer-coroca.gif`;
+
+  const commentAttachmentId = new ObjectId().toHexString();
+
+  const commentAttachment: SetMediaItem = {
+    set: {
+      updatedAt: undefined,
+      id: commentAttachmentId,
+      uploadedAt: new Date(Date.now()),
+      fileLastModified: commentAttachmentLastModified,
+      quality: 90,
+      filename: commentFilename,
+      src: commentAttachmentSrc,
+      srcSet: "",
+      filetype: MimeType.GIF,
+      size: "0.5MB",
+      width: 498,
+      height: 280,
+      description: faker.lorem.sentences(2),
+      caption: "",
+      title: commentFilename,
+      ariaLabel: commentFilename,
+      destination: MediaItemDestination.COMMENT_ATTACHMENT
+    }
+  };
+  const entryOneFileName = "Blood Moon";
+  const entryOneAttachmentSrc =
+    "https://images.unsplash.com/photo-1443428018053-13da55589fed?ixlib=rb-1.2.1&ixid=MnwxMjA3fDB8MHxwaG90by1wYWdlfHx8fGVufDB8fHx8&auto=format&fit=crop&w=1000&q=80";
+
+  const entryTwoFileName="Solar Eclipse"
+  const entryTwoAttachmentSrc = `https://images.unsplash.com/photo-1503862242163-608ef852091d?ixlib=rb-1.2.1&ixid=MnwxMjA3fDB8MHxwaG90by1wYWdlfHx8fGVufDB8fHx8&auto=format&fit=crop&w=1000&q=80`;
+
+
+  const entryAttachmentIdOne = new ObjectId().toHexString();
+
+  const entryAttachmentIdTwo = new ObjectId().toHexString();
+
+  const entryAttachmentOneLastModified = faker.date.past(
+      0.1421355,
+      new Date(Date.now())
+  );
+
+    const entryAttachmentTwoLastModified = faker.date.past(
+      3.1421355,
+      new Date(Date.now())
+  );
+
+  const entryAttachments: SetMediaItems = {
+    set: [
+      {
+        updatedAt: undefined,
+        id: entryAttachmentIdOne,
+        uploadedAt: new Date(Date.now()),
+        fileLastModified: entryAttachmentOneLastModified,
+        quality: 90,
+        filename: entryOneFileName,
+        src: entryOneAttachmentSrc,
+        srcSet: "",
+        filetype: MimeType.PNG,
+        size: "0.65MB",
+        width: 498,
+        height: 280,
+        description: "Blood Moon in Sweden",
+        caption: "Stockholm, Sweden",
+        title: entryOneFileName,
+        ariaLabel: entryOneFileName,
+        destination: MediaItemDestination.ENTRY_ATTACHMENT
+      },
+      {
+        updatedAt: undefined,
+        id: entryAttachmentIdTwo,
+        uploadedAt: new Date(Date.now()),
+        fileLastModified: entryAttachmentTwoLastModified,
+        quality: 90,
+        filename: entryTwoFileName,
+        src: entryTwoAttachmentSrc,
+        srcSet: "",
+        filetype: MimeType.PNG,
+        size: "0.5MB",
+        width: 498,
+        height: 280,
+        description: faker.lorem.sentences(2),
+        caption: "Stockhold, Sweden",
+        title: entryTwoFileName,
+        ariaLabel: entryTwoFileName,
+        destination: MediaItemDestination.ENTRY_ATTACHMENT
+      }
+    ]
+  };
 
   const dobGenerated = fractionateTimeStamp(
     new Date(usingUnixTime()).toUTCString()
@@ -999,7 +1087,7 @@ export async function seed<T extends import("@prisma/client").PrismaClient>(
                 body: faker.lorem.paragraph(5),
                 createdAt: new Date(Date.now()),
                 intro: faker.lorem.sentences(2),
-                status: `${reactionTemplate(0, 19).toString()}`
+                status: reactionTemplate(0, 19).toString()
               }
             } as SetBio,
             city: userCity,
@@ -1047,6 +1135,7 @@ export async function seed<T extends import("@prisma/client").PrismaClient>(
               id: seedOneEntryId,
               createdAt: new Date(Date.now()),
               published: true,
+              attachments: entryAttachments,
               reactions: {
                 set: [
                   reactionTemplate(0, 30),
@@ -1075,6 +1164,7 @@ export async function seed<T extends import("@prisma/client").PrismaClient>(
               createdAt: new Date(Date.now()),
               entryId: seedOneEntryId,
               id: seedOneCommentId,
+              attachment: commentAttachment,
               reactions: {
                 set: [
                   reactionTemplate(0, 30),

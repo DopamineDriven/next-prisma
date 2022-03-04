@@ -8,7 +8,8 @@ import { RequestHandler } from "micro";
 import {
   ApolloServerPluginInlineTrace,
   ApolloServerPluginLandingPageGraphQLPlayground,
-  ApolloServerPluginUsageReporting,ContextFunction,
+  ApolloServerPluginUsageReporting,
+  ContextFunction,
   Context as ContextObject
 } from "apollo-server-core";
 import { createContext, Context } from "../../../server/Context/index";
@@ -23,6 +24,21 @@ import { Resolvers, ResolversObject } from "../../../.cache/__types__";
 import { buildServices } from "../../../server/Services/index";
 import { PageConfig } from "next";
 import clientPromise from "../../../lib/mongodb";
+import graphqlHTTP, { getGraphQLParams } from "express-graphql";
+
+
+/**
+ * export const serverSchema = new GraphQLSchema(NexusSchema.toConfig());
+export const corsMiddleware = (handler: RequestHandler) => {
+  return cors()(handler => handler.on("/",graphqlHTTP.graphqlHTTP({
+      schema: new GraphQLSchema(NexusSchema.toConfig()),
+      context: configg.context,
+      graphiql: { headerEditorEnabled: true },
+      pretty: true
+    })
+  ));
+};
+ */
 
 export const serverSchema = new GraphQLSchema(NexusSchema.toConfig());
 export const corsMiddleware = (handler: RequestHandler) => {
@@ -67,6 +83,8 @@ export default corsMiddleware(async function handler(
     "Access-Control-Allow-Headers",
     "Origin, X-Requested-With, Content-Type, Accept, apollo-federation-include-trace, Authorization"
   );
+
+  apolloServer.createGraphQLServerOptions(req, res);
   if (req.method === "OPTIONS") {
     res.end();
     return;

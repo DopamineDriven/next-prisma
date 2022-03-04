@@ -10,6 +10,7 @@ export {default as Analytics} from "./analytics"
 export { default as BellIcon } from "./bell";
 export { default as Clock } from "./clock";
 export { default as Engagement } from "./engagement";
+export { default as GitHubNav } from "./github-nav";
 export { default as HorizontalWave } from "./horizontal-wave";
 export { default as LockClosedIcon } from "./lock-closed";
 export { default as Mail } from "./mail";

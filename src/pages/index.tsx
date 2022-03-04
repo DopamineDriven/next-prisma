@@ -14,26 +14,45 @@ import crypto from "crypto";
 import { useRouter } from "next/router";
 import Layout from "@/components/Layout/layout";
 import { Session } from "next-auth";
-
+import { parse } from "cookie"
+import { getToken, JWT } from "next-auth/jwt";
+import * as Jose from "jose";
+import { decode } from "jsonwebtoken";
 export type IndexProps = {
   session: Session | null;
   initialApolloState: NormalizedCacheObject;
+  jwt: JWT | null;
 };
 
-const accessToken = process.env.FACEBOOK_ACCESS_TOKEN ?? "";
-const secretKey = process.env.FACEBOOK_SECRET ?? "";
+// import { NextAuthMiddlewareOptions, WithAuthArgs } from "next-auth/middleware";
+// import type { NextFetchEvent, NextMiddleware } from "next/server";
+// import type { UnwrapTuple } from "@/types/helpers";
+// import { INTERNALS } from "next/dist/server/web/spec-extension/request";
+
+// type WithAuthTupleFiestaArgs = UnwrapTuple<
+//   | [NextRequest]
+//   | [NextRequest, NextFetchEvent]
+//   | [NextRequest, NextAuthMiddlewareOptions]
+//   | [NextMiddleware]
+//   | [NextMiddleware, NextAuthMiddlewareOptions]
+//   | [NextAuthMiddlewareOptions]
+//   | []
+// >;
+
 
 export const getServerSideProps = async (
   ctx: GetServerSidePropsContext<ParsedUrlQuery>
 ): Promise<GetServerSidePropsResult<IndexProps>> => {
   const params = ctx.params ? ctx.params.session : "";
   const session = await getSession({ ctx: ctx });
+  const tokennnn = await getToken({req: ctx.req})
   console.log(JSON.stringify(session, null, 2));
   console.log(params ?? "");
-
+  const getCookies = ctx.req.cookies['next-auth.session-token'];
   const apolloClient = initializeApollo(null, ctx.params);
-
-  // await apolloClient.query<UserByEmailQuery, UserByEmailQueryVariables>({
+  // const decoded = Jose.decodeProtectedHeader(getCookies)
+  // console.log(decoded ?? "no decoded")
+  // // await apolloClient.query<UserByEmailQuery, UserByEmailQueryVariables>({
   //   query: UserByEmailDocument,
   //   variables: {
   //     email: "andrew.ross@cortinahealth.com",
@@ -45,6 +64,7 @@ export const getServerSideProps = async (
 
   return {
     props: {
+      jwt: tokennnn,
       session,
       initialApolloState: apolloClient.cache.extract(true)
       // user: apolloClient.cache.readQuery<
@@ -74,7 +94,8 @@ export const getServerSideProps = async (
 
 export default function Index<T extends typeof getServerSideProps>({
   initialApolloState,
-  session
+  session,
+  jwt
 }: InferGetServerSidePropsType<T>) {
   // const [userEmail, setUserEmail] = useState("");
   const apolloClient = useApollo(initialApolloState);
@@ -145,7 +166,7 @@ export default function Index<T extends typeof getServerSideProps>({
           <div className='fit font-sans py-10'>
             <main>
               {session ? (
-                <Inspector>{session.user ? session.user.image : "waiting..."}</Inspector>
+                <Inspector>{JSON.stringify(jwt, null, 2)}</Inspector>
               ) : <div>loading...</div> ? (
                 // ) : !called ? (
                 //   <button

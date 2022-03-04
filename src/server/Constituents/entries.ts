@@ -19,8 +19,11 @@ import {
   UserRelationFilter,
   CategoryObject,
   CommentListRelationFilter,
-  Reaction
+  Reaction,
+  MediaItemRelationFilter,
+  MediaItemListRelationFilter
 } from ".";
+import { nodeDefinitions } from "graphql-relay";
 
 export const Entry: core.NexusObjectTypeDef<"Entry"> = objectType({
   name: "Entry",
@@ -31,7 +34,11 @@ export const Entry: core.NexusObjectTypeDef<"Entry"> = objectType({
     t.nullable.field("featuredImage", { type: MediaItem });
     t.boolean("published");
     t.list.field("reactions", { type: Reaction });
-    t.list.field("categories", { type: CategoryObject });
+    t.list.field("categories", {
+      type: CategoryObject});
+    t.list.field("attachments", {
+      type: MediaItem
+    });
     t.string("authorId", {
       resolve(source) {
         return source.authorId;
@@ -151,7 +158,7 @@ export const EntryMutation: core.NexusExtendTypeDef<"Mutation"> =
               title: String(args.title),
               content: String(args.content),
               featuredImage: {
-                set: { ariaLabel: "", width: 0, height: 0, quality: 85 }
+                set: { id: "", ariaLabel: "", width: 0, height: 0, quality: 85 }
               },
               createdAt: new Date(Date.now()),
               published: args?.publish ? args.publish : false,
@@ -200,7 +207,8 @@ export const EntryWhereInput = core.inputObjectType({
     t.field("comments", { type: CommentListRelationFilter });
     t.field("content", { type: StringNullableFilter });
     t.field("createdAt", { type: DateTimeFilter });
-    t.string("featuredImage");
+    t.field("featuredImage", { type: MediaItemRelationFilter });
+    t.field("attachments", { type: MediaItemListRelationFilter });
     t.field("id", { type: StringFilter });
     t.field("published", { type: BoolFilter });
     t.field("title", { type: StringFilter });

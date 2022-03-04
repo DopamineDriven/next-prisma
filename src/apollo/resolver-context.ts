@@ -107,8 +107,9 @@ export const nextNestAfterware = new ApolloLink((operation, forward) => {
     // check for session header & update session in LS accordingly
     const context = operation.getContext();
     const {
-      response: { headers }
+      response: { headers, cookies }
     } = context;
+    console.log("coooookies "+cookies ?? "no cookies :'(")
     const session = headers.get("authorization");
     if (session && isBrowser) {
       if (window.localStorage.getItem("authorization") !== session) {
