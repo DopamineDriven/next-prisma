@@ -3,7 +3,7 @@ import { SVGAttribs } from '@/types/mapped';
 const X = ({
   ...props
 }: SVGAttribs<
-  'className' | 'width' | 'height' | 'onMouseOver' | 'aria-hidden'
+  'className' | 'width' | 'height' | 'onMouseOver' | 'aria-hidden' | "onClick"
 >) => {
   return (
     <svg
