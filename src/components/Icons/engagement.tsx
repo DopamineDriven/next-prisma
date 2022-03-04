@@ -1,14 +1,14 @@
 import { SVGAttribs } from "@/types/mapped";
 
-const Engagement = ({ className }: SVGAttribs<"className">) => {
+const Engagement = ({ ...props }: SVGAttribs<"className" | "aria-hidden" | "fill" | "stroke">) => {
   return (
     <svg
-      className={className ?? "h-6 w-6"}
+      {...props}
+      className={props.className ? props.className : "h-6 w-6"}
       xmlns='http://www.w3.org/2000/svg'
-      fill='none'
+      fill={props.fill ? props.fill : "none"}
       viewBox='0 0 24 24'
-      stroke='currentColor'
-      aria-hidden='true'>
+      stroke={props.stroke ? props.stroke : "currentColor"}>
       <path
         strokeLinecap='round'
         strokeLinejoin='round'

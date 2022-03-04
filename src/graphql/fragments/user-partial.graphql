@@ -1,0 +1,16 @@
+fragment UserEdgePartial on UserEdge {
+  cursor
+  __typename
+}
+
+
+fragment UserPartial on User {
+  id
+  name
+  email
+  image
+  emailVerified
+  role
+  status
+  __typename
+}

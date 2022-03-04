@@ -11,6 +11,10 @@ import { ResolverContext } from "@/apollo/resolver-context";
 import { Session } from "next-auth"
 
 
+export enum ViewerStatus {
+  authenticated= "authenticated", loading="loading",  unauthenticated="unauthenticated"
+}
+
 declare module "next/app" {
   type AppProps<P = Record<string, unknown>> = {
     Component: NextComponentType<NextPageContext, any, P>;
@@ -22,6 +26,7 @@ declare module "next/app" {
       initialApolloState: NormalizedCacheObject | null;
       session: Session | null;
       resolverContext: ResolverContext;
+      status: keyof typeof ViewerStatus;
       // authData: AuthData | null;
     };
   };

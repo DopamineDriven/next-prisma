@@ -79,7 +79,6 @@ export type BioFieldPolicy = {
 export type CategoryKeySpecifier = (
   | "createdAt"
   | "creatorId"
-  | "entryId"
   | "name"
   | "root"
   | "updatedAt"
@@ -88,12 +87,12 @@ export type CategoryKeySpecifier = (
 export type CategoryFieldPolicy = {
   createdAt?: FieldPolicy<any> | FieldReadFunction<any>;
   creatorId?: FieldPolicy<any> | FieldReadFunction<any>;
-  entryId?: FieldPolicy<any> | FieldReadFunction<any>;
   name?: FieldPolicy<any> | FieldReadFunction<any>;
   root?: FieldPolicy<any> | FieldReadFunction<any>;
   updatedAt?: FieldPolicy<any> | FieldReadFunction<any>;
 };
 export type CommentKeySpecifier = (
+  | "attachment"
   | "author"
   | "authorId"
   | "body"
@@ -107,6 +106,7 @@ export type CommentKeySpecifier = (
   | CommentKeySpecifier
 )[];
 export type CommentFieldPolicy = {
+  attachment?: FieldPolicy<any> | FieldReadFunction<any>;
   author?: FieldPolicy<any> | FieldReadFunction<any>;
   authorId?: FieldPolicy<any> | FieldReadFunction<any>;
   body?: FieldPolicy<any> | FieldReadFunction<any>;
@@ -139,6 +139,7 @@ export type CommentEdgeFieldPolicy = {
   node?: FieldPolicy<any> | FieldReadFunction<any>;
 };
 export type EntryKeySpecifier = (
+  | "attachments"
   | "author"
   | "authorId"
   | "categories"
@@ -154,6 +155,7 @@ export type EntryKeySpecifier = (
   | EntryKeySpecifier
 )[];
 export type EntryFieldPolicy = {
+  attachments?: FieldPolicy<any> | FieldReadFunction<any>;
   author?: FieldPolicy<any> | FieldReadFunction<any>;
   authorId?: FieldPolicy<any> | FieldReadFunction<any>;
   categories?: FieldPolicy<any> | FieldReadFunction<any>;
@@ -190,12 +192,13 @@ export type EntryEdgeFieldPolicy = {
 export type MediaItemKeySpecifier = (
   | "ariaLabel"
   | "caption"
+  | "description"
   | "destination"
   | "fileLastModified"
   | "filename"
   | "filetype"
   | "height"
-  | "mediaItemId"
+  | "id"
   | "quality"
   | "size"
   | "src"
@@ -209,12 +212,13 @@ export type MediaItemKeySpecifier = (
 export type MediaItemFieldPolicy = {
   ariaLabel?: FieldPolicy<any> | FieldReadFunction<any>;
   caption?: FieldPolicy<any> | FieldReadFunction<any>;
+  description?: FieldPolicy<any> | FieldReadFunction<any>;
   destination?: FieldPolicy<any> | FieldReadFunction<any>;
   fileLastModified?: FieldPolicy<any> | FieldReadFunction<any>;
   filename?: FieldPolicy<any> | FieldReadFunction<any>;
   filetype?: FieldPolicy<any> | FieldReadFunction<any>;
   height?: FieldPolicy<any> | FieldReadFunction<any>;
-  mediaItemId?: FieldPolicy<any> | FieldReadFunction<any>;
+  id?: FieldPolicy<any> | FieldReadFunction<any>;
   quality?: FieldPolicy<any> | FieldReadFunction<any>;
   size?: FieldPolicy<any> | FieldReadFunction<any>;
   src?: FieldPolicy<any> | FieldReadFunction<any>;
@@ -255,21 +259,39 @@ export type PageInfoFieldPolicy = {
   startCursor?: FieldPolicy<any> | FieldReadFunction<any>;
 };
 export type ProfileKeySpecifier = (
-  | "coverImage"
+  | "activityFeed"
+  | "bio"
+  | "city"
+  | "country"
+  | "coverPhoto"
   | "dob"
+  | "gender"
   | "id"
+  | "lastSeen"
   | "memberSince"
+  | "occupation"
   | "phoneNumber"
+  | "pronouns"
+  | "recentActivity"
   | "user"
   | "userId"
   | ProfileKeySpecifier
 )[];
 export type ProfileFieldPolicy = {
-  coverImage?: FieldPolicy<any> | FieldReadFunction<any>;
+  activityFeed?: FieldPolicy<any> | FieldReadFunction<any>;
+  bio?: FieldPolicy<any> | FieldReadFunction<any>;
+  city?: FieldPolicy<any> | FieldReadFunction<any>;
+  country?: FieldPolicy<any> | FieldReadFunction<any>;
+  coverPhoto?: FieldPolicy<any> | FieldReadFunction<any>;
   dob?: FieldPolicy<any> | FieldReadFunction<any>;
+  gender?: FieldPolicy<any> | FieldReadFunction<any>;
   id?: FieldPolicy<any> | FieldReadFunction<any>;
+  lastSeen?: FieldPolicy<any> | FieldReadFunction<any>;
   memberSince?: FieldPolicy<any> | FieldReadFunction<any>;
+  occupation?: FieldPolicy<any> | FieldReadFunction<any>;
   phoneNumber?: FieldPolicy<any> | FieldReadFunction<any>;
+  pronouns?: FieldPolicy<any> | FieldReadFunction<any>;
+  recentActivity?: FieldPolicy<any> | FieldReadFunction<any>;
   user?: FieldPolicy<any> | FieldReadFunction<any>;
   userId?: FieldPolicy<any> | FieldReadFunction<any>;
 };

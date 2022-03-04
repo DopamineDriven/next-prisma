@@ -1,6 +1,5 @@
 fragment EntryPartial on Entry {
-    id
-  __typename
+  id
   title
   content
   published
@@ -8,4 +7,10 @@ fragment EntryPartial on Entry {
   authorId
   createdAt
   updatedAt
+  __typename
+}
+
+fragment EntryEdgePartial on EntryEdge {
+  cursor
+  __typename
 }

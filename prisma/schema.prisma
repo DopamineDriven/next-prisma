@@ -54,6 +54,7 @@ model Comment {
   position  String?
   createdAt DateTime   @default(now())
   updatedAt DateTime?  @updatedAt
+  attachment MediaItem?
   reactions Reaction[]
   entry     Entry?     @relation("EntryComments", fields: [entryId], references: [id], onDelete: Cascade)
   author    User?      @relation("CommentAuthor", fields: [authorId], references: [id], onDelete: Cascade)
@@ -70,6 +71,7 @@ model Entry {
   createdAt     DateTime   @default(now())
   updatedAt     DateTime?  @updatedAt
   featuredImage MediaItem?
+  attachments   MediaItem[]
   reactions     Reaction[]
   categories    Category[]
   author        User?      @relation("Author", fields: [authorId], references: [id], onDelete: Cascade)
@@ -115,11 +117,10 @@ model VerificationToken {
 
 type Category {
   creatorId String?
-  createdAt DateTime? @default(now())
+  createdAt DateTime @default(now())
   updatedAt DateTime?
   root      Boolean   @default(true)
   name      String
-  entryId   String?
 }
 
 type Bio {
@@ -132,7 +133,7 @@ type Bio {
 }
 
 type MediaItem {
-  mediaItemId      String?
+  id               String 
   uploadedAt       DateTime              @default(now())
   updatedAt        DateTime?
   filename         String?
@@ -145,6 +146,7 @@ type MediaItem {
   quality          Int                   @default(85)
   src              String?
   srcSet           String?
+  description      String?
   ariaLabel        String?
   title            String?
   caption          String?

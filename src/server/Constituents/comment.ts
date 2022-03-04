@@ -21,6 +21,12 @@ export const Comment: core.NexusObjectTypeDef<"Comment"> =
       t.nullable.string("position");
       t.nonNull.DateTime("createdAt");
       t.nullable.DateTime("updatedAt");
+      t.nullable.field("attachment", {
+        type: "MediaItem",
+        resolve(root) {
+          return root.attachment;
+        }
+      });
       t.list.field("reactions", { type: "Reaction" });
       t.nullable.field("author", {
         type: "User",
@@ -78,6 +84,7 @@ export const CommentWhereInput = core.inputObjectType({
     t.field("createdAt", { type: DateTimeFilter });
     t.field("entry", { type: EntryRelationFilter });
     t.field("entryId", { type: StringNullableFilter });
+    t.nullable.field("attachment", { type: "MediaItemRelationFilter" });
     t.field("id", { type: StringFilter });
     t.field("position", { type: StringNullableFilter });
     t.field("reactions", { type: EnumCommentReactionsNullableListFilter });

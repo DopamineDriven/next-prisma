@@ -1,0 +1,12 @@
+fragment SessionPartial on Session {
+  id
+  userId
+  expires
+  sessionToken
+  __typename
+}
+
+fragment SessionEdgePartial on SessionEdge {
+  cursor
+  __typename
+}

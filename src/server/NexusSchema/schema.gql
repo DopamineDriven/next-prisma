@@ -124,13 +124,13 @@ input BoolFilter {
 type Category {
   createdAt: DateTime
   creatorId: String
-  entryId: String
   name: String
   root: Boolean
   updatedAt: DateTime
 }
 
 type Comment implements Node {
+  attachment: MediaItem
   author: User
   authorId: String
   body: String
@@ -186,6 +186,7 @@ input CommentWhereInput {
   AND: [CommentWhereInput!]
   NOT: [CommentWhereInput!]
   OR: [CommentWhereInput!]
+  attachment: MediaItemRelationFilter
   author: UserRelationFilter
   authorId: StringNullableFilter
   body: StringNullableFilter
@@ -231,6 +232,7 @@ input DateTimeNullableFilter {
 }
 
 type Entry implements Node {
+  attachments: [MediaItem]
   author: User
   authorId: String
   categories: [Category]
@@ -321,13 +323,14 @@ input EntryWhereInput {
   AND: [EntryWhereInput!]
   NOT: [EntryWhereInput!]
   OR: [EntryWhereInput!]
+  attachments: MediaItemListRelationFilter
   author: UserRelationFilter
   authorId: StringNullableFilter
   categoryId: StringNullableFilter
   comments: CommentListRelationFilter
   content: StringNullableFilter
   createdAt: DateTimeFilter
-  featuredImage: String
+  featuredImage: MediaItemRelationFilter
   id: StringFilter
   published: BoolFilter
   title: StringFilter
@@ -442,12 +445,13 @@ scalar Json
 type MediaItem {
   ariaLabel: String
   caption: String
+  description: String
   destination: MediaItemDestination
   fileLastModified: DateTime
   filename: String
   filetype: MimeType
   height: Float!
-  mediaItemId: String
+  id: String
   quality: Int!
   size: String
   src: String
@@ -472,12 +476,13 @@ enum MediaItemDestination {
 input MediaItemInput {
   ariaLabel: String
   caption: String
+  description: String
   destination: MediaItemDestination
   fileLastModified: DateTime
   filename: String
   filetype: MimeType
   height: Float
-  mediaItemId: String
+  id: String
   quality: Int
   size: String
   src: String
@@ -505,12 +510,13 @@ input MediaItemWhereInput {
   OR: [MediaItemWhereInput!]
   ariaLabel: StringNullableFilter
   caption: StringNullableFilter
+  description: StringNullableFilter
   destination: EnumMediaItemDestinationNullableFilter
   fileLastModified: DateTimeNullableFilter
   filename: StringNullableFilter
   filetype: EnumMimeTypeNullableFilter
   height: FloatNullableFilter
-  mediaItemId: StringFilter
+  id: StringFilter
   quality: IntNullableFilter
   size: StringNullableFilter
   src: StringNullableFilter
@@ -569,8 +575,6 @@ type Mutation {
     userId: String
   ): Entry
   createProfile(
-    bio: String
-    coverImage: String
     dob: String
     email: String!
 
@@ -745,11 +749,20 @@ A field whose value conforms to the standard E.164 format as specified in: https
 scalar PhoneNumber
 
 type Profile implements Node {
-  coverImage: MediaItem
+  activityFeed: String
+  bio: Bio
+  city: String
+  country: String
+  coverPhoto: MediaItem
   dob: Date
+  gender: Gender
   id: String!
+  lastSeen: DateTime
   memberSince: DateTime
+  occupation: String
   phoneNumber: PhoneNumber
+  pronouns: Pronouns
+  recentActivity: String
   user: User
   userId: String
 }
@@ -816,7 +829,7 @@ input ProfileOrderByWithRelationAndSearchRelevanceInput {
   coverPhoto: SortOrderEnum
   dob: SortOrderEnum
   gender: SortOrderEnum
-  id: SortOrderEnum
+  id: SortOrderEnum!
   lastSeen: SortOrderEnum
   memberSince: SortOrderEnum
   occupation: SortOrderEnum
@@ -837,10 +850,10 @@ input ProfileWhereInput {
   NOT: [ProfileWhereInput!]
   OR: [ProfileWhereInput!]
   activiyFeed: StringNullableFilter
-  bio: StringNullableFilter
+  bio: BioRelationFilter
   city: StringNullableFilter
   country: StringNullableFilter
-  coverPhoto: StringNullableFilter
+  coverPhoto: MediaItemRelationFilter
   dob: StringNullableFilter
   gender: EnumGenderNullableFilter
   id: StringFilter
@@ -1135,6 +1148,7 @@ type Query {
     Returns the last n elements from the list.
     """
     last: Int
+    orderBy: SortOrderEnum!
   ): ProfileConnection
   session(
     """

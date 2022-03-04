@@ -9,6 +9,5 @@ export const CategoryObject: core.NexusObjectTypeDef<"Category"> =
       t.nullable.DateTime("updatedAt");
       t.boolean("root");
       t.string("name");
-      t.nullable.string("entryId");
     }
   });

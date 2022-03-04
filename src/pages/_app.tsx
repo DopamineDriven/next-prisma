@@ -20,7 +20,7 @@ export const Page: FC<HTMLAttributes<HTMLElement>> = ({
   className,
   ...props
 }) => (
-  <main {...props} className={cn("w-full max-w-3xl mx-auto py-16", className)}>
+  <main {...props} className={cn("w-full max-w-3xl font-interVar mx-auto py-16", className)}>
     {children}
   </main>
 );
@@ -100,9 +100,10 @@ export default function NextPrismaApp({ Component, pageProps }: AppProps) {
   return (
     <ApolloProvider client={apolloClient}>
       <SessionProvider session={pageProps.session}>
-
         <LayoutGlobal {...pageProps}>
-          <Layout>
+          <Layout
+            viewerSesh={pageProps.session}
+            viewerStatus={pageProps.status}>
             <Component {...pageProps} />
           </Layout>
         </LayoutGlobal>

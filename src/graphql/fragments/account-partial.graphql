@@ -1,0 +1,22 @@
+fragment AccountPartial on Account {
+  id
+  userId
+  type
+  provider
+  providerAccountId
+  refresh_token
+  access_token
+  expires_at
+  token_type
+  scope
+  id_token
+  session_state
+  oauth_token_secret
+  oauth_token
+  __typename
+}
+
+fragment AccountEdgePartial on AccountEdge {
+  cursor
+  __typename
+}

@@ -1,6 +1,7 @@
 fragment MediaItemPartial on MediaItem {
   ariaLabel
-  mediaItemId
+  id
+  description
   uploadedAt
   updatedAt
   filename

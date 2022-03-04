@@ -15,7 +15,7 @@ export const MediaItem: core.NexusObjectTypeDef<"MediaItem"> =
   core.objectType<"MediaItem">({
     name: "MediaItem",
     definition(t) {
-      t.nullable.string("mediaItemId");
+      t.string('id');
       t.DateTime("uploadedAt");
       t.nullable.DateTime("updatedAt");
       t.nullable.string("filename");
@@ -25,6 +25,10 @@ export const MediaItem: core.NexusObjectTypeDef<"MediaItem"> =
       t.nullable.DateTime("fileLastModified");
       t.nonNull.float("width");
       t.nonNull.float("height");
+      t.nullable.field("description", {
+        type: "String", resolve(root) {
+          return root.description;
+      }})
       t.nonNull.int("quality");
       t.nullable.string("src");
       t.nullable.string("srcSet");
@@ -83,12 +87,13 @@ export const MediaItemWhereInput = core.inputObjectType({
     t.list.nonNull.field("OR", { type: MediaItemWhereInput });
     t.field("ariaLabel", { type: StringNullableFilter });
     t.field("caption", { type: StringNullableFilter });
+    t.field("id", { type: StringFilter });
     t.field("destination", { type: EnumMediaItemDestinationNullableFilter });
     t.field("fileLastModified", { type: DateTimeNullableFilter });
     t.field("height", { type: FloatNullableFilter });
-    t.nullable.field("mediaItemId", { type: StringFilter });
     t.field("filename", { type: StringNullableFilter });
     t.field("quality", { type: IntNullableFilter });
+    t.field("description", { type: StringNullableFilter });
     t.field("size", { type: StringNullableFilter });
     t.field("src", { type: StringNullableFilter });
     t.field("srcSet", { type: StringNullableFilter });
@@ -105,20 +110,21 @@ export const MediaItemWhereInput = core.inputObjectType({
 export const MediaItemInput = core.inputObjectType({
   name: "MediaItemInput",
   definition(t) {
-    t.string("ariaLabel");
-    t.string("caption");
-    t.field("destination", { type: MediaItemDestination });
-    t.field("fileLastModified", { type: "DateTime" });
+    t.nullable.string("ariaLabel");
+    t.nullable.string("caption");
+    t.nullable.field("destination", { type: MediaItemDestination });
+    t.nullable.field("fileLastModified", { type: "DateTime" });
     t.float("height");
-    t.nullable.string("mediaItemId");
-    t.string("filename");
+    t.string("id");
+    t.nullable.string("filename");
     t.int("quality");
-    t.string("size");
-    t.string("src");
-    t.string("srcSet");
-    t.string("title");
-    t.field("filetype", { type: MimeType });
-    t.field("updatedAt", { type: "DateTime" });
+    t.nullable.string("size");
+    t.nullable.string("description")
+    t.nullable.string("src");
+    t.nullable.string("srcSet");
+    t.nullable.string("title");
+    t.nullable.field("filetype", { type: MimeType });
+    t.nullable.field("updatedAt", { type: "DateTime" });
     t.field("uploadedAt", { type: "DateTime" });
     t.float("width");
   }

@@ -65,6 +65,7 @@ export const schema = makeSchema({
         module: join(process.cwd(), "/node_modules/.prisma/client/index.d.ts"),
         alias: "Prisma"
       }
+      // {module: join(process.cwd(), "/src/server/Services/index.ts"), alias: "t"}
     ]
   },
   features: {
@@ -74,6 +75,7 @@ export const schema = makeSchema({
       resolveType: true
     }
   },
+  // shouldExitAfterGenerateArtifacts: true,
   contextType: {
     module: join(process.cwd(), "/src/server/Context/index.ts"),
     export: "Context",

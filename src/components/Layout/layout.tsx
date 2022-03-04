@@ -5,13 +5,30 @@ import GlobalNav from "./Nav/nav";
 
 export interface Props {
   children: ReactNode;
+  className?: string;
+  viewerStatus?: "authenticated" | "loading" | "unauthenticated";
+  viewerSesh?: Session | null;
 }
 
-const Layout: FC<Props> = ({ children }) => {
+const Layout: FC<Props> = ({
+  children,
+  viewerSesh,
+  className,
+  viewerStatus
+}) => {
   const { data, status } = useSession();
+  const statusSimilarity: WithImplicitCoercion<
+    "authenticated" | "loading" | "unauthenticated" | undefined
+  > =
+    viewerStatus?.valueOf() !== undefined &&
+    viewerStatus.valueOf() === status.valueOf()
+      ? viewerStatus
+      : status;
+  const seshSimilarity =
+    viewerSesh !== undefined && viewerSesh === data ? viewerSesh : data;
   return (
-    <div>
-      <GlobalNav data={data} status={status} />
+    <div className={className ? className : ""}>
+      <GlobalNav data={seshSimilarity} status={statusSimilarity} />
       <div className=''>{children}</div>
       <style jsx global>{`
         html {
