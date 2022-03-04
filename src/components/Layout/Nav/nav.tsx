@@ -1,11 +1,10 @@
-import { Fragment, FC, useState, useEffect, useRef, MouseEventHandler, ButtonHTMLAttributes, EventHandler } from "react";
+import { Fragment, useState, useEffect } from "react";
 import { Menu, Transition, Popover } from "@headlessui/react";
 import {
   Analytics,
   ChevronDown,
   Engagement,
   GitHubNav,
-  Hubspot,
   MenuIcon,
   TypeScript,
   Users,
@@ -19,11 +18,8 @@ import throttle from "lodash/throttle";
 import { useRouter } from "next/router";
 import { SVGAttribs } from "@/types/mapped";
 import { blurDataURLShimmer } from "@/lib/shimmer";
-import { User } from "@/graphql/generated/graphql";
+import { signOut, useSession } from "next-auth/react";
 import { Session } from "next-auth";
-import { getSession, signOut, useSession } from "next-auth/react";
-import { Anchor } from "@/components/UI";
-import { RedirectableProviderType } from "next-auth/providers";
 
 type HubSpotProps = {
   name: string;
@@ -135,12 +131,6 @@ const GlobalNav = ({ data: user, status: statusSession }: NavProps) => {
       const scrolled = scrollTop > offset;
       setHasScrolled(scrolled);
     }, 200);
-    // (async function MenuToggleIIFE() {
-    //   console.log(menuOpen)
-    //  return internalMenuRef.valueOf() !== menuOpen.valueOf()
-    //     ? setMenuOpen(!internalMenuRef.valueOf())
-    //     : () => {};
-    // })();
     document.addEventListener("scroll", handleScroll);
     return () => {
       document.removeEventListener("scroll", handleScroll);
@@ -165,31 +155,43 @@ const GlobalNav = ({ data: user, status: statusSession }: NavProps) => {
           <Link href='/' passHref={true} scroll={true}>
             <a data-active='/' id='/' className='flex'>
               <span className='sr-only'>AR</span>
-              <TypeScript className={cn('block relative sm:h-10 md:not-sr-only', {
-                'sr-only md:not-sr-only': !menuOpen,
-                "not-sr-only": !!menuOpen
-              } )}/>
+              <TypeScript
+                className={cn("block relative sm:h-10 md:not-sr-only", {
+                  "sr-only md:not-sr-only": !menuOpen,
+                  "not-sr-only": !!menuOpen
+                })}
+              />
             </a>
           </Link>
         </div>
         <div className='-mr-2 -my-2 md:hidden'>
-          {menuOpen === true ?  (
+          {menuOpen === true ? (
             <Popover.Button
               as='button'
               className='bg-white rounded-md p-2 inline-flex items-center justify-center text-gray-400 hover:text-gray-500 hover:bg-gray-100 focus:outline-none focus:ring-2 focus:ring-inset focus:ring-indigo-500'>
               <span className='sr-only'>Open menu</span>
-              <MenuIcon className='h-6 w-6' aria-hidden='true' onClick={e => {
-                e.preventDefault();
-                setMenuOpen(false)
-              }} />
+              <MenuIcon
+                className='h-6 w-6'
+                aria-hidden='true'
+                onClick={e => {
+                  e.preventDefault();
+                  setMenuOpen(false);
+                }}
+              />
             </Popover.Button>
           ) : (
-            <Popover.Button as="button" className="bg-white rounded-md p-2 inline-flex items-center justify-center text-gray-400 hover:text-gray-500 hover:bg-gray-100 focus:outline-none focus:ring-2 focus:ring-inset focus:ring-indigo-500">
+            <Popover.Button
+              as='button'
+              className='bg-white rounded-md p-2 inline-flex items-center justify-center text-gray-400 hover:text-gray-500 hover:bg-gray-100 focus:outline-none focus:ring-2 focus:ring-inset focus:ring-indigo-500'>
               <span className='sr-only'>Close Menu</span>
-              <XIcon className='h-6 w-6' aria-hidden='true' onClick={e => {
-                e.preventDefault();
-                setMenuOpen(true)
-              }}  />
+              <XIcon
+                className='h-6 w-6'
+                aria-hidden='true'
+                onClick={e => {
+                  e.preventDefault();
+                  setMenuOpen(true);
+                }}
+              />
             </Popover.Button>
           )}
         </div>
@@ -212,7 +214,6 @@ const GlobalNav = ({ data: user, status: statusSession }: NavProps) => {
                       aria-hidden='true'
                     />
                   </Popover.Button>
-
                   <Transition
                     as={Fragment}
                     enter='transition ease-out duration-200'
@@ -285,7 +286,6 @@ const GlobalNav = ({ data: user, status: statusSession }: NavProps) => {
               className='text-base font-medium text-gray-500 hover:text-gray-900'>
               Teams
             </a>
-
             <Popover className='relative'>
               {({ open }) => (
                 <>
@@ -303,7 +303,6 @@ const GlobalNav = ({ data: user, status: statusSession }: NavProps) => {
                       aria-hidden='true'
                     />
                   </Popover.Button>
-
                   <Transition
                     as={Fragment}
                     enter='transition ease-out duration-200'
@@ -429,235 +428,216 @@ const GlobalNav = ({ data: user, status: statusSession }: NavProps) => {
         </div>
       </div>
       {/* <div className='absolute inset-0'></div> */}
-      {/* {menuRef.current.valueOf() === false ? */}
-        <Transition
-          as={Fragment}
-          enter='duration-200 ease-out'
-          enterFrom='opacity-0 scale-95'
-          enterTo='opacity-100 scale-100'
-          leave='duration-100 ease-in'
-          leaveFrom='opacity-100 scale-100'
-          leaveTo='opacity-0 scale-95'>
-          <Popover.Panel
-            focus className={cn(
-              "absolute top-0 inset-x-0 min-h-[calc(100vh)] transition transform origin-top-right md:hidden",{
+      <Transition
+        as={Fragment}
+        enter='duration-200 ease-out'
+        enterFrom='opacity-0 scale-95'
+        enterTo='opacity-100 scale-100'
+        leave='duration-100 ease-in'
+        leaveFrom='opacity-100 scale-100'
+        leaveTo='opacity-0 scale-95'>
+        <Popover.Panel
+          focus
+          className={cn(
+            "absolute top-0 inset-x-0 min-h-[calc(100vh)] transition transform origin-top-right md:hidden",
+            {
               "sr-only": menuOpen === true,
-          "not-sr-only": menuOpen === false}
-            )}>
-            <div
-              aria-hidden="true"
-              className='rounded-lg shadow-lg ring-1 ring-black ring-opacity-5 bg-white divide-y-2 divide-gray-50'>
-              <div className='pt-5 pb-6 px-5'>
-                <div className='flex items-center justify-between'>
-                  {/* <div>
-                  <TypeScript className='h-8 w-auto not-sr-only md:sr-only' />
-                </div> */}
-                </div>
-                <div className='mt-6'>
-                  <nav className='grid gap-6'>
-                    {hubspot.map((item, yy) => (
-                      <Link
-                        href={item.href}
-                        passHref={true}
-                        scroll={true}
-                        key={hubspot.length ** -++yy}>
-                        <a
-                          data-active={isActive(item.href)}
-                          id={"#" + item.href}
-                          className='-m-3 p-3 flex items-center rounded-lg hover:bg-gray-50'>
-                          <div className='flex-shrink-0 flex items-center justify-center h-10 w-10 rounded-md bg-indigo-500 text-white'>
-                            <item.icon className='h-6 w-6' aria-hidden='true' />
-                          </div>
-                          <div className='ml-4 text-base font-medium text-gray-900'>
-                            {item.name}
-                          </div>
-                        </a>
-                      </Link>
-                    ))}
-                  </nav>
-                </div>
-              </div>
-              <div className='py-6 px-5'>
-                <div className='grid grid-cols-2 gap-4'>
-                  <a
-                    href='#'
-                    className='text-base font-medium text-gray-900 hover:text-gray-700'>
-                    Pricing
-                  </a>
-
-                  <a
-                    href='#'
-                    className='text-base font-medium text-gray-900 hover:text-gray-700'>
-                    Docs
-                  </a>
-
-                  <a
-                    href='#'
-                    className='text-base font-medium text-gray-900 hover:text-gray-700'>
-                    Enterprise
-                  </a>
-                  {github.map(item => (
+              "not-sr-only": menuOpen === false
+            }
+          )}>
+          <div
+            aria-hidden='true'
+            className='rounded-lg shadow-lg ring-1 ring-black ring-opacity-5 bg-white divide-y-2 divide-gray-50'>
+            <div className='pt-5 pb-6 px-5'>
+              <div className='flex items-center justify-between'></div>
+              <div className='mt-6'>
+                <nav className='grid gap-6'>
+                  {hubspot.map((item, yy) => (
                     <Link
-                      key={item.name}
                       href={item.href}
                       passHref={true}
-                      scroll={true}>
+                      scroll={true}
+                      key={hubspot.length ** -++yy}>
                       <a
                         data-active={isActive(item.href)}
-                        id={`#${item.href}`}
-                        className='text-base font-medium text-gray-900 hover:text-gray-700'>
-                        {item.name}
+                        id={"#" + item.href}
+                        className='-m-3 p-3 flex items-center rounded-lg hover:bg-gray-50'>
+                        <div className='flex-shrink-0 flex items-center justify-center h-10 w-10 rounded-md bg-indigo-500 text-white'>
+                          <item.icon className='h-6 w-6' aria-hidden='true' />
+                        </div>
+                        <div className='ml-4 text-base font-medium text-gray-900'>
+                          {item.name}
+                        </div>
                       </a>
                     </Link>
                   ))}
-                </div>
-                <Menu as='div' className='mt-6'>
-                  {({ open }) => (
-                    <>
-                      <div className='grid grid-cols-3'>
-                        <button
-                          className=' flex text-sm rounded-full focus:outline-none focus:ring-2 focus:ring-offset-2 focus:ring-offset-gray-800 focus:ring-white'>
-                          <span className='sr-only'>Open user menu</span>
-                          <Image
-                            // onClick={e => {
-                            //   e.preventDefault();
-                            //   setMenuOpen(true)
-                            // }}
-                            width='48'
-                            height='48'
-                            objectPosition={"50%,50%"}
-                            objectFit='cover'
-                            placeholder='blur'
-                            blurDataURL={blurDataURLShimmer({
-                              w: 48,
-                              h: 48
-                            })}
-                            quality='100'
-                            className='w-[3.375rem] h-[3.375rem] object-center object-contain rounded-full relative'
-                            src={
-                              status === "unauthenticated"
-                                ? "/archer.gif"
-                                : status === "authenticated" && data?.user.image
-                                  ? data.user.image
-                                  : blurDataURLShimmer({
-                                    w: 48,
-                                    h: 48
-                                  })
-                            }
-                            alt={`${data?.user.name}'s Avatar`}
-                        />
-                        </button>
-
-                      {userNavigation.map((item, b) => (
-                                <Link
-                                  href={item.href}
-                                  as={item.as}
-                                  key={(3 + b++) ** 3}
-                                  passHref={true}
-                                  scroll={true}>
-                                  {item.name.includes("Sign out") ? (
-                                    <a
-                                      data-active={isActive(item.href)}
-                                      id={`#${item.as}`}
-                                      onClick={e => {
-                                        e.preventDefault();
-                                        signOut<true>();
-                                      }}
-                                      className='list-none text-left text-black ease-in container'>
-
-                                        <span
-                                          className={cn(
-
-                                            "text-sm text-black font-medium bg-transparent "
-                                          )}
-                                         >
-                                          {item.name}
-                                        </span>
-
-                                    </a>
-                                  ) : item.name.includes("Profile") ? <></> : (
-                                    <a
-                                      data-active={isActive(item.href)}
-                                      id={`#${item.as}`}
-                                      className='list-none text-left text-black ease-in container'>
-                                        <span
-                                          className={cn(
-                                            "text-sm text-black font-medium bg-transparent "
-                                          )}
-                                          >
-                                          {item.name}
-                                        </span>
-                                    </a>
-                                  )}
-                          </Link>
-
-                              ))}
-                        {status === "unauthenticated" ? (
-                          <></>
-                        ) : (
-                          <Transition
-                            as={"div"}
-                            enter='transition ease-out duration-100'
-                            enterFrom='transform opacity-0 scale-95'
-                            enterTo='transform opacity-100 scale-100'
-                            leave='transition ease-in duration-75'
-                            leaveFrom='transform opacity-100 scale-100'
-                            leaveTo='transform opacity-0 scale-95'>
-                            <Menu.Items className='flex-grow right-20 bg-transparent  min-w-fit grid grid-cols-3 min-h-fit rounded-md  py-1.5 ring-1 ring-black ring-opacity-5 focus:outline-none'>
-                              {userNavigation.map((item, b) => (
-                                <Link
-                                  href={item.href}
-                                  as={item.as}
-                                  key={(3 + b++) ** 3}
-                                  passHref={true}
-                                  scroll={true}>
-                                  {item.name.includes("Sign out") ? (
-                                    <a
-                                      data-active={isActive(item.href)}
-                                      id={`#${item.as}`}
-                                      onClick={e => {
-                                        e.preventDefault();
-                                        signOut<true>();
-                                      }}
-                                      className='list-none text-center text-black ease-in container'>
-
-                                        <span
-                                          className={cn(
-
-                                            "text-sm text-black font-medium bg-transparent "
-                                          )}
-                                         >
-                                          {item.name}
-                                        </span>
-
-                                    </a>
-                                  ) : (
-                                    <a
-                                      data-active={isActive(item.href)}
-                                      id={`#${item.as}`}
-                                      className='list-none text-center text-black ease-in container'>
-                                        <span
-                                          className={cn(
-                                            "text-sm text-black font-medium bg-transparent "
-                                          )}
-                                          >
-                                          {item.name}
-                                        </span>
-                                    </a>
-                                  )}
-                                </Link>
-                              ))}
-                            </Menu.Items>
-                          </Transition>
-                        )}
-                      </div>
-                    </>
-                  )}
-                </Menu>
+                </nav>
               </div>
             </div>
-          </Popover.Panel>
-        </Transition>
+            <div className='py-6 px-5'>
+              <div className='grid grid-cols-2 gap-4'>
+                <a
+                  href='#'
+                  className='text-base font-medium text-gray-900 hover:text-gray-700'>
+                  Pricing
+                </a>
+                <a
+                  href='#'
+                  className='text-base font-medium text-gray-900 hover:text-gray-700'>
+                  Docs
+                </a>
+                <a
+                  href='#'
+                  className='text-base font-medium text-gray-900 hover:text-gray-700'>
+                  Enterprise
+                </a>
+                {github.map(item => (
+                  <Link
+                    key={item.name}
+                    href={item.href}
+                    passHref={true}
+                    scroll={true}>
+                    <a
+                      data-active={isActive(item.href)}
+                      id={`#${item.href}`}
+                      className='text-base font-medium text-gray-900 hover:text-gray-700'>
+                      {item.name}
+                    </a>
+                  </Link>
+                ))}
+              </div>
+              <Menu as='div' className='mt-6'>
+                {({ open }) => (
+                  <>
+                    <div className='grid grid-cols-3'>
+                      <button className=' flex text-sm rounded-full focus:outline-none focus:ring-2 focus:ring-offset-2 focus:ring-offset-gray-800 focus:ring-white'>
+                        <span className='sr-only'>Open user menu</span>
+                        <Image
+                          width='48'
+                          height='48'
+                          objectPosition={"50%,50%"}
+                          objectFit='cover'
+                          placeholder='blur'
+                          blurDataURL={blurDataURLShimmer({
+                            w: 48,
+                            h: 48
+                          })}
+                          quality='100'
+                          className='w-[3.375rem] h-[3.375rem] object-center object-contain rounded-full relative'
+                          src={
+                            status === "unauthenticated"
+                              ? "/archer.gif"
+                              : status === "authenticated" && data?.user.image
+                              ? data.user.image
+                              : blurDataURLShimmer({
+                                  w: 48,
+                                  h: 48
+                                })
+                          }
+                          alt={`${data?.user.name}'s Avatar`}
+                        />
+                      </button>
+                      {userNavigation.map((item, b) => (
+                        <Link
+                          href={item.href}
+                          as={item.as}
+                          key={(3 + b++) ** 3}
+                          passHref={true}
+                          scroll={true}>
+                          {item.name.includes("Sign out") ? (
+                            <a
+                              data-active={isActive(item.href)}
+                              id={`#${item.as}`}
+                              onClick={e => {
+                                e.preventDefault();
+                                signOut<true>();
+                              }}
+                              className='list-none text-left text-black ease-in container'>
+                              <span
+                                className={cn(
+                                  "text-sm text-black font-medium bg-transparent "
+                                )}>
+                                {item.name}
+                              </span>
+                            </a>
+                          ) : item.name.includes("Profile") ? (
+                            <></>
+                          ) : (
+                            <a
+                              data-active={isActive(item.href)}
+                              id={`#${item.as}`}
+                              className='list-none text-left text-black ease-in container'>
+                              <span
+                                className={cn(
+                                  "text-sm text-black font-medium bg-transparent "
+                                )}>
+                                {item.name}
+                              </span>
+                            </a>
+                          )}
+                        </Link>
+                      ))}
+                      {status === "unauthenticated" ? (
+                        <></>
+                      ) : (
+                        <Transition
+                          as={"div"}
+                          enter='transition ease-out duration-100'
+                          enterFrom='transform opacity-0 scale-95'
+                          enterTo='transform opacity-100 scale-100'
+                          leave='transition ease-in duration-75'
+                          leaveFrom='transform opacity-100 scale-100'
+                          leaveTo='transform opacity-0 scale-95'>
+                          <Menu.Items className='flex-grow right-20 bg-transparent  min-w-fit grid grid-cols-3 min-h-fit rounded-md  py-1.5 ring-1 ring-black ring-opacity-5 focus:outline-none'>
+                            {userNavigation.map((item, b) => (
+                              <Link
+                                href={item.href}
+                                as={item.as}
+                                key={(3 + b++) ** 3}
+                                passHref={true}
+                                scroll={true}>
+                                {item.name.includes("Sign out") ? (
+                                  <a
+                                    data-active={isActive(item.href)}
+                                    id={`#${item.as}`}
+                                    onClick={e => {
+                                      e.preventDefault();
+                                      signOut<true>();
+                                    }}
+                                    className='list-none text-center text-black ease-in container'>
+                                    <span
+                                      className={cn(
+                                        "text-sm text-black font-medium bg-transparent "
+                                      )}>
+                                      {item.name}
+                                    </span>
+                                  </a>
+                                ) : (
+                                  <a
+                                    data-active={isActive(item.href)}
+                                    id={`#${item.as}`}
+                                    className='list-none text-center text-black ease-in container'>
+                                    <span
+                                      className={cn(
+                                        "text-sm text-black font-medium bg-transparent "
+                                      )}>
+                                      {item.name}
+                                    </span>
+                                  </a>
+                                )}
+                              </Link>
+                            ))}
+                          </Menu.Items>
+                        </Transition>
+                      )}
+                    </div>
+                  </>
+                )}
+              </Menu>
+            </div>
+          </div>
+        </Popover.Panel>
+      </Transition>
     </Popover>
   );
 };
