@@ -5,7 +5,7 @@ import { ComponentType, FC, HTMLAttributes, useEffect } from "react";
 import cn from "classnames";
 import { LinkProps } from "next/link";
 import { useRouter } from "next/router";
-import { SessionProvider, useSession } from "next-auth/react";
+import { SessionProvider } from "next-auth/react";
 import { useApollo } from "@/apollo/apollo";
 import {
   ApolloClient,
@@ -20,7 +20,9 @@ export const Page: FC<HTMLAttributes<HTMLElement>> = ({
   className,
   ...props
 }) => (
-  <main {...props} className={cn("w-full max-w-3xl font-interVar mx-auto py-16", className)}>
+  <main
+    {...props}
+    className={cn("w-full max-w-3xl font-interVar mx-auto py-16", className)}>
     {children}
   </main>
 );
