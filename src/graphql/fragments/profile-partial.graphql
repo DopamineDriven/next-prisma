@@ -1,0 +1,16 @@
+fragment ProfilePartial on Profile {
+  id
+  userId
+  memberSince
+  dob
+  phoneNumber
+  gender
+  pronouns
+  lastSeen
+  occupation
+  city
+  country
+  activityFeed
+  recentActivity
+  __typename
+}

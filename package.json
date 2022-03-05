@@ -10,6 +10,7 @@
     "seed": "ts-node src/seeds/seed.ts",
     "clear": "ts-node src/seeds/clear.ts",
     "dev": "next dev -p ${PORT:=3040}",
+    "vercel:dev": "vercel dev -p ${PORT:=3040}",
     "dev:debug": "NODE_OPTIONS='--inspect' next -p ${PORT:=3040}",
     "build": "yarn graphql:let && next build",
     "start": "next start -p ${PORT:=3040}",
@@ -26,7 +27,8 @@
     "pretty:quick": "yarn pretty-quick --staged",
     "lint": "eslint . --ext ts --ext tsx --ext js",
     "format": "prettier --write .",
-    "type-check": "tsc --pretty --noEmit"
+    "type-check": "tsc --pretty --noEmit",
+    "prepare": "husky install"
   },
   "next-unused": {
     "alias": {

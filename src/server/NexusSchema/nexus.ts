@@ -833,6 +833,10 @@ export interface NexusGenObjects {
     nodes?: Array<NexusGenRootTypes["Entry"] | null> | null; // [Entry]
     pageInfo: NexusGenRootTypes["PageInfo"]; // PageInfo!
   };
+  EntryCount: {
+    // root type
+    comments: number; // Int!
+  };
   EntryEdge: {
     // root type
     cursor: string; // String!
@@ -998,6 +1002,7 @@ export interface NexusGenFieldTypes {
   };
   Entry: {
     // field return type
+    _count: NexusGenRootTypes["EntryCount"]; // EntryCount!
     attachments: Array<NexusGenRootTypes["MediaItem"] | null> | null; // [MediaItem]
     author: NexusGenRootTypes["User"] | null; // User
     authorId: string | null; // String
@@ -1017,6 +1022,10 @@ export interface NexusGenFieldTypes {
     edges: Array<NexusGenRootTypes["EntryEdge"] | null> | null; // [EntryEdge]
     nodes: Array<NexusGenRootTypes["Entry"] | null> | null; // [Entry]
     pageInfo: NexusGenRootTypes["PageInfo"]; // PageInfo!
+  };
+  EntryCount: {
+    // field return type
+    comments: number; // Int!
   };
   EntryEdge: {
     // field return type
@@ -1264,6 +1273,7 @@ export interface NexusGenFieldTypeNames {
   };
   Entry: {
     // field return type name
+    _count: "EntryCount";
     attachments: "MediaItem";
     author: "User";
     authorId: "String";
@@ -1283,6 +1293,10 @@ export interface NexusGenFieldTypeNames {
     edges: "EntryEdge";
     nodes: "Entry";
     pageInfo: "PageInfo";
+  };
+  EntryCount: {
+    // field return type name
+    comments: "Int";
   };
   EntryEdge: {
     // field return type name

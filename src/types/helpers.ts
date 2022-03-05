@@ -1,7 +1,10 @@
 import { BufferEncodingOptions } from "@/utils/reusable-buffer";
 
-export type ReturnTypeMixinOg<T extends (...args: any) => any> =
-  T extends (...args: any) => infer R ? R : any;
+export type ReturnTypeMixinOg<T extends (...args: any) => any> = T extends (
+  ...args: any
+) => infer R
+  ? R
+  : any;
 
 export type ReturnTypeMixinV2<
   T extends (...args: Enumerable<any extends infer U ? U : any>) => any
@@ -10,6 +13,8 @@ export type ReturnTypeMixinV2<
 ) => infer R
   ? R
   : T;
+
+export type ExtractPromiseType<T> = T extends PromiseLike<infer U> ? U : T;
 
 export type TalVez<T> = T extends PromiseLike<infer U>
   ? PromiseLike<U | Record<keyof T, U>>
@@ -27,8 +32,8 @@ export type UnionToIntersection<U> = (
 ) extends (k: infer I) => void
   ? I
   : never;
-
-export type UnwrapPromise<T> = T extends Promise<infer U> ? U : T;
+export type PromiseOrPromiseLike<T> = Promise<T> | PromiseLike<T>;
+export type UnwrapPromise<T> = T extends PromiseOrPromiseLike<infer U> ? U : T;
 
 export type Maybe<T> = T | null;
 
@@ -42,10 +47,7 @@ type Values<T extends Record<string, unknown>> = T[keyof T];
 
 type Tuplize<T extends Record<string, unknown>[]> = Pick<
   T,
-  Exclude<
-    keyof T,
-    Extract<keyof Record<string, unknown>[], string> | number
-  >
+  Exclude<keyof T, Extract<keyof Record<string, unknown>[], string> | number>
 >;
 
 type _OneOf<T extends Record<string, unknown>> = Values<{
@@ -54,9 +56,7 @@ type _OneOf<T extends Record<string, unknown>> = Values<{
   };
 }>;
 
-export type OneOf<T extends Record<string, unknown>[]> = _OneOf<
-  Tuplize<T>
->;
+export type OneOf<T extends Record<string, unknown>[]> = _OneOf<Tuplize<T>>;
 
 abstract class A<
   T extends number extends { [index: string | number | symbol]: infer U }
@@ -129,9 +129,7 @@ class C extends A<3.14 | -7.28> {
 
   // thisObj deconstruction/reconstruction helper
   thisObjByIndex(thisIndex: number) {
-    const extractKeyFromThisObj = Object.keys(this.obj)[
-      thisIndex
-    ].toString();
+    const extractKeyFromThisObj = Object.keys(this.obj)[thisIndex].toString();
     const extractValueFromThisObj = Object.values(this.obj)[
       thisIndex
     ].valueOf();
@@ -225,9 +223,7 @@ class C extends A<3.14 | -7.28> {
 }
 // Boolean constructor wrapper used since calling these methods without initializing them within a Class can throw errors
 console.log(Boolean(new B(0).truthyCheck)); // Returns True!
-console.log(
-  Boolean(new C(3.14, -7.28).crossCompareRebuiltThisAndSuperObjects)
-); // returns True!
+console.log(Boolean(new C(3.14, -7.28).crossCompareRebuiltThisAndSuperObjects)); // returns True!
 
 /**
  *
@@ -243,8 +239,7 @@ console.log(
   }
  */
 export type PropGetters<TObj extends Record<string, any>> = {
-  [TKey in string &
-    keyof TObj as `get${Capitalize<TKey>}`]: () => TObj[TKey];
+  [TKey in string & keyof TObj as `get${Capitalize<TKey>}`]: () => TObj[TKey];
 };
 
 // Record<string, any> extended by TObj to resolve a type error on line 16 in its absence
@@ -305,9 +300,7 @@ export class SetUtil<T> {
     arrayTwo = this.arrayTwo;
   }
   intersection<T>(arrayOne: T[], arrayTwo: T[]): Set<T> {
-    return new Set(
-      [...arrayOne].filter(value => arrayTwo.includes(value))
-    );
+    return new Set([...arrayOne].filter(value => arrayTwo.includes(value)));
   }
 
   /**
@@ -365,8 +358,7 @@ export type RequireAtLeastOne<T, Keys extends keyof T = keyof T> = Pick<
   Exclude<keyof T, Keys>
 > &
   {
-    [K in Keys]-?: Required<Pick<T, K>> &
-      Partial<Pick<T, Exclude<Keys, K>>>;
+    [K in Keys]-?: Required<Pick<T, K>> & Partial<Pick<T, Exclude<Keys, K>>>;
   }[Keys];
 
 /* Makes an interface with all optional values to accept ONLY one of them */
@@ -444,10 +436,10 @@ export type ImmutablePick<T, K extends keyof T> = {
   [P in K]: T[P];
 };
 
-export type __Either<
-  O extends Record<string, unknown>,
-  K extends Key
-> = Omit<O, K> &
+export type __Either<O extends Record<string, unknown>, K extends Key> = Omit<
+  O,
+  K
+> &
   {
     // Merge all but K
     [P in K]: ImmutablePick<O, P & keyof O>; // With K possibilities
@@ -471,9 +463,7 @@ export type _Strict<U, _U = U> = U extends unknown
   ? U & RecursiveConditional<_Record<Exclude<Keys<_U>, keyof U>, never>>
   : never;
 
-export type Strict<U extends Record<string, unknown>> = RawCompute<
-  _Strict<U>
->;
+export type Strict<U extends Record<string, unknown>> = RawCompute<_Strict<U>>;
 
 export type EitherStrict<
   O extends Record<string, unknown>,
@@ -498,7 +488,7 @@ export type Either<
   O extends Record<string, unknown>,
   K extends Key,
   strict extends 1
-  > = O extends unknown ? _Either<O, K, strict> : never;
+> = O extends unknown ? _Either<O, K, strict> : never;
 
 export interface ClassType<T = any> {
   new (...args: any[]): T;

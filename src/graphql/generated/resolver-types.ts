@@ -244,6 +244,7 @@ export type DateTimeNullableFilter = {
 
 export type Entry = Node & {
   __typename?: "Entry";
+  _count: EntryCount;
   attachments?: Maybe<Array<Maybe<MediaItem>>>;
   author?: Maybe<User>;
   authorId?: Maybe<Scalars["String"]>;
@@ -276,6 +277,11 @@ export type EntryConnection = {
   nodes?: Maybe<Array<Maybe<Entry>>>;
   /** https://facebook.github.io/relay/graphql/connections.htm#sec-undefined.PageInfo */
   pageInfo: PageInfo;
+};
+
+export type EntryCount = {
+  __typename?: "EntryCount";
+  comments: Scalars["Int"];
 };
 
 export type EntryEdge = {
@@ -1444,6 +1450,7 @@ export type ResolversTypes = ResolversObject<{
   DateTimeNullableFilter: DateTimeNullableFilter;
   Entry: ResolverTypeWrapper<Entry>;
   EntryConnection: ResolverTypeWrapper<EntryConnection>;
+  EntryCount: ResolverTypeWrapper<EntryCount>;
   EntryEdge: ResolverTypeWrapper<EntryEdge>;
   EntryListRelationFilter: EntryListRelationFilter;
   EntryOrderBy: EntryOrderBy;
@@ -1570,6 +1577,7 @@ export type ResolversParentTypes = ResolversObject<{
   DateTimeNullableFilter: DateTimeNullableFilter;
   Entry: Entry;
   EntryConnection: EntryConnection;
+  EntryCount: EntryCount;
   EntryEdge: EntryEdge;
   EntryListRelationFilter: EntryListRelationFilter;
   EntryOrderBy: EntryOrderBy;
@@ -1849,6 +1857,7 @@ export type EntryResolvers<
   ContextType = any,
   ParentType extends ResolversParentTypes["Entry"] = ResolversParentTypes["Entry"]
 > = ResolversObject<{
+  _count?: Resolver<ResolversTypes["EntryCount"], ParentType, ContextType>;
   attachments?: Resolver<
     Maybe<Array<Maybe<ResolversTypes["MediaItem"]>>>,
     ParentType,
@@ -1913,6 +1922,14 @@ export type EntryConnectionResolvers<
     ContextType
   >;
   pageInfo?: Resolver<ResolversTypes["PageInfo"], ParentType, ContextType>;
+  __isTypeOf?: IsTypeOfResolverFn<ParentType, ContextType>;
+}>;
+
+export type EntryCountResolvers<
+  ContextType = any,
+  ParentType extends ResolversParentTypes["EntryCount"] = ResolversParentTypes["EntryCount"]
+> = ResolversObject<{
+  comments?: Resolver<ResolversTypes["Int"], ParentType, ContextType>;
   __isTypeOf?: IsTypeOfResolverFn<ParentType, ContextType>;
 }>;
 
@@ -2500,6 +2517,7 @@ export type Resolvers<ContextType = any> = ResolversObject<{
   DateTime?: GraphQLScalarType;
   Entry?: EntryResolvers<ContextType>;
   EntryConnection?: EntryConnectionResolvers<ContextType>;
+  EntryCount?: EntryCountResolvers<ContextType>;
   EntryEdge?: EntryEdgeResolvers<ContextType>;
   Json?: GraphQLScalarType;
   MediaItem?: MediaItemResolvers<ContextType>;

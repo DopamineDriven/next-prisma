@@ -139,6 +139,7 @@ export type CommentEdgeFieldPolicy = {
   node?: FieldPolicy<any> | FieldReadFunction<any>;
 };
 export type EntryKeySpecifier = (
+  | "_count"
   | "attachments"
   | "author"
   | "authorId"
@@ -155,6 +156,7 @@ export type EntryKeySpecifier = (
   | EntryKeySpecifier
 )[];
 export type EntryFieldPolicy = {
+  _count?: FieldPolicy<any> | FieldReadFunction<any>;
   attachments?: FieldPolicy<any> | FieldReadFunction<any>;
   author?: FieldPolicy<any> | FieldReadFunction<any>;
   authorId?: FieldPolicy<any> | FieldReadFunction<any>;
@@ -179,6 +181,10 @@ export type EntryConnectionFieldPolicy = {
   edges?: FieldPolicy<any> | FieldReadFunction<any>;
   nodes?: FieldPolicy<any> | FieldReadFunction<any>;
   pageInfo?: FieldPolicy<any> | FieldReadFunction<any>;
+};
+export type EntryCountKeySpecifier = ("comments" | EntryCountKeySpecifier)[];
+export type EntryCountFieldPolicy = {
+  comments?: FieldPolicy<any> | FieldReadFunction<any>;
 };
 export type EntryEdgeKeySpecifier = (
   | "cursor"
@@ -561,6 +567,13 @@ export type StrictTypedTypePolicies = {
       | EntryConnectionKeySpecifier
       | (() => undefined | EntryConnectionKeySpecifier);
     fields?: EntryConnectionFieldPolicy;
+  };
+  EntryCount?: Omit<TypePolicy, "fields" | "keyFields"> & {
+    keyFields?:
+      | false
+      | EntryCountKeySpecifier
+      | (() => undefined | EntryCountKeySpecifier);
+    fields?: EntryCountFieldPolicy;
   };
   EntryEdge?: Omit<TypePolicy, "fields" | "keyFields"> & {
     keyFields?:

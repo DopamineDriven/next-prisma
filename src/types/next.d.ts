@@ -8,12 +8,8 @@ import type {
 } from "@apollo/client";
 import { ResolverContext } from "@/apollo/resolver-context";
 // import { AuthData } from "@/hooks/use-auth";
-import { Session } from "next-auth"
-
-
-export enum ViewerStatus {
-  authenticated= "authenticated", loading="loading",  unauthenticated="unauthenticated"
-}
+import { Session } from "next-auth";
+import { ViewerStatus } from "./enums";
 
 declare module "next/app" {
   type AppProps<P = Record<string, unknown>> = {
