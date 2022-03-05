@@ -11,6 +11,7 @@ export { default as BellIcon } from "./bell";
 export { default as Clock } from "./clock";
 export { default as Engagement } from "./engagement";
 export { default as GitHubNav } from "./github-nav";
+export { default as GitlabIcon } from "./gitlab";
 export { default as HorizontalWave } from "./horizontal-wave";
 export { default as LockClosedIcon } from "./lock-closed";
 export { default as Logo } from "./logo";
@@ -22,6 +23,7 @@ export { default as Search } from "./search";
 export { default as Users } from "./users";
 export { default as XIcon } from "./x-icon";
 export { default as Vercel } from "./vercel";
+export { default as TwitterLogin } from "./twitter-login";
 export const { ApplePay, Basket, Cart, SpotCard } = CommerceScaffold;
 export const {
   Discord,

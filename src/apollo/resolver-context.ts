@@ -1,9 +1,7 @@
 import { ServerResponse, IncomingMessage } from "http";
 import { BatchHttpLink } from "@apollo/client/link/batch-http";
 import { onError } from "@apollo/client/link/error";
-import {
-  Resolvers
-} from "@/graphql/generated/graphql";
+import { Resolvers } from "@/graphql/generated/graphql";
 import { ApolloLink, FetchResult } from "@apollo/client";
 
 export interface ResolverContext {
@@ -22,10 +20,7 @@ const envEndpoint =
     ? "http://localhost:3000/graphql"
     : "http://[::1]:3000/graphql";
 
-export const enhancedFetch = async (
-  url: RequestInfo,
-  init: RequestInit
-) => {
+export const enhancedFetch = async (url: RequestInfo, init: RequestInit) => {
   return await fetch(url, {
     ...init,
     headers: {
@@ -49,6 +44,7 @@ export function createBatch<T extends ResolverContext>(context?: T) {
     },
     fetch: enhancedFetch,
     headers: {
+      Authorization: "Bearer ".concat(`${process.env.TWITTER_BEARER_TOKEN}`),
       "Accept-Encoding": "gzip, deflate, br",
       "Transfer-Encoding": "chunked",
       "Content-Type": "application/json",
@@ -60,15 +56,14 @@ export function createBatch<T extends ResolverContext>(context?: T) {
 
 export const errorLink = onError(({ graphQLErrors, networkError }) => {
   if (graphQLErrors)
-    graphQLErrors.forEach(
-      ({ message, locations, path, extensions }, index) =>
-        console.log(
-          JSON.stringify(
-            `[${index++}]: \n [Message]: ${message}, \n [Location]: ${locations}, \n [Path]: ${path}, \n [Extension]: ${extensions}`,
-            null,
-            2
-          )
+    graphQLErrors.forEach(({ message, locations, path, extensions }, index) =>
+      console.log(
+        JSON.stringify(
+          `[${index++}]: \n [Message]: ${message}, \n [Location]: ${locations}, \n [Path]: ${path}, \n [Extension]: ${extensions}`,
+          null,
+          2
         )
+      )
     );
   if (networkError)
     console.log(
@@ -87,9 +82,7 @@ const isBrowser = typeof window !== "undefined";
 
 export const nextNestMiddleware = new ApolloLink((operation, forward) => {
   // if session exists in LS, set value as session header
-  const token = isBrowser
-    ? window.localStorage.getItem("authorization")
-    : "";
+  const token = isBrowser ? window.localStorage.getItem("authorization") : "";
   if (token) {
     operation.setContext(({ headers = {} }) => ({
       headers: {
@@ -109,7 +102,7 @@ export const nextNestAfterware = new ApolloLink((operation, forward) => {
     const {
       response: { headers, cookies }
     } = context;
-    console.log("coooookies "+cookies ?? "no cookies :'(")
+    console.log("coooookies " + cookies ?? "no cookies :'(");
     const session = headers.get("authorization");
     if (session && isBrowser) {
       if (window.localStorage.getItem("authorization") !== session) {
