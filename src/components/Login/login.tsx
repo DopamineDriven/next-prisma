@@ -2,7 +2,7 @@ import Image from "next/image";
 import { Anchor } from "../UI";
 import Link from "next/link";
 import css from "./login.module.css";
-import { Google, GitHub, Vercel } from "@/components/Icons";
+import { Google, GitHub, Logo } from "@/components/Icons";
 import { signIn } from "node_modules/next-auth/react";
 import { useRouter } from "next/router";
 import { GoogleProfile } from "next-auth/providers/google";
@@ -19,7 +19,7 @@ export default function Login() {
           <div>
             <Link href='/' as='/' scroll={true} passHref={true}>
               <Anchor id='/#' className='focus:outline-none'>
-                <Vercel className={`${css.logo}`} />
+                <Logo className={`${css.logo}`} />
               </Anchor>
             </Link>
             <h2 className='mt-6 text-3xl font-extrabold font-sans text-gray-900'>
@@ -59,7 +59,7 @@ export default function Login() {
                         data-active={isActive("/signup")}
                         onClick={e => {
                           e.preventDefault();
-                          signIn<RedirectableProviderType>("github")
+                          signIn<RedirectableProviderType>("github");
                         }}
                         className='w-full inline-flex justify-center py-2 px-4 border border-gray-300 rounded-md shadow-sm bg-white text-sm font-medium text-gray-500 hover:bg-gray-50'>
                         <span className='sr-only'>Sign in with GitHub</span>

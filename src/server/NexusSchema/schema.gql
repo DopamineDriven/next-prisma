@@ -232,6 +232,7 @@ input DateTimeNullableFilter {
 }
 
 type Entry implements Node {
+  _count: EntryCount!
   attachments: [MediaItem]
   author: User
   authorId: String
@@ -284,6 +285,10 @@ type EntryConnection {
   https://facebook.github.io/relay/graphql/connections.htm#sec-undefined.PageInfo
   """
   pageInfo: PageInfo!
+}
+
+type EntryCount {
+  comments: Int!
 }
 
 type EntryEdge {

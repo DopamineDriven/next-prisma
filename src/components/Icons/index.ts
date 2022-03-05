@@ -6,13 +6,14 @@ export { default as Commerce } from "./Commerce";
 export { default as Company } from "./Company";
 export { default as Directional } from "./Directional";
 export { default as Dashboard } from "./Dashboard";
-export {default as Analytics} from "./analytics"
+export { default as Analytics } from "./analytics";
 export { default as BellIcon } from "./bell";
 export { default as Clock } from "./clock";
 export { default as Engagement } from "./engagement";
 export { default as GitHubNav } from "./github-nav";
 export { default as HorizontalWave } from "./horizontal-wave";
 export { default as LockClosedIcon } from "./lock-closed";
+export { default as Logo } from "./logo";
 export { default as Mail } from "./mail";
 export { default as MenuIcon } from "./menu-icon";
 export { default as PaperClip } from "./paper-clip";

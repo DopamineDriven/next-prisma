@@ -1,0 +1,9 @@
+fragment BioPartial on Bio {
+  headline
+  intro
+  body
+  status
+  createdAt
+  updatedAt
+  __typename
+}

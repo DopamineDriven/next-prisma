@@ -24,18 +24,37 @@ import {
   MediaItemListRelationFilter
 } from ".";
 import { nodeDefinitions } from "graphql-relay";
+import { Prisma } from "@prisma/client";
 
 export const Entry: core.NexusObjectTypeDef<"Entry"> = objectType({
   name: "Entry",
   definition(t) {
     t.implements("Node");
+    t.nonNull.field("_count", {
+      type: EntryCount,
+      resolve: async (source, _, ctx, info) => {
+        return await ctx.prisma.entry
+          .findFirst({
+            cursor: { id: source.id },
+            where: { id: source.id },
+            include: {
+              comments: true,
+              _count: true
+            }
+          })
+          .then(data => {
+            return data?._count as Prisma.EntryCountOutputType;
+          });
+      }
+    });
     t.string("title");
     t.nullable.string("content");
     t.nullable.field("featuredImage", { type: MediaItem });
     t.boolean("published");
     t.list.field("reactions", { type: Reaction });
     t.list.field("categories", {
-      type: CategoryObject});
+      type: CategoryObject
+    });
     t.list.field("attachments", {
       type: MediaItem
     });
@@ -51,6 +70,7 @@ export const Entry: core.NexusObjectTypeDef<"Entry"> = objectType({
       async resolve(parent, _args, ctx, _info) {
         return await ctx.prisma.entry
           .findFirst({
+            include: { comments: true, _count: true },
             where: {
               author: { id: String(parent.authorId) }
             }
@@ -170,6 +190,14 @@ export const EntryMutation: core.NexusExtendTypeDef<"Mutation"> =
     }
   });
 // Input Types
+
+export const EntryCount: core.NexusObjectTypeDef<"EntryCount"> =
+  core.objectType<"EntryCount">({
+    name: "EntryCount",
+    definition(t) {
+      t.nonNull.int("comments");
+    }
+  });
 
 export const EntryListRelationFilter = core.inputObjectType({
   name: "EntryListRelationFilter",

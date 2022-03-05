@@ -258,6 +258,7 @@ export type DateTimeNullableFilter = {
 
 export type Entry = Node & {
   __typename?: "Entry";
+  _count: FieldWrapper<EntryCount>;
   attachments?: Maybe<Array<Maybe<FieldWrapper<MediaItem>>>>;
   author?: Maybe<FieldWrapper<User>>;
   authorId?: Maybe<FieldWrapper<Scalars["String"]>>;
@@ -290,6 +291,11 @@ export type EntryConnection = {
   nodes?: Maybe<Array<Maybe<FieldWrapper<Entry>>>>;
   /** https://facebook.github.io/relay/graphql/connections.htm#sec-undefined.PageInfo */
   pageInfo: FieldWrapper<PageInfo>;
+};
+
+export type EntryCount = {
+  __typename?: "EntryCount";
+  comments: FieldWrapper<Scalars["Int"]>;
 };
 
 export type EntryEdge = {
@@ -1347,6 +1353,23 @@ export const AccountEdgePartial = gql`
     __typename
   }
 `;
+export const BioPartial = gql`
+  fragment BioPartial on Bio {
+    headline
+    intro
+    body
+    status
+    createdAt
+    updatedAt
+    __typename
+  }
+`;
+export const EntryCountPartial = gql`
+  fragment EntryCountPartial on EntryCount {
+    comments
+    __typename
+  }
+`;
 export const EntryPartial = gql`
   fragment EntryPartial on Entry {
     id
@@ -1394,6 +1417,24 @@ export const PageInfoPartial = gql`
     hasNextPage
     hasPreviousPage
     startCursor
+    __typename
+  }
+`;
+export const ProfilePartial = gql`
+  fragment ProfilePartial on Profile {
+    id
+    userId
+    memberSince
+    dob
+    phoneNumber
+    gender
+    pronouns
+    lastSeen
+    occupation
+    city
+    country
+    activityFeed
+    recentActivity
     __typename
   }
 `;
@@ -1596,6 +1637,7 @@ export type ResolversTypes = ResolversObject<{
   >;
   Entry: ResolverTypeWrapper<DeepPartial<Entry>>;
   EntryConnection: ResolverTypeWrapper<DeepPartial<EntryConnection>>;
+  EntryCount: ResolverTypeWrapper<DeepPartial<EntryCount>>;
   EntryEdge: ResolverTypeWrapper<DeepPartial<EntryEdge>>;
   EntryListRelationFilter: ResolverTypeWrapper<
     DeepPartial<EntryListRelationFilter>
@@ -1790,6 +1832,7 @@ export type ResolversParentTypes = ResolversObject<{
   DateTimeNullableFilter: DeepPartial<DateTimeNullableFilter>;
   Entry: DeepPartial<Entry>;
   EntryConnection: DeepPartial<EntryConnection>;
+  EntryCount: DeepPartial<EntryCount>;
   EntryEdge: DeepPartial<EntryEdge>;
   EntryListRelationFilter: DeepPartial<EntryListRelationFilter>;
   EntryOrderBy: DeepPartial<EntryOrderBy>;
@@ -2069,6 +2112,7 @@ export type EntryResolvers<
   ContextType = any,
   ParentType extends ResolversParentTypes["Entry"] = ResolversParentTypes["Entry"]
 > = ResolversObject<{
+  _count?: Resolver<ResolversTypes["EntryCount"], ParentType, ContextType>;
   attachments?: Resolver<
     Maybe<Array<Maybe<ResolversTypes["MediaItem"]>>>,
     ParentType,
@@ -2133,6 +2177,14 @@ export type EntryConnectionResolvers<
     ContextType
   >;
   pageInfo?: Resolver<ResolversTypes["PageInfo"], ParentType, ContextType>;
+  __isTypeOf?: IsTypeOfResolverFn<ParentType, ContextType>;
+}>;
+
+export type EntryCountResolvers<
+  ContextType = any,
+  ParentType extends ResolversParentTypes["EntryCount"] = ResolversParentTypes["EntryCount"]
+> = ResolversObject<{
+  comments?: Resolver<ResolversTypes["Int"], ParentType, ContextType>;
   __isTypeOf?: IsTypeOfResolverFn<ParentType, ContextType>;
 }>;
 
@@ -2720,6 +2772,7 @@ export type Resolvers<ContextType = any> = ResolversObject<{
   DateTime?: GraphQLScalarType;
   Entry?: EntryResolvers<ContextType>;
   EntryConnection?: EntryConnectionResolvers<ContextType>;
+  EntryCount?: EntryCountResolvers<ContextType>;
   EntryEdge?: EntryEdgeResolvers<ContextType>;
   Json?: GraphQLScalarType;
   MediaItem?: MediaItemResolvers<ContextType>;
@@ -2769,6 +2822,21 @@ export type AccountEdgePartialFragment = {
   cursor: string;
 };
 
+export type BioPartialFragment = {
+  __typename: "Bio";
+  headline?: string | null;
+  intro?: string | null;
+  body?: string | null;
+  status?: string | null;
+  createdAt?: Date | null;
+  updatedAt?: Date | null;
+};
+
+export type EntryCountPartialFragment = {
+  __typename: "EntryCount";
+  comments: number;
+};
+
 export type EntryPartialFragment = {
   __typename: "Entry";
   id: string;
@@ -2813,6 +2881,23 @@ export type PageInfoPartialFragment = {
   hasNextPage: boolean;
   hasPreviousPage: boolean;
   startCursor?: string | null;
+};
+
+export type ProfilePartialFragment = {
+  __typename: "Profile";
+  id: string;
+  userId?: string | null;
+  memberSince?: Date | null;
+  dob?: typeof GraphQLDate | null;
+  phoneNumber?: typeof String | null;
+  gender?: Gender | null;
+  pronouns?: Pronouns | null;
+  lastSeen?: Date | null;
+  occupation?: string | null;
+  city?: string | null;
+  country?: string | null;
+  activityFeed?: string | null;
+  recentActivity?: string | null;
 };
 
 export type SessionPartialFragment = {
@@ -2877,6 +2962,23 @@ export const AccountEdgePartialFragmentDoc = gql`
     __typename
   }
 `;
+export const BioPartialFragmentDoc = gql`
+  fragment BioPartial on Bio {
+    headline
+    intro
+    body
+    status
+    createdAt
+    updatedAt
+    __typename
+  }
+`;
+export const EntryCountPartialFragmentDoc = gql`
+  fragment EntryCountPartial on EntryCount {
+    comments
+    __typename
+  }
+`;
 export const EntryPartialFragmentDoc = gql`
   fragment EntryPartial on Entry {
     id
@@ -2927,6 +3029,24 @@ export const PageInfoPartialFragmentDoc = gql`
     __typename
   }
 `;
+export const ProfilePartialFragmentDoc = gql`
+  fragment ProfilePartial on Profile {
+    id
+    userId
+    memberSince
+    dob
+    phoneNumber
+    gender
+    pronouns
+    lastSeen
+    occupation
+    city
+    country
+    activityFeed
+    recentActivity
+    __typename
+  }
+`;
 export const SessionPartialFragmentDoc = gql`
   fragment SessionPartial on Session {
     id
@@ -2973,10 +3093,13 @@ export const namedOperations = {
   Fragment: {
     AccountPartial: "AccountPartial",
     AccountEdgePartial: "AccountEdgePartial",
+    BioPartial: "BioPartial",
+    EntryCountPartial: "EntryCountPartial",
     EntryPartial: "EntryPartial",
     EntryEdgePartial: "EntryEdgePartial",
     MediaItemPartial: "MediaItemPartial",
     PageInfoPartial: "PageInfoPartial",
+    ProfilePartial: "ProfilePartial",
     SessionPartial: "SessionPartial",
     SessionEdgePartial: "SessionEdgePartial",
     UserCountPartial: "UserCountPartial",

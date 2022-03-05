@@ -1,0 +1,4 @@
+fragment EntryCountPartial on EntryCount {
+  comments
+  __typename
+}

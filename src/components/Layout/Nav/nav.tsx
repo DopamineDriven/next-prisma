@@ -5,8 +5,8 @@ import {
   ChevronDown,
   Engagement,
   GitHubNav,
+  Logo,
   MenuIcon,
-  TypeScript,
   Users,
   XIcon
 } from "@/components/Icons";
@@ -20,8 +20,9 @@ import { SVGAttribs } from "@/types/mapped";
 import { blurDataURLShimmer } from "@/lib/shimmer";
 import { signOut, useSession } from "next-auth/react";
 import { Session } from "next-auth";
+import { ViewerStatus } from "@/types/enums";
 
-type HubSpotProps = {
+export type UnderPressurePropsIeConstruction = {
   name: string;
   href: string;
   icon: ({
@@ -33,7 +34,7 @@ type HubSpotProps = {
   current: boolean;
 };
 
-type GitHubProps = {
+export type GitHubProps = {
   name: string;
   href: string;
   description: string;
@@ -67,7 +68,7 @@ const github: GitHubProps[] = [
   }
 ];
 
-const hubspot: HubSpotProps[] = [
+const hubspot: UnderPressurePropsIeConstruction[] = [
   {
     name: "Home",
     href: "/github",
@@ -103,20 +104,9 @@ const userNavigation = [
   { name: "Sign out", href: "/api/auth/[...nextauth]", as: "/api/auth/signout" }
 ];
 
-const ViewsAuth = [
-  {
-    title: "Profile",
-    href: "/profile"
-  },
-  {
-    title: "Sign Out",
-    href: "/api/auth/signout"
-  }
-];
-
 export type NavProps = {
   data?: Session | null;
-  status: "authenticated" | "unauthenticated" | "loading";
+  status: keyof typeof ViewerStatus;
 };
 const GlobalNav = ({ data: user, status: statusSession }: NavProps) => {
   const { data: data = user, status: status = statusSession } = useSession();
@@ -155,8 +145,8 @@ const GlobalNav = ({ data: user, status: statusSession }: NavProps) => {
           <Link href='/' passHref={true} scroll={true}>
             <a data-active='/' id='/' className='flex'>
               <span className='sr-only'>AR</span>
-              <TypeScript
-                className={cn("block relative sm:h-10 md:not-sr-only", {
+              <Logo
+                className={cn("block relative md:not-sr-only", {
                   "sr-only md:not-sr-only": !menuOpen,
                   "not-sr-only": !!menuOpen
                 })}
