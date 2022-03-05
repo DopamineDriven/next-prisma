@@ -27,9 +27,7 @@ const Discord = ({
   );
 };
 
-const Facebook = ({
-  ...props
-}: SVGAttribs<"className" | "aria-hidden">) => {
+const Facebook = ({ ...props }: SVGAttribs<"className" | "aria-hidden">) => {
   return (
     <svg
       xmlns='http://www.w3.org/2000/svg'
@@ -52,6 +50,7 @@ const GitHub = ({
 }: SVGAttribs<"className" | "aria-hidden" | "width" | "height">) => {
   return (
     <svg
+      focusable={"false"}
       width='20'
       height='20'
       viewBox='0 0 24 24'
@@ -71,6 +70,7 @@ const Google = ({
 }: SVGAttribs<"className" | "aria-hidden" | "width" | "height">) => {
   return (
     <svg
+      focusable={"false"}
       width='20'
       height='20'
       viewBox='0 0 256 262'
@@ -97,9 +97,7 @@ const Google = ({
   );
 };
 
-const Hubspot = ({
-  ...props
-}: SVGAttribs<"className" | "aria-hidden">) => {
+const Hubspot = ({ ...props }: SVGAttribs<"className" | "aria-hidden">) => {
   return (
     <svg
       {...props}
@@ -118,9 +116,7 @@ const Hubspot = ({
   );
 };
 
-const Instagram = ({
-  ...props
-}: SVGAttribs<"className" | "aria-hidden">) => {
+const Instagram = ({ ...props }: SVGAttribs<"className" | "aria-hidden">) => {
   return (
     <svg
       xmlns='http://www.w3.org/2000/svg'
@@ -140,9 +136,7 @@ const Instagram = ({
   );
 };
 
-const LinkedIn = ({
-  ...props
-}: SVGAttribs<"className" | "aria-hidden">) => {
+const LinkedIn = ({ ...props }: SVGAttribs<"className" | "aria-hidden">) => {
   return (
     <svg
       xmlns='http://www.w3.org/2000/svg'
@@ -178,9 +172,7 @@ const StackOverflow = ({
   );
 };
 
-const Twitter = ({
-  ...props
-}: SVGAttribs<"className" | "aria-hidden">) => {
+const Twitter = ({ ...props }: SVGAttribs<"className" | "aria-hidden">) => {
   return (
     <svg
       xmlns='http://www.w3.org/2000/svg'
@@ -252,9 +244,7 @@ const TypeScript = ({
   );
 };
 
-const YouTube = ({
-  ...props
-}: SVGAttribs<"className" | "aria-hidden">) => {
+const YouTube = ({ ...props }: SVGAttribs<"className" | "aria-hidden">) => {
   return (
     <svg
       width='24'

@@ -195,7 +195,7 @@ const GlobalNav = ({ data: user, status: statusSession }: NavProps) => {
                       open ? "text-gray-900" : "text-gray-500",
                       "group bg-white rounded-md inline-flex items-center text-base font-medium hover:text-gray-900 focus:outline-none focus:ring-2 focus:ring-offset-2 focus:ring-indigo-500"
                     )}>
-                    <span>HubSpot</span>
+                    <span>About</span>
                     <ChevronDown
                       className={cn(
                         open ? "text-gray-600" : "text-gray-400",
@@ -269,12 +269,12 @@ const GlobalNav = ({ data: user, status: statusSession }: NavProps) => {
             <a
               href='#'
               className='text-base font-medium text-gray-500 hover:text-gray-900'>
-              Campaigns
+              Blog
             </a>
             <a
               href='#'
               className='text-base font-medium text-gray-500 hover:text-gray-900'>
-              Teams
+              Integrations
             </a>
             <Popover className='relative'>
               {({ open }) => (
@@ -348,7 +348,7 @@ const GlobalNav = ({ data: user, status: statusSession }: NavProps) => {
                       className='w-8 h-8 rounded-full'
                       src={
                         status === "unauthenticated"
-                          ? "/archer.gif"
+                          ? "/dope-bg.avif"
                           : status === "authenticated"
                           ? `${data?.user.image}`
                           : "/archer.gif"

@@ -14,5 +14,76 @@
   }
 }
 .logo {
-  @apply block h-12 z-50 w-auto;
+  @apply absolute origin-top-left -left-5 -top-64 h-12 z-50 w-auto scale-[2.5] rounded-full;
+  & > *:nth-child(2n + 1) {
+    @apply stroke-gray-400 filter blur backdrop-blur-lg backdrop-filter motion-safe:animate-pulse
+    bg-clip-border rounded-full stroke-[1.5] ring-inset motion-safe:animate-slowPing;
+  }
+  & > *:nth-child(2n + 2) {
+    @apply stroke-gray-300 stroke-[1.25] shadow-magical;
+  }
+}
+
+.mapped {
+  @apply mt-1 grid grid-cols-4;
+  & > *:nth-child(4n + 1) {
+    @apply absolute left-0;
+    & > a {
+      @apply appearance-none w-auto scale-[1.125] inline-flex justify-center p-1.5 border
+    border-gray-300 rounded-md shadow-sm bg-transparent text-sm font-medium text-gray-500
+    hover:bg-gray-50 hover:scale-[1.025] hover:ease-in-out;
+      & > *:nth-child(2n + 1) {
+        @apply sr-only;
+      }
+      & > *:nth-child(2n + 2) {
+        @apply hover:scale-[1.025] grayscale hover:duration-200 hover:bg-opacity-[80]
+      hover:ease-in-out hover:shadow-magical;
+      }
+    }
+  }
+  & > *:nth-child(4n + 2) {
+    @apply relative left-[6rem];
+    & > a {
+      @apply appearance-none w-auto scale-[1.125] inline-flex justify-center p-1.5 border
+    border-gray-300 rounded-md shadow-sm bg-transparent text-sm font-medium text-gray-500
+    hover:bg-gray-50 hover:scale-[1.025] hover:ease-in-out;
+      & > *:nth-child(2n + 1) {
+        @apply sr-only;
+      }
+      & > *:nth-child(2n + 2) {
+        @apply hover:scale-[1.025] grayscale hover:duration-200 hover:bg-opacity-[80]
+      hover:ease-in-out hover:shadow-magical;
+      }
+    }
+  }
+  & > *:nth-child(4n + 3) {
+    @apply absolute left-[12rem];
+    & > a {
+      @apply appearance-none w-auto scale-[1.125] inline-flex justify-center p-1.5 border
+    border-gray-300 rounded-md shadow-sm bg-transparent text-sm font-medium text-gray-500
+    hover:bg-gray-50 hover:scale-[1.025] hover:ease-in-out;
+      & > *:nth-child(2n + 1) {
+        @apply sr-only;
+      }
+      & > *:nth-child(2n + 2) {
+        @apply hover:scale-[1.025] grayscale hover:duration-200 hover:bg-opacity-[80]
+      hover:ease-in-out hover:shadow-magical;
+      }
+    }
+  }
+  & > *:nth-child(4n + 4) {
+    @apply absolute left-[18rem];
+    & > a {
+      @apply appearance-none w-auto scale-[1.125] inline-flex justify-center p-1.5 border
+    border-gray-300 rounded-md shadow-sm bg-transparent text-sm font-medium text-gray-500
+    hover:bg-gray-50 hover:scale-[1.025] hover:ease-in-out;
+      & > *:nth-child(2n + 1) {
+        @apply sr-only;
+      }
+      & > *:nth-child(2n + 2) {
+        @apply hover:scale-[1.025] grayscale hover:duration-200 hover:bg-opacity-[80]
+      hover:ease-in-out hover:shadow-magical;
+      }
+    }
+  }
 }
