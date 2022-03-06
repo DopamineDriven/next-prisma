@@ -187,6 +187,7 @@ export const UserExtended: core.NexusExtendTypeDef<"Query"> =
           });
         }
       });
+
       // t.field("allUsers", {
       //   type: "UserConnection",
       //   args: {
@@ -221,6 +222,11 @@ export const UserExtended: core.NexusExtendTypeDef<"Query"> =
       });
     }
   });
+
+export class UserResolver {
+  constructor(public queryExtended: core.NexusExtendTypeDef<"Query">) {}
+  async findUserByRelayId() {}
+}
 /**
  *     // t.field<"accounts">("accounts", {
     //   type: "AccountConnection",

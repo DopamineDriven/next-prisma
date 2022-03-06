@@ -13,7 +13,6 @@ export class UserService {
     if (!user) {
       throw new Error("could not find user with id: " + params.id);
     }
-
     return user;
   }
 
