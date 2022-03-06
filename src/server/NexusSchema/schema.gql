@@ -1469,7 +1469,7 @@ type User implements Node {
     """
     last: Int
   ): CommentConnection
-  email: String
+  email: String!
   emailVerified: DateTime
   entries(
     """

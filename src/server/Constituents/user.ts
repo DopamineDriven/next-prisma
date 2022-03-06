@@ -55,7 +55,7 @@ export const User: core.NexusObjectTypeDef<"User"> = core.objectType({
           });
       }
     });
-    t.string("email");
+    t.nonNull.string("email");
     t.nullable.string("image");
     t.nullable.string("name", {
       resolve(root) {
@@ -223,10 +223,6 @@ export const UserExtended: core.NexusExtendTypeDef<"Query"> =
     }
   });
 
-export class UserResolver {
-  constructor(public queryExtended: core.NexusExtendTypeDef<"Query">) {}
-  async findUserByRelayId() {}
-}
 /**
  *     // t.field<"accounts">("accounts", {
     //   type: "AccountConnection",
