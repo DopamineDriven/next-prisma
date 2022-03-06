@@ -113,6 +113,7 @@ export const nextNestAfterware = new ApolloLink((operation, forward) => {
         );
       }
     }
+    console.log(response ?? "");
     return response;
   });
 });

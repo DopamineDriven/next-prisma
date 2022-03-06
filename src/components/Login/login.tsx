@@ -15,7 +15,7 @@ import { GoogleProfile } from "next-auth/providers/google";
 import { RedirectableProviderType } from "next-auth/providers";
 import { Url } from "url";
 import { SVGAttribs } from "@/types/mapped";
-import Bg from "../../../public/stock.jpg";
+import Bg from "../../../public/dope-bg.avif";
 import cn from "classnames";
 
 export type DynamicCase<T extends string> =
@@ -132,7 +132,7 @@ export default function Login() {
               <div>
                 <div className={css.mapped}>
                   {authPropsPopulated.map((value, p) => (
-                    <div key={++p * 4 ** (1 / ++p)}>
+                    <div key={`${p++}:${value.providerName}`}>
                       <Link
                         href='/api/auth/[...nextauth]'
                         as={value.as}
@@ -170,11 +170,11 @@ export default function Login() {
           </div>
         </div>
       </div>
-      <div className=' relative w-0 flex-1 filter -right-36 grayscale mix-blend-color-burn   brightness-[1.825] overflow-hidden bg-gradient-to-r from-stone-400 via-gray-600 to-stone-400 '>
+      <div className=' relative w-0 flex-1 filter  grayscale mix-blend-color-burn   brightness-[1.925] overflow-hidden bg-gradient-to-r from-stone-400 via-gray-600 to-stone-400 '>
         <Image
           width={Bg.width}
-          layout='responsive'
-          objectFit='cover'
+          layout='intrinsic'
+          objectFit='contain'
           blurDataURL={Bg.blurDataURL}
           placeholder='blur'
           height={Bg.height}

@@ -1145,7 +1145,7 @@ export interface NexusGenFieldTypes {
     _count: NexusGenRootTypes["UserCount"]; // UserCount!
     accounts: NexusGenRootTypes["AccountConnection"] | null; // AccountConnection
     comments: NexusGenRootTypes["CommentConnection"] | null; // CommentConnection
-    email: string | null; // String
+    email: string; // String!
     emailVerified: NexusGenScalars["DateTime"] | null; // DateTime
     entries: NexusGenRootTypes["EntryConnection"] | null; // EntryConnection
     id: string; // String!
