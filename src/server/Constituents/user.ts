@@ -55,7 +55,12 @@ export const User: core.NexusObjectTypeDef<"User"> = core.objectType({
           });
       }
     });
-    t.nonNull.string("email");
+    t.nullable.field("email", {
+      type: "String",
+      resolve(root) {
+        return root.email ? root.email : null;
+      }
+    });
     t.nullable.string("image");
     t.nullable.string("name", {
       resolve(root) {

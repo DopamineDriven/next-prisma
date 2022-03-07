@@ -71,6 +71,7 @@ module.exports = withSuperjson()({
     domains: [
       "avatars.githubusercontent.com",
       "secure.gravatar.com",
+      "pbs.twimg.com",
       "en.gravatar.com",
       "c.tenor.com",
       "unsplash.com",
