@@ -5,7 +5,26 @@ import GoogleProvider from "next-auth/providers/google";
 import TwitterProvider from "next-auth/providers/twitter";
 import { PrismaAdapter } from "@next-auth/prisma-adapter/dist/index";
 import prisma from "../../../server/Context/prisma";
-
+import { User } from "@prisma/client";
+export interface TwitterUserCallback {
+  profile: {
+    id: string;
+    name: string;
+    email: null;
+    username: string;
+    image: string;
+  };
+  account: {
+    provider: string;
+    type: string;
+    providerAccountId: string;
+    token_type: string;
+    expires_at: number;
+    access_token: string;
+    scope: string;
+    refresh_token: string;
+  };
+}
 const authHandler: NextApiHandler<NextAuthOptions> = (req, res) =>
   NextAuth(req, res, options);
 
@@ -21,14 +40,24 @@ const options: NextAuthOptions = {
       clientId: process.env.GITHUB_ID,
       clientSecret: process.env.GITHUB_SECRET
     }),
-    TwitterProvider({
+    TwitterProvider<TwitterUserCallback>({
       clientId: process.env.TWITTER_CLIENT_ID ?? "",
       clientSecret: process.env.TWITTER_CLIENT_SECRET ?? "",
       version: "2.0"
     })
   ],
   debug: true,
-  logger: { debug: (code, metadata) => ({ code, metadata }) },
+  logger: {
+    error(code, ...message) {
+      console.error(code, message);
+    },
+    warn(code, ...message) {
+      console.warn(code, message);
+    },
+    debug(code, ...message) {
+      console.debug(code, message);
+    }
+  },
   adapter: PrismaAdapter(prisma),
   session: {
     updateAge: 120,
@@ -39,6 +68,7 @@ const options: NextAuthOptions = {
     maxAge: 30 * 24 * 60 * 60
     /** Override this method to control the NextAuth.js issued JWT encoding. */
   },
+
   secret: process.env.NEXTAUTH_SECRET
 };
 // accessTokenUrl: "https://github.com/login/oauth/access_token",

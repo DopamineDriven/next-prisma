@@ -11,7 +11,7 @@ generator client {
 model User {
   id            String      @id @default(auto()) @map("_id") @db.ObjectId
   name          String?
-  email         String      @unique
+  email         String?      @unique
   image         String?     @default("https://dev-to-uploads.s3.amazonaws.com/uploads/articles/g4apn65eo8acy988pfhb.gif")
   imageMeta     MediaItem?
   role          Role?       @default(USER)
@@ -133,7 +133,7 @@ type Bio {
 }
 
 type MediaItem {
-  id               String 
+  id               String
   uploadedAt       DateTime              @default(now())
   updatedAt        DateTime?
   filename         String?
