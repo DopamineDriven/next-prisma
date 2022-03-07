@@ -110,7 +110,7 @@ export type NavProps = {
 };
 const GlobalNav = ({ data: user, status: statusSession }: NavProps) => {
   const { data: data = user, status: status = statusSession } = useSession();
-  const [menuOpen, setMenuOpen] = useState(false);
+  const [menuOpen, setMenuOpen] = useState(true);
   const [hasScrolled, setHasScrolled] = useState(false);
   const router = useRouter();
 
@@ -139,7 +139,7 @@ const GlobalNav = ({ data: user, status: statusSession }: NavProps) => {
       <div
         className={cn(
           css.stickyNav,
-          "flex justify-between items-center px-4 py-6 sm:px-6 md:justify-start md:space-x-10"
+          "flex justify-between items-center px-4 py-6 sm:px-6 md:justify-start md:space-x-10 lg:mx-14"
         )}>
         <div>
           <Link href='/' passHref={true} scroll={true}>
@@ -155,7 +155,7 @@ const GlobalNav = ({ data: user, status: statusSession }: NavProps) => {
           </Link>
         </div>
         <div className='-mr-2 -my-2 md:hidden'>
-          {menuOpen === true ? (
+          {menuOpen !== false ? (
             <Popover.Button
               as='button'
               className='bg-white rounded-md p-2 inline-flex items-center justify-center text-gray-400 hover:text-gray-500 hover:bg-gray-100 focus:outline-none focus:ring-2 focus:ring-inset focus:ring-indigo-500'>
