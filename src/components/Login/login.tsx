@@ -1,5 +1,4 @@
 import Image from "next/image";
-import { Anchor } from "../UI";
 import Link from "next/link";
 import css from "./login.module.css";
 import {
@@ -7,13 +6,12 @@ import {
   GitHub,
   Logo,
   TwitterLogin,
-  GitlabIcon
+  GitlabIcon,
+  MediumIcon
 } from "@/components/Icons";
 import { signIn } from "node_modules/next-auth/react";
 import { useRouter } from "next/router";
-import { GoogleProfile } from "next-auth/providers/google";
 import { RedirectableProviderType } from "next-auth/providers";
-import { Url } from "url";
 import { SVGAttribs } from "@/types/mapped";
 import Bg from "../../../public/dope-bg.avif";
 import cn from "classnames";
@@ -24,7 +22,6 @@ export type DynamicCase<T extends string> =
   | Uppercase<T>;
 
 export type LoginProviderProps = {
-  as?: Omit<Url["path"], "null">;
   providerName: string;
   svg: ({
     ...props
@@ -35,7 +32,6 @@ export type LoginProviderProps = {
 
 export const authPropsPopulated: Array<LoginProviderProps> = [
   {
-    as: `/api/auth/signin/github`,
     providerName: "github",
     svg: ({
       ...props
@@ -44,7 +40,6 @@ export const authPropsPopulated: Array<LoginProviderProps> = [
     )
   },
   {
-    as: `/api/auth/signin/google`,
     providerName: "google",
     svg: ({
       ...props
@@ -53,63 +48,37 @@ export const authPropsPopulated: Array<LoginProviderProps> = [
     )
   },
   {
-    as: `/api/auth/signin/twitter`,
     providerName: "twitter",
     svg: ({
       ...props
     }: SVGAttribs<"className" | "aria-hidden" | "width" | "height">) => (
       <TwitterLogin {...props} />
     )
-  },
-  {
-    as: `/api/auth/signin/gitlab`,
-    providerName: "gitlab",
-    svg: ({
-      ...props
-    }: SVGAttribs<"className" | "aria-hidden" | "width" | "height">) => (
-      <GitlabIcon {...props} />
-    )
   }
+  // {
+  //   providerName: "gitlab",
+  //   svg: ({
+  //     ...props
+  //   }: SVGAttribs<"className" | "aria-hidden" | "width" | "height">) => (
+  //     <GitlabIcon {...props} />
+  //   )
+  // },
+  // {
+  //   providerName: "medium",
+  //   svg: ({
+  //     ...props
+  //   }: SVGAttribs<"className" | "aria-hidden" | "width" | "height">) => (
+  //     <MediumIcon {...props} />
+  //   )
+  // }
 ];
-
-export const lazyReturnInfer = () => {
-  const router = useRouter();
-  const isActive: (pathname: string) => boolean = pathname =>
-    router.pathname === pathname;
-  return authPropsPopulated.map((value, p) => (
-    <div key={++p * 4 ** (1 / ++p)}>
-      <Link
-        href='/api/auth/[...nextauth]'
-        as={value.as}
-        passHref={true}
-        scroll={true}>
-        <a
-          data-active={isActive(`${value.as}`)}
-          onClick={e => {
-            e.preventDefault();
-            signIn<RedirectableProviderType>(value.providerName);
-          }}
-          className='w-full inline-flex justify-center py-2 px-4 border border-gray-300 rounded-md shadow-sm bg-white text-sm font-medium text-gray-500 hover:bg-gray-50'>
-          <span className='sr-only'>
-            {"Sign in with "
-              .concat(
-                value.providerName as Capitalize<typeof value.providerName>
-              )
-              .trim()}
-          </span>
-          <Google />
-        </a>
-      </Link>
-    </div>
-  ));
-};
 
 export default function Login() {
   const router = useRouter();
   const isActive: (pathname: string) => boolean = pathname =>
     router.pathname === pathname;
   return (
-    <div className='lg:max-h-screen bg-gradient-to-tl from-gray-700 via-slate-800 to-gray-900 flex'>
+    <div className='min-h-screen bg-gradient-to-tl from-gray-700 via-slate-800 to-gray-900 flex'>
       <div className='flex-1 flex flex-col justify-center pb-12 px-4 sm:px-6 lg:flex-none lg:px-20 xl:px-24'>
         <div className='mx-auto w-full max-w-sm lg:w-96'>
           <div className='relative'>
@@ -120,10 +89,10 @@ export default function Login() {
                 <Logo className={cn(css.logo)} />
               </a>
             </Link>
-            <h1 className='text-[1.025rem] absolute -top-[5.75rem] tracking-[0.25rem] leading-[2.34rem] font-extralight font-interVar text-stone-200'>
+            <h1 className='lg:text-[1.025rem] text-[0.8rem] absolute -top-[7.75rem] lg:-top-[5.75rem] tracking-[0.25rem] leading-[2.34rem] font-extralight font-interVar text-stone-200'>
               Next. Prisma. Mongo. Nexus. Apollo. GraphQL. Tailwind. Init.
             </h1>
-            <h2 className='text-[1.025rem] absolute -top-3 tracking-[0.25rem] leading-[2.54rem] font-light font-interVar text-stone-300'>
+            <h2 className='lg:text-[1.025rem] text-[0.75rem] absolute -top-5 lg:-top-3 tracking-[0.25rem] leading-[2.54rem] font-light font-interVar text-stone-300'>
               <span className=''>Select a provider to get started.</span>
             </h2>
           </div>
@@ -134,13 +103,15 @@ export default function Login() {
                   {authPropsPopulated.map((value, p) => (
                     <div key={`${p++}:${value.providerName}`}>
                       <Link
-                        href='/api/auth/[...nextauth]'
-                        as={value.as}
+                        href={`/api/auth/signin/${value.providerName}`}
+                        as={`/api/auth/signin/${value.providerName}`}
                         passHref={true}
                         scroll={true}>
                         <a
                           role='button'
-                          data-active={isActive(`${value.as}`)}
+                          data-active={isActive(
+                            `/api/auth/signin/${value.providerName}`
+                          )}
                           onClick={e => {
                             e.preventDefault();
                             signIn<RedirectableProviderType>(
@@ -170,7 +141,7 @@ export default function Login() {
           </div>
         </div>
       </div>
-      <div className=' relative w-0 flex-1 filter  grayscale mix-blend-color-burn   brightness-[1.925] overflow-hidden bg-gradient-to-r from-stone-400 via-gray-600 to-stone-400 '>
+      <div className='sr-only lg:relative w-0 lg:flex-1 lg:filter  lg:grayscale lg:mix-blend-color-burn lg:not-sr-only  lg:brightness-[1.925] lg:overflow-hidden lg:bg-gradient-to-r lg:from-stone-400 lg:via-gray-600 lg:to-stone-400 '>
         <Image
           width={Bg.width}
           layout='intrinsic'

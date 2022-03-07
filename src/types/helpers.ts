@@ -493,3 +493,30 @@ export type Either<
 export interface ClassType<T = any> {
   new (...args: any[]): T;
 }
+
+export const tree = (inp: number[]) => {
+  const data = inp;
+
+  const leftVRight = {
+    right: {
+      data: data
+        .filter((num, i) => (i % 2 === 0 && i > 0 ? num : null))
+        .filter(val => (val !== 0 ? val : null))
+        .reduce((prev, current, arr) => current + prev)
+    },
+    left: {
+      data: data
+        .filter((num, i) => (i % 2 !== 0 && i > 0 ? num : null))
+        .filter(val => (val !== 0 ? val : null))
+        .reduce((prev, current, arr) => current + prev)
+    }
+  };
+  const { left, right } = leftVRight;
+  if (left.data > right.data) {
+    return "left";
+  } else if (right.data > left.data) {
+    return "right";
+  } else {
+    return "";
+  }
+};
