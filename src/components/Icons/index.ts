@@ -16,6 +16,7 @@ export { default as HorizontalWave } from "./horizontal-wave";
 export { default as LockClosedIcon } from "./lock-closed";
 export { default as Logo } from "./logo";
 export { default as Mail } from "./mail";
+export { default as MediumIcon } from "./medium";
 export { default as MenuIcon } from "./menu-icon";
 export { default as PaperClip } from "./paper-clip";
 export { default as Phone } from "./phone";

@@ -368,7 +368,7 @@ const GlobalNav = ({ data: user, status: statusSession }: NavProps) => {
                     leave='transition ease-in duration-75'
                     leaveFrom='transform opacity-100 scale-100'
                     leaveTo='transform opacity-0 scale-95'>
-                    <Menu.Items className='origin-top-right absolute top-16 right-0 mt-2 w-36 rounded-md shadow-lg py-1 bg-white ring-1 ring-black ring-opacity-5 focus:outline-none'>
+                    <Menu.Items className='origin-top-right absolute top-[4.5rem] right-0 mt-2 w-36 rounded-md shadow-lg py-1 bg-white ring-1 ring-black ring-opacity-5 focus:outline-none'>
                       {userNavigation.map((item, l) => (
                         <Menu.Item
                           as='li'
