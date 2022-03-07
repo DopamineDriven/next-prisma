@@ -19,18 +19,18 @@ const options: NextAuthOptions = {
       clientId: process.env.GITHUB_ID ?? "",
       clientSecret: process.env.GITHUB_SECRET ?? ""
     }),
-    GitLabProvider({
-      clientId: process.env.GITLAB_ID ?? "",
-      clientSecret: process.env.GITLAB_SECRET ?? ""
-    }),
+    // GitLabProvider({
+    //   clientId: process.env.GITLAB_ID ?? "",
+    //   clientSecret: process.env.GITLAB_SECRET ?? ""
+    // }),
     GoogleProvider({
       clientId: process.env.GOOGLE_ID ?? "",
       clientSecret: process.env.GOOGLE_SECRET ?? ""
     }),
-    MediumProvider({
-      clientId: process.env.MEDIUM_ID ?? "",
-      clientSecret: process.env.MEDIUM_SECRET ?? ""
-    }),
+    // MediumProvider({
+    //   clientId: process.env.MEDIUM_ID ?? "",
+    //   clientSecret: process.env.MEDIUM_SECRET ?? ""
+    // }),
     TwitterProvider({
       clientId: process.env.TWITTER_CLIENT_ID ?? "",
       clientSecret: process.env.TWITTER_CLIENT_SECRET ?? "",
