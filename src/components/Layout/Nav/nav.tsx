@@ -350,10 +350,10 @@ const GlobalNav = ({ data: user, status: statusSession }: NavProps) => {
                         status === "unauthenticated"
                           ? "/dope-bg.avif"
                           : status === "authenticated"
-                          ? `${data?.user.image}`
+                          ? `${data?.user?.image}`
                           : "/archer.gif"
                       }
-                      alt={`${data?.user.name}'s Avatar`}
+                      alt={`${data?.user?.name}'s Avatar`}
                     />
                   </Menu.Button>
                 </div>
@@ -517,14 +517,14 @@ const GlobalNav = ({ data: user, status: statusSession }: NavProps) => {
                           src={
                             status === "unauthenticated"
                               ? "/archer.gif"
-                              : status === "authenticated" && data?.user.image
+                              : status === "authenticated" && data?.user?.image
                               ? data.user.image
                               : blurDataURLShimmer({
                                   w: 48,
                                   h: 48
                                 })
                           }
-                          alt={`${data?.user.name}'s Avatar`}
+                          alt={`${data?.user?.name}'s Avatar`}
                         />
                       </button>
                       {userNavigation.map((item, b) => (
