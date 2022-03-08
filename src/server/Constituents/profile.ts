@@ -1,4 +1,12 @@
-import { extendType, objectType, core, nonNull, stringArg, arg, list } from "nexus";
+import {
+  extendType,
+  objectType,
+  core,
+  nonNull,
+  stringArg,
+  arg,
+  list
+} from "nexus";
 import { buildOrderBy } from "./utils";
 import { ObjectId } from "bson";
 import {
@@ -15,12 +23,12 @@ import {
   EnumGenderNullableFilter,
   EnumPronounsNullableFilter,
   Gender,
+  UserOrderByWithRelationInput,
   Pronouns,
   MediaItemListRelationFilter,
   MediaItemRelationFilter,
   BioRelationFilter
 } from ".";
-import { SortOrder } from "./type-handling";
 
 export const Profile: core.NexusObjectTypeDef<"Profile"> =
   objectType<"Profile">({
@@ -107,9 +115,21 @@ export const ProfileOrderByArgs: core.NexusArgDef<"ProfileOrderBy"> =
 export const ProfileQuery = extendType<"Query">({
   type: "Query",
   definition(t) {
-    t.connectionField("profiles", {
+    t.connectionField("listProfiles", {
       additionalArgs: {
         orderBy: nonNull(arg({ type: "SortOrderEnum" }))
+      },
+      extendConnection(t) {
+        t.nonNull.field("totalCount", {
+          nullable: false,
+          type: "Int",
+          resolve: source => {
+            const totalCount: number | 0 = source?.edges?.length
+              ? source.edges.length
+              : 0;
+            return { totalCount: totalCount }.totalCount;
+          }
+        });
       },
       type: "Profile",
       async nodes(root, args, ctx, info) {
@@ -120,6 +140,11 @@ export const ProfileQuery = extendType<"Query">({
           }
         });
         return profiles;
+      },
+      totalCount(_source, _args, ctx, info) {
+        return {
+          totalCount: info.fieldNodes.length
+        }.totalCount;
       }
     });
   }
@@ -188,7 +213,26 @@ export const ProfileOrderByRelevanceInput = core.inputObjectType({
   }
 });
 
-
+export const ProfileOrderByWithRelationInput =
+  core.inputObjectType<"ProfileOrderByWithRelationInput">({
+    name: "ProfileOrderByWithRelationInput",
+    definition(t) {
+      t.nullable.field("id", { type: SortOrderEnum });
+      t.nullable.field("userId", { type: SortOrderEnum });
+      t.nullable.field("memberSince", { type: SortOrderEnum });
+      t.nullable.field("gender", { type: SortOrderEnum });
+      t.nullable.field("pronouns", { type: SortOrderEnum });
+      t.nullable.field("lastSeen", { type: SortOrderEnum });
+      t.nullable.field("dob", { type: SortOrderEnum });
+      t.nullable.field("phoneNumber", { type: SortOrderEnum });
+      t.nullable.field("occupation", { type: SortOrderEnum });
+      t.nullable.field("city", { type: SortOrderEnum });
+      t.nullable.field("country", { type: SortOrderEnum });
+      t.nullable.field("activityFeed", { type: SortOrderEnum });
+      t.nullable.field("recentActivity", { type: SortOrderEnum });
+      t.nullable.field("user", { type: UserOrderByWithRelationInput });
+    }
+  });
 
 export const ProfileOrderByWithRelationAndSearchRelevanceInput =
   core.inputObjectType({

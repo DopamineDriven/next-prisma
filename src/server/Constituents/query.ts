@@ -1,6 +1,6 @@
 import { queryField, stringArg, arg, core, nonNull, intArg } from "nexus";
 import { Role } from ".";
-import {findManyCursorConnection} from '@devoxa/prisma-relay-cursor-connection'
+import { findManyCursorConnection } from "@devoxa/prisma-relay-cursor-connection";
 
 export const Query = queryField(t => {
   t.connectionField("accounts", {
@@ -9,18 +9,52 @@ export const Query = queryField(t => {
     additionalArgs: {
       userId: nonNull(stringArg())
     },
+    extendConnection(t) {
+      t.nonNull.field("totalCount", {
+        nullable: false,
+        type: "Int",
+        resolve: source => {
+          const totalCount: number | 0 = source?.edges?.length
+            ? source.edges.length
+            : 0;
+          return { totalCount: totalCount }.totalCount;
+        }
+      });
+    },
     nodes(_parent, args, ctx, _info) {
       return ctx.prisma.account.findMany({
         where: { userId: String(args.userId) }
       });
+    },
+    totalCount(_source, _args, ctx, info) {
+      return {
+        totalCount: info.fieldNodes.length
+      }.totalCount;
     }
   });
   t.connectionField("usersQuery", {
     type: "User",
+    extendConnection(t) {
+      t.nonNull.field("totalCount", {
+        nullable: false,
+        type: "Int",
+        resolve: source => {
+          const totalCount: number | 0 = source?.edges?.length
+            ? source.edges.length
+            : 0;
+          return { totalCount: totalCount }.totalCount;
+        }
+      });
+    },
     nodes(root, args, ctx, info) {
       return ctx.prisma.user.findMany({
         take: args.first ?? 10
       });
+    },
+    totalCount(_source, _args, ctx, info) {
+      return {
+        totalCount: info.fieldNodes.length
+      }.totalCount;
     }
   });
   t.connectionField("allEntries", {
@@ -29,10 +63,27 @@ export const Query = queryField(t => {
     additionalArgs: {
       take: nonNull(intArg())
     },
+    extendConnection(t) {
+      t.nonNull.field("totalCount", {
+        nullable: false,
+        type: "Int",
+        resolve: source => {
+          const totalCount: number | 0 = source?.edges?.length
+            ? source.edges.length
+            : 0;
+          return { totalCount: totalCount }.totalCount;
+        }
+      });
+    },
     nodes(_root, args, ctx, _info) {
       return ctx.prisma.entry.findMany({
         take: Number(args.take)
       });
+    },
+    totalCount(_source, _args, ctx, info) {
+      return {
+        totalCount: info.fieldNodes.length
+      }.totalCount;
     }
   });
 
@@ -42,17 +93,55 @@ export const Query = queryField(t => {
     additionalArgs: {
       take: intArg({ default: 10 })
     },
+    extendConnection(t) {
+      t.nonNull.field("totalCount", {
+        nullable: false,
+        type: "Int",
+        resolve: source => {
+          const totalCount: number | 0 = source?.edges?.length
+            ? source.edges.length
+            : 0;
+          return { totalCount: totalCount }.totalCount;
+        }
+      });
+    },
     nodes(_root, args, ctx, info) {
       return ctx.prisma.account.findMany({
         include: { user: true },
         take: Number(args.take)
       });
+    },
+    async totalCount(_source, _args, ctx, info) {
+      const getUserByAcct = (
+        await ctx.prisma.account.findMany({
+          where: { user: { status: { not: "BANNED" } } }
+        })
+      ).length;
+      console.log(getUserByAcct);
+      return (
+        {
+          totalCount: info.fieldNodes.length
+        }.totalCount ?? getUserByAcct
+      );
     }
   });
   t.connectionField("userEntries", {
     type: "Entry",
     additionalArgs: {
       id: stringArg()
+    },
+    extendConnection(t) {
+      t.nonNull.field("totalCount", {
+        nullable: false,
+        type: "Int",
+        resolve: source => {
+          const totalCount: number | 0 = source?.edges?.find(cursor => cursor)
+            ?.cursor
+            ? source.edges.length
+            : 0;
+          return { totalCount: totalCount }.totalCount;
+        }
+      });
     },
     inheritAdditionalArgs: true,
     nodes: (root, args, ctx, info) => {
@@ -61,6 +150,11 @@ export const Query = queryField(t => {
           authorId: String(args.id)
         }
       });
+    },
+    totalCount(_source, _args, ctx, info) {
+      return {
+        totalCount: info.fieldNodes.length
+      }.totalCount;
     }
   });
   t.connectionField("entryFeed", {
@@ -70,6 +164,18 @@ export const Query = queryField(t => {
       searchString: stringArg({ default: "" }),
       skip: intArg({ default: 0 }),
       take: intArg({ default: 10 })
+    },
+    extendConnection(t) {
+      t.nonNull.field("totalCount", {
+        nullable: false,
+        type: "Int",
+        resolve: source => {
+          const totalCount: number | 0 = source?.edges?.length
+            ? source.edges.length
+            : 0;
+          return { totalCount: totalCount }.totalCount;
+        }
+      });
     },
     nodes(_root, args, ctx, _info) {
       const or = args.searchString
@@ -87,6 +193,11 @@ export const Query = queryField(t => {
         take: args.take ?? 10,
         skip: args.skip ?? 0
       });
+    },
+    totalCount(_source, _args, ctx, info) {
+      return {
+        totalCount: info.fieldNodes.length
+      }.totalCount;
     }
   });
 
@@ -96,6 +207,18 @@ export const Query = queryField(t => {
     additionalArgs: {
       search: nonNull(stringArg({ default: "" }) as core.NexusArgDef<"String">)
     },
+    extendConnection(t) {
+      t.nonNull.field("totalCount", {
+        nullable: false,
+        type: "Int",
+        resolve: source => {
+          const totalCount: number | 0 = source?.edges?.length
+            ? source.edges.length
+            : 0;
+          return { totalCount: totalCount }.totalCount;
+        }
+      });
+    },
     async nodes(parent, args, ctx, info) {
       const role = arg({ type: nonNull(Role) });
       return await ctx.prisma.user.findMany({
@@ -103,6 +226,11 @@ export const Query = queryField(t => {
           email: "asc"
         }
       });
+    },
+    totalCount(_source, _args, ctx, info) {
+      return {
+        totalCount: info.fieldNodes.length
+      }.totalCount;
     }
   });
   t.connectionField("FilterUsers", {
@@ -111,7 +239,19 @@ export const Query = queryField(t => {
     additionalArgs: {
       searchString: nonNull(stringArg())
     },
-   async nodes(_root, args, ctx, info) {
+    extendConnection(t) {
+      t.nonNull.field("totalCount", {
+        nullable: false,
+        type: "Int",
+        resolve: source => {
+          const totalCount: number | 0 = source?.edges?.length
+            ? source.edges.length
+            : 0;
+          return { totalCount: totalCount }.totalCount;
+        }
+      });
+    },
+    async nodes(_root, args, ctx, info) {
       const or = args.searchString
         ? {
             OR: [
@@ -125,6 +265,11 @@ export const Query = queryField(t => {
           ...or
         }
       });
+    },
+    totalCount(_source, _args, ctx, info) {
+      return {
+        totalCount: info.fieldNodes.length
+      }.totalCount;
     }
   });
 });

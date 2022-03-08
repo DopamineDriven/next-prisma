@@ -68,7 +68,7 @@ export const CommentListRelationFilter = core.inputObjectType({
 export const CommentOrderByRelationAggregateInput = core.inputObjectType({
   name: "CommentOrderByRelationAggregateInput",
   definition(t) {
-    t.field("_count", { type: SortOrderEnum });
+    t.nullable.field("_count", { type: SortOrderEnum });
   }
 });
 

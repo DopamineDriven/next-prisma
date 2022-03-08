@@ -6,6 +6,7 @@
 import type * as Prisma from "./../../../node_modules/.prisma/client/index";
 import type { Context as ctx } from "./../Context/index";
 import type { core, connectionPluginCore } from "nexus";
+import type { QueryComplexity } from "nexus/dist/plugins/queryComplexityPlugin";
 declare global {
   interface NexusGenCustomInputMethods<TypeName extends string> {
     UserScalarFieldsEnum<FieldName extends string>(
@@ -125,7 +126,16 @@ declare global {
      */
     connectionField<FieldName extends string>(
       fieldName: FieldName,
-      config: connectionPluginCore.ConnectionFieldConfig<TypeName, FieldName>
+      config: connectionPluginCore.ConnectionFieldConfig<
+        TypeName,
+        FieldName
+      > & {
+        totalCount: connectionPluginCore.ConnectionFieldResolver<
+          TypeName,
+          FieldName,
+          "totalCount"
+        >;
+      }
     ): void;
   }
 }
@@ -587,6 +597,23 @@ export interface NexusGenInputs {
       | null; // UserOrderByWithRelationAndSearchRelevanceInput
     userId?: NexusGenEnums["SortOrderEnum"] | null; // SortOrderEnum
   };
+  ProfileOrderByWithRelationInput: {
+    // input type
+    activityFeed?: NexusGenEnums["SortOrderEnum"] | null; // SortOrderEnum
+    city?: NexusGenEnums["SortOrderEnum"] | null; // SortOrderEnum
+    country?: NexusGenEnums["SortOrderEnum"] | null; // SortOrderEnum
+    dob?: NexusGenEnums["SortOrderEnum"] | null; // SortOrderEnum
+    gender?: NexusGenEnums["SortOrderEnum"] | null; // SortOrderEnum
+    id?: NexusGenEnums["SortOrderEnum"] | null; // SortOrderEnum
+    lastSeen?: NexusGenEnums["SortOrderEnum"] | null; // SortOrderEnum
+    memberSince?: NexusGenEnums["SortOrderEnum"] | null; // SortOrderEnum
+    occupation?: NexusGenEnums["SortOrderEnum"] | null; // SortOrderEnum
+    phoneNumber?: NexusGenEnums["SortOrderEnum"] | null; // SortOrderEnum
+    pronouns?: NexusGenEnums["SortOrderEnum"] | null; // SortOrderEnum
+    recentActivity?: NexusGenEnums["SortOrderEnum"] | null; // SortOrderEnum
+    user?: NexusGenInputs["UserOrderByWithRelationInput"] | null; // UserOrderByWithRelationInput
+    userId?: NexusGenEnums["SortOrderEnum"] | null; // SortOrderEnum
+  };
   ProfileRelationFilter: {
     // input type
     is?: NexusGenInputs["ProfileWhereInput"] | null; // ProfileWhereInput
@@ -630,6 +657,13 @@ export interface NexusGenInputs {
   SessionOrderByRelationAggregateInput: {
     // input type
     _count?: NexusGenEnums["SortOrderEnum"] | null; // SortOrderEnum
+  };
+  SessionOrderByWithRelationshipInput: {
+    // input type
+    expires?: NexusGenEnums["SortOrderEnum"] | null; // SortOrderEnum
+    id?: NexusGenEnums["SortOrderEnum"] | null; // SortOrderEnum
+    sessionToken?: NexusGenEnums["SortOrderEnum"] | null; // SortOrderEnum
+    userId?: NexusGenEnums["SortOrderEnum"] | null; // SortOrderEnum
   };
   SessionWhereInput: {
     // input type
@@ -703,6 +737,26 @@ export interface NexusGenInputs {
     profile?:
       | NexusGenInputs["ProfileOrderByWithRelationAndSearchRelevanceInput"]
       | null; // ProfileOrderByWithRelationAndSearchRelevanceInput
+    role?: NexusGenEnums["SortOrderEnum"] | null; // SortOrderEnum
+    sessions?: NexusGenInputs["SessionOrderByRelationAggregateInput"] | null; // SessionOrderByRelationAggregateInput
+    status?: NexusGenEnums["SortOrderEnum"] | null; // SortOrderEnum
+    updatedAt?: NexusGenEnums["SortOrderEnum"] | null; // SortOrderEnum
+  };
+  UserOrderByWithRelationInput: {
+    // input type
+    UserOrderByWithRelationInput?: Array<
+      NexusGenInputs["UserOrderByWithRelationInput"] | null
+    > | null; // [UserOrderByWithRelationInput]
+    accounts?: NexusGenInputs["AccountOrderByRelationAggregateInput"] | null; // AccountOrderByRelationAggregateInput
+    comments?: NexusGenInputs["CommentOrderByRelationAggregateInput"] | null; // CommentOrderByRelationAggregateInput
+    createdAt?: NexusGenEnums["SortOrderEnum"] | null; // SortOrderEnum
+    email?: NexusGenEnums["SortOrderEnum"] | null; // SortOrderEnum
+    emailVerified?: NexusGenEnums["SortOrderEnum"] | null; // SortOrderEnum
+    entries?: NexusGenInputs["EntryOrderByRelationAggregateInput"] | null; // EntryOrderByRelationAggregateInput
+    id?: NexusGenEnums["SortOrderEnum"] | null; // SortOrderEnum
+    image?: NexusGenEnums["SortOrderEnum"] | null; // SortOrderEnum
+    name?: NexusGenEnums["SortOrderEnum"] | null; // SortOrderEnum
+    profile?: NexusGenInputs["ProfileOrderByWithRelationInput"] | null; // ProfileOrderByWithRelationInput
     role?: NexusGenEnums["SortOrderEnum"] | null; // SortOrderEnum
     sessions?: NexusGenInputs["SessionOrderByRelationAggregateInput"] | null; // SessionOrderByRelationAggregateInput
     status?: NexusGenEnums["SortOrderEnum"] | null; // SortOrderEnum
@@ -801,12 +855,6 @@ export interface NexusGenScalars {
 
 export interface NexusGenObjects {
   Account: Prisma.Account;
-  AccountConnection: {
-    // root type
-    edges?: Array<NexusGenRootTypes["AccountEdge"] | null> | null; // [AccountEdge]
-    nodes?: Array<NexusGenRootTypes["Account"] | null> | null; // [Account]
-    pageInfo: NexusGenRootTypes["PageInfo"]; // PageInfo!
-  };
   AccountEdge: {
     // root type
     cursor: string; // String!
@@ -815,22 +863,16 @@ export interface NexusGenObjects {
   Bio: Prisma.Bio;
   Category: Prisma.Category;
   Comment: Prisma.Comment;
-  CommentConnection: {
-    // root type
-    edges?: Array<NexusGenRootTypes["CommentEdge"] | null> | null; // [CommentEdge]
-    nodes?: Array<NexusGenRootTypes["Comment"] | null> | null; // [Comment]
-    pageInfo: NexusGenRootTypes["PageInfo"]; // PageInfo!
-  };
   CommentEdge: {
     // root type
     cursor: string; // String!
     node?: NexusGenRootTypes["Comment"] | null; // Comment
   };
   Entry: Prisma.Entry;
-  EntryConnection: {
+  EntryComments_Connection: {
     // root type
-    edges?: Array<NexusGenRootTypes["EntryEdge"] | null> | null; // [EntryEdge]
-    nodes?: Array<NexusGenRootTypes["Entry"] | null> | null; // [Entry]
+    edges?: Array<NexusGenRootTypes["CommentEdge"] | null> | null; // [CommentEdge]
+    nodes?: Array<NexusGenRootTypes["Comment"] | null> | null; // [Comment]
     pageInfo: NexusGenRootTypes["PageInfo"]; // PageInfo!
   };
   EntryCount: {
@@ -852,35 +894,131 @@ export interface NexusGenObjects {
     startCursor?: string | null; // String
   };
   Profile: Prisma.Profile;
-  ProfileConnection: {
-    // root type
-    edges?: Array<NexusGenRootTypes["ProfileEdge"] | null> | null; // [ProfileEdge]
-    nodes?: Array<NexusGenRootTypes["Profile"] | null> | null; // [Profile]
-    pageInfo: NexusGenRootTypes["PageInfo"]; // PageInfo!
-  };
   ProfileEdge: {
     // root type
     cursor: string; // String!
     node?: NexusGenRootTypes["Profile"] | null; // Profile
   };
   Query: {};
-  Session: Prisma.Session;
-  SessionConnection: {
+  QueryAccounts_Connection: {
+    // root type
+    edges?: Array<NexusGenRootTypes["AccountEdge"] | null> | null; // [AccountEdge]
+    nodes?: Array<NexusGenRootTypes["Account"] | null> | null; // [Account]
+    pageInfo: NexusGenRootTypes["PageInfo"]; // PageInfo!
+  };
+  QueryAllAccounts_Connection: {
+    // root type
+    edges?: Array<NexusGenRootTypes["AccountEdge"] | null> | null; // [AccountEdge]
+    nodes?: Array<NexusGenRootTypes["Account"] | null> | null; // [Account]
+    pageInfo: NexusGenRootTypes["PageInfo"]; // PageInfo!
+  };
+  QueryAllEntries_Connection: {
+    // root type
+    edges?: Array<NexusGenRootTypes["EntryEdge"] | null> | null; // [EntryEdge]
+    nodes?: Array<NexusGenRootTypes["Entry"] | null> | null; // [Entry]
+    pageInfo: NexusGenRootTypes["PageInfo"]; // PageInfo!
+  };
+  QueryEntries_Connection: {
+    // root type
+    edges?: Array<NexusGenRootTypes["EntryEdge"] | null> | null; // [EntryEdge]
+    nodes?: Array<NexusGenRootTypes["Entry"] | null> | null; // [Entry]
+    pageInfo: NexusGenRootTypes["PageInfo"]; // PageInfo!
+  };
+  QueryEntryFeed_Connection: {
+    // root type
+    edges?: Array<NexusGenRootTypes["EntryEdge"] | null> | null; // [EntryEdge]
+    nodes?: Array<NexusGenRootTypes["Entry"] | null> | null; // [Entry]
+    pageInfo: NexusGenRootTypes["PageInfo"]; // PageInfo!
+  };
+  QueryFilterUsers_Connection: {
+    // root type
+    edges?: Array<NexusGenRootTypes["UserEdge"] | null> | null; // [UserEdge]
+    nodes?: Array<NexusGenRootTypes["User"] | null> | null; // [User]
+    pageInfo: NexusGenRootTypes["PageInfo"]; // PageInfo!
+  };
+  QueryGetAllEntries_Connection: {
+    // root type
+    edges?: Array<NexusGenRootTypes["EntryEdge"] | null> | null; // [EntryEdge]
+    nodes?: Array<NexusGenRootTypes["Entry"] | null> | null; // [Entry]
+    pageInfo: NexusGenRootTypes["PageInfo"]; // PageInfo!
+  };
+  QueryGetUserByAccount_Connection: {
+    // root type
+    edges?: Array<NexusGenRootTypes["AccountEdge"] | null> | null; // [AccountEdge]
+    nodes?: Array<NexusGenRootTypes["Account"] | null> | null; // [Account]
+    pageInfo: NexusGenRootTypes["PageInfo"]; // PageInfo!
+  };
+  QueryListProfiles_Connection: {
+    // root type
+    edges?: Array<NexusGenRootTypes["ProfileEdge"] | null> | null; // [ProfileEdge]
+    nodes?: Array<NexusGenRootTypes["Profile"] | null> | null; // [Profile]
+    pageInfo: NexusGenRootTypes["PageInfo"]; // PageInfo!
+  };
+  QueryListSessions_Connection: {
     // root type
     edges?: Array<NexusGenRootTypes["SessionEdge"] | null> | null; // [SessionEdge]
     nodes?: Array<NexusGenRootTypes["Session"] | null> | null; // [Session]
     pageInfo: NexusGenRootTypes["PageInfo"]; // PageInfo!
   };
+  QuerySearchByUserEmail_Connection: {
+    // root type
+    edges?: Array<NexusGenRootTypes["UserEdge"] | null> | null; // [UserEdge]
+    nodes?: Array<NexusGenRootTypes["User"] | null> | null; // [User]
+    pageInfo: NexusGenRootTypes["PageInfo"]; // PageInfo!
+  };
+  QuerySearchEntriesByTitle_Connection: {
+    // root type
+    edges?: Array<NexusGenRootTypes["EntryEdge"] | null> | null; // [EntryEdge]
+    nodes?: Array<NexusGenRootTypes["Entry"] | null> | null; // [Entry]
+    pageInfo: NexusGenRootTypes["PageInfo"]; // PageInfo!
+  };
+  QuerySession_Connection: {
+    // root type
+    edges?: Array<NexusGenRootTypes["SessionEdge"] | null> | null; // [SessionEdge]
+    nodes?: Array<NexusGenRootTypes["Session"] | null> | null; // [Session]
+    pageInfo: NexusGenRootTypes["PageInfo"]; // PageInfo!
+  };
+  QueryUserAccount_Connection: {
+    // root type
+    edges?: Array<NexusGenRootTypes["AccountEdge"] | null> | null; // [AccountEdge]
+    nodes?: Array<NexusGenRootTypes["Account"] | null> | null; // [Account]
+    pageInfo: NexusGenRootTypes["PageInfo"]; // PageInfo!
+  };
+  QueryUserEntries_Connection: {
+    // root type
+    edges?: Array<NexusGenRootTypes["EntryEdge"] | null> | null; // [EntryEdge]
+    nodes?: Array<NexusGenRootTypes["Entry"] | null> | null; // [Entry]
+    pageInfo: NexusGenRootTypes["PageInfo"]; // PageInfo!
+  };
+  QueryUsersQuery_Connection: {
+    // root type
+    edges?: Array<NexusGenRootTypes["UserEdge"] | null> | null; // [UserEdge]
+    nodes?: Array<NexusGenRootTypes["User"] | null> | null; // [User]
+    pageInfo: NexusGenRootTypes["PageInfo"]; // PageInfo!
+  };
+  QueryVerificationTokens_Connection: {
+    // root type
+    edges?: Array<NexusGenRootTypes["VerificationTokenEdge"] | null> | null; // [VerificationTokenEdge]
+    nodes?: Array<NexusGenRootTypes["VerificationToken"] | null> | null; // [VerificationToken]
+    pageInfo: NexusGenRootTypes["PageInfo"]; // PageInfo!
+  };
+  Session: Prisma.Session;
   SessionEdge: {
     // root type
     cursor: string; // String!
     node?: NexusGenRootTypes["Session"] | null; // Session
   };
   User: Prisma.User;
-  UserConnection: {
+  UserAccounts_Connection: {
     // root type
-    edges?: Array<NexusGenRootTypes["UserEdge"] | null> | null; // [UserEdge]
-    nodes?: Array<NexusGenRootTypes["User"] | null> | null; // [User]
+    edges?: Array<NexusGenRootTypes["AccountEdge"] | null> | null; // [AccountEdge]
+    nodes?: Array<NexusGenRootTypes["Account"] | null> | null; // [Account]
+    pageInfo: NexusGenRootTypes["PageInfo"]; // PageInfo!
+  };
+  UserComments_Connection: {
+    // root type
+    edges?: Array<NexusGenRootTypes["CommentEdge"] | null> | null; // [CommentEdge]
+    nodes?: Array<NexusGenRootTypes["Comment"] | null> | null; // [Comment]
     pageInfo: NexusGenRootTypes["PageInfo"]; // PageInfo!
   };
   UserCount: {
@@ -895,13 +1033,19 @@ export interface NexusGenObjects {
     cursor: string; // String!
     node?: NexusGenRootTypes["User"] | null; // User
   };
-  VerificationToken: Prisma.VerificationToken;
-  VerificationTokenConnection: {
+  UserEntries_Connection: {
     // root type
-    edges?: Array<NexusGenRootTypes["VerificationTokenEdge"] | null> | null; // [VerificationTokenEdge]
-    nodes?: Array<NexusGenRootTypes["VerificationToken"] | null> | null; // [VerificationToken]
+    edges?: Array<NexusGenRootTypes["EntryEdge"] | null> | null; // [EntryEdge]
+    nodes?: Array<NexusGenRootTypes["Entry"] | null> | null; // [Entry]
     pageInfo: NexusGenRootTypes["PageInfo"]; // PageInfo!
   };
+  UserSessions_Connection: {
+    // root type
+    edges?: Array<NexusGenRootTypes["SessionEdge"] | null> | null; // [SessionEdge]
+    nodes?: Array<NexusGenRootTypes["Session"] | null> | null; // [Session]
+    pageInfo: NexusGenRootTypes["PageInfo"]; // PageInfo!
+  };
+  VerificationToken: Prisma.VerificationToken;
   VerificationTokenEdge: {
     // root type
     cursor: string; // String!
@@ -947,12 +1091,6 @@ export interface NexusGenFieldTypes {
     user: NexusGenRootTypes["User"] | null; // User
     userId: string | null; // String
   };
-  AccountConnection: {
-    // field return type
-    edges: Array<NexusGenRootTypes["AccountEdge"] | null> | null; // [AccountEdge]
-    nodes: Array<NexusGenRootTypes["Account"] | null> | null; // [Account]
-    pageInfo: NexusGenRootTypes["PageInfo"]; // PageInfo!
-  };
   AccountEdge: {
     // field return type
     cursor: string; // String!
@@ -989,12 +1127,6 @@ export interface NexusGenFieldTypes {
     reactions: Array<NexusGenEnums["Reaction"] | null> | null; // [Reaction]
     updatedAt: NexusGenScalars["DateTime"] | null; // DateTime
   };
-  CommentConnection: {
-    // field return type
-    edges: Array<NexusGenRootTypes["CommentEdge"] | null> | null; // [CommentEdge]
-    nodes: Array<NexusGenRootTypes["Comment"] | null> | null; // [Comment]
-    pageInfo: NexusGenRootTypes["PageInfo"]; // PageInfo!
-  };
   CommentEdge: {
     // field return type
     cursor: string; // String!
@@ -1007,7 +1139,7 @@ export interface NexusGenFieldTypes {
     author: NexusGenRootTypes["User"] | null; // User
     authorId: string | null; // String
     categories: Array<NexusGenRootTypes["Category"] | null> | null; // [Category]
-    comments: NexusGenRootTypes["CommentConnection"] | null; // CommentConnection
+    comments: NexusGenRootTypes["EntryComments_Connection"] | null; // EntryComments_Connection
     content: string | null; // String
     createdAt: NexusGenScalars["DateTime"] | null; // DateTime
     featuredImage: NexusGenRootTypes["MediaItem"] | null; // MediaItem
@@ -1017,11 +1149,12 @@ export interface NexusGenFieldTypes {
     title: string | null; // String
     updatedAt: NexusGenScalars["DateTime"] | null; // DateTime
   };
-  EntryConnection: {
+  EntryComments_Connection: {
     // field return type
-    edges: Array<NexusGenRootTypes["EntryEdge"] | null> | null; // [EntryEdge]
-    nodes: Array<NexusGenRootTypes["Entry"] | null> | null; // [Entry]
+    edges: Array<NexusGenRootTypes["CommentEdge"] | null> | null; // [CommentEdge]
+    nodes: Array<NexusGenRootTypes["Comment"] | null> | null; // [Comment]
     pageInfo: NexusGenRootTypes["PageInfo"]; // PageInfo!
+    totalCount: number; // Int!
   };
   EntryCount: {
     // field return type
@@ -1085,12 +1218,6 @@ export interface NexusGenFieldTypes {
     user: NexusGenRootTypes["User"] | null; // User
     userId: string | null; // String
   };
-  ProfileConnection: {
-    // field return type
-    edges: Array<NexusGenRootTypes["ProfileEdge"] | null> | null; // [ProfileEdge]
-    nodes: Array<NexusGenRootTypes["Profile"] | null> | null; // [Profile]
-    pageInfo: NexusGenRootTypes["PageInfo"]; // PageInfo!
-  };
   ProfileEdge: {
     // field return type
     cursor: string; // String!
@@ -1098,28 +1225,155 @@ export interface NexusGenFieldTypes {
   };
   Query: {
     // field return type
-    FilterUsers: NexusGenRootTypes["UserConnection"] | null; // UserConnection
-    GetAllEntries: NexusGenRootTypes["EntryConnection"] | null; // EntryConnection
-    GetAllSessions: NexusGenRootTypes["SessionConnection"] | null; // SessionConnection
+    FilterUsers: NexusGenRootTypes["QueryFilterUsers_Connection"] | null; // QueryFilterUsers_Connection
+    GetAllEntries: NexusGenRootTypes["QueryGetAllEntries_Connection"] | null; // QueryGetAllEntries_Connection
     GetEntry: NexusGenRootTypes["Entry"] | null; // Entry
     GetSession: NexusGenRootTypes["Session"] | null; // Session
-    SearchByUserEmail: NexusGenRootTypes["UserConnection"] | null; // UserConnection
-    SearchEntriesByTitle: NexusGenRootTypes["EntryConnection"] | null; // EntryConnection
-    accounts: NexusGenRootTypes["AccountConnection"] | null; // AccountConnection
-    allAccounts: NexusGenRootTypes["AccountConnection"] | null; // AccountConnection
-    allEntries: NexusGenRootTypes["EntryConnection"] | null; // EntryConnection
-    entries: NexusGenRootTypes["EntryConnection"] | null; // EntryConnection
-    entryFeed: NexusGenRootTypes["EntryConnection"] | null; // EntryConnection
-    getUserByAccount: NexusGenRootTypes["AccountConnection"] | null; // AccountConnection
+    SearchByUserEmail:
+      | NexusGenRootTypes["QuerySearchByUserEmail_Connection"]
+      | null; // QuerySearchByUserEmail_Connection
+    SearchEntriesByTitle:
+      | NexusGenRootTypes["QuerySearchEntriesByTitle_Connection"]
+      | null; // QuerySearchEntriesByTitle_Connection
+    accounts: NexusGenRootTypes["QueryAccounts_Connection"] | null; // QueryAccounts_Connection
+    allAccounts: NexusGenRootTypes["QueryAllAccounts_Connection"] | null; // QueryAllAccounts_Connection
+    allEntries: NexusGenRootTypes["QueryAllEntries_Connection"] | null; // QueryAllEntries_Connection
+    entries: NexusGenRootTypes["QueryEntries_Connection"] | null; // QueryEntries_Connection
+    entryFeed: NexusGenRootTypes["QueryEntryFeed_Connection"] | null; // QueryEntryFeed_Connection
+    getUserByAccount:
+      | NexusGenRootTypes["QueryGetUserByAccount_Connection"]
+      | null; // QueryGetUserByAccount_Connection
+    listProfiles: NexusGenRootTypes["QueryListProfiles_Connection"] | null; // QueryListProfiles_Connection
+    listSessions: NexusGenRootTypes["QueryListSessions_Connection"] | null; // QueryListSessions_Connection
     node: NexusGenRootTypes["Node"] | null; // Node
-    profiles: NexusGenRootTypes["ProfileConnection"] | null; // ProfileConnection
-    session: NexusGenRootTypes["SessionConnection"] | null; // SessionConnection
-    userAccount: NexusGenRootTypes["AccountConnection"] | null; // AccountConnection
+    session: NexusGenRootTypes["QuerySession_Connection"] | null; // QuerySession_Connection
+    userAccount: NexusGenRootTypes["QueryUserAccount_Connection"] | null; // QueryUserAccount_Connection
     userByEmail: NexusGenRootTypes["User"] | null; // User
     userById: NexusGenRootTypes["User"] | null; // User
-    userEntries: NexusGenRootTypes["EntryConnection"] | null; // EntryConnection
-    usersQuery: NexusGenRootTypes["UserConnection"] | null; // UserConnection
-    verificationTokens: NexusGenRootTypes["VerificationTokenConnection"] | null; // VerificationTokenConnection
+    userEntries: NexusGenRootTypes["QueryUserEntries_Connection"] | null; // QueryUserEntries_Connection
+    usersQuery: NexusGenRootTypes["QueryUsersQuery_Connection"] | null; // QueryUsersQuery_Connection
+    verificationTokens:
+      | NexusGenRootTypes["QueryVerificationTokens_Connection"]
+      | null; // QueryVerificationTokens_Connection
+  };
+  QueryAccounts_Connection: {
+    // field return type
+    edges: Array<NexusGenRootTypes["AccountEdge"] | null> | null; // [AccountEdge]
+    nodes: Array<NexusGenRootTypes["Account"] | null> | null; // [Account]
+    pageInfo: NexusGenRootTypes["PageInfo"]; // PageInfo!
+    totalCount: number; // Int!
+  };
+  QueryAllAccounts_Connection: {
+    // field return type
+    edges: Array<NexusGenRootTypes["AccountEdge"] | null> | null; // [AccountEdge]
+    nodes: Array<NexusGenRootTypes["Account"] | null> | null; // [Account]
+    pageInfo: NexusGenRootTypes["PageInfo"]; // PageInfo!
+    totalCount: number; // Int!
+  };
+  QueryAllEntries_Connection: {
+    // field return type
+    edges: Array<NexusGenRootTypes["EntryEdge"] | null> | null; // [EntryEdge]
+    nodes: Array<NexusGenRootTypes["Entry"] | null> | null; // [Entry]
+    pageInfo: NexusGenRootTypes["PageInfo"]; // PageInfo!
+    totalCount: number; // Int!
+  };
+  QueryEntries_Connection: {
+    // field return type
+    edges: Array<NexusGenRootTypes["EntryEdge"] | null> | null; // [EntryEdge]
+    nodes: Array<NexusGenRootTypes["Entry"] | null> | null; // [Entry]
+    pageInfo: NexusGenRootTypes["PageInfo"]; // PageInfo!
+    totalCount: number; // Int!
+  };
+  QueryEntryFeed_Connection: {
+    // field return type
+    edges: Array<NexusGenRootTypes["EntryEdge"] | null> | null; // [EntryEdge]
+    nodes: Array<NexusGenRootTypes["Entry"] | null> | null; // [Entry]
+    pageInfo: NexusGenRootTypes["PageInfo"]; // PageInfo!
+    totalCount: number; // Int!
+  };
+  QueryFilterUsers_Connection: {
+    // field return type
+    edges: Array<NexusGenRootTypes["UserEdge"] | null> | null; // [UserEdge]
+    nodes: Array<NexusGenRootTypes["User"] | null> | null; // [User]
+    pageInfo: NexusGenRootTypes["PageInfo"]; // PageInfo!
+    totalCount: number; // Int!
+  };
+  QueryGetAllEntries_Connection: {
+    // field return type
+    edges: Array<NexusGenRootTypes["EntryEdge"] | null> | null; // [EntryEdge]
+    nodes: Array<NexusGenRootTypes["Entry"] | null> | null; // [Entry]
+    pageInfo: NexusGenRootTypes["PageInfo"]; // PageInfo!
+    totalCount: number; // Int!
+  };
+  QueryGetUserByAccount_Connection: {
+    // field return type
+    edges: Array<NexusGenRootTypes["AccountEdge"] | null> | null; // [AccountEdge]
+    nodes: Array<NexusGenRootTypes["Account"] | null> | null; // [Account]
+    pageInfo: NexusGenRootTypes["PageInfo"]; // PageInfo!
+    totalCount: number; // Int!
+  };
+  QueryListProfiles_Connection: {
+    // field return type
+    edges: Array<NexusGenRootTypes["ProfileEdge"] | null> | null; // [ProfileEdge]
+    nodes: Array<NexusGenRootTypes["Profile"] | null> | null; // [Profile]
+    pageInfo: NexusGenRootTypes["PageInfo"]; // PageInfo!
+    totalCount: number; // Int!
+  };
+  QueryListSessions_Connection: {
+    // field return type
+    edges: Array<NexusGenRootTypes["SessionEdge"] | null> | null; // [SessionEdge]
+    nodes: Array<NexusGenRootTypes["Session"] | null> | null; // [Session]
+    pageInfo: NexusGenRootTypes["PageInfo"]; // PageInfo!
+    totalCount: number; // Int!
+  };
+  QuerySearchByUserEmail_Connection: {
+    // field return type
+    edges: Array<NexusGenRootTypes["UserEdge"] | null> | null; // [UserEdge]
+    nodes: Array<NexusGenRootTypes["User"] | null> | null; // [User]
+    pageInfo: NexusGenRootTypes["PageInfo"]; // PageInfo!
+    totalCount: number; // Int!
+  };
+  QuerySearchEntriesByTitle_Connection: {
+    // field return type
+    edges: Array<NexusGenRootTypes["EntryEdge"] | null> | null; // [EntryEdge]
+    nodes: Array<NexusGenRootTypes["Entry"] | null> | null; // [Entry]
+    pageInfo: NexusGenRootTypes["PageInfo"]; // PageInfo!
+    totalCount: number; // Int!
+  };
+  QuerySession_Connection: {
+    // field return type
+    edges: Array<NexusGenRootTypes["SessionEdge"] | null> | null; // [SessionEdge]
+    nodes: Array<NexusGenRootTypes["Session"] | null> | null; // [Session]
+    pageInfo: NexusGenRootTypes["PageInfo"]; // PageInfo!
+    totalCount: number; // Int!
+  };
+  QueryUserAccount_Connection: {
+    // field return type
+    edges: Array<NexusGenRootTypes["AccountEdge"] | null> | null; // [AccountEdge]
+    nodes: Array<NexusGenRootTypes["Account"] | null> | null; // [Account]
+    pageInfo: NexusGenRootTypes["PageInfo"]; // PageInfo!
+    totalCount: number; // Int!
+  };
+  QueryUserEntries_Connection: {
+    // field return type
+    edges: Array<NexusGenRootTypes["EntryEdge"] | null> | null; // [EntryEdge]
+    nodes: Array<NexusGenRootTypes["Entry"] | null> | null; // [Entry]
+    pageInfo: NexusGenRootTypes["PageInfo"]; // PageInfo!
+    totalCount: number; // Int!
+  };
+  QueryUsersQuery_Connection: {
+    // field return type
+    edges: Array<NexusGenRootTypes["UserEdge"] | null> | null; // [UserEdge]
+    nodes: Array<NexusGenRootTypes["User"] | null> | null; // [User]
+    pageInfo: NexusGenRootTypes["PageInfo"]; // PageInfo!
+    totalCount: number; // Int!
+  };
+  QueryVerificationTokens_Connection: {
+    // field return type
+    edges: Array<NexusGenRootTypes["VerificationTokenEdge"] | null> | null; // [VerificationTokenEdge]
+    nodes: Array<NexusGenRootTypes["VerificationToken"] | null> | null; // [VerificationToken]
+    pageInfo: NexusGenRootTypes["PageInfo"]; // PageInfo!
+    totalCount: number; // Int!
   };
   Session: {
     // field return type
@@ -1129,12 +1383,6 @@ export interface NexusGenFieldTypes {
     user: NexusGenRootTypes["User"] | null; // User
     userId: string | null; // String
   };
-  SessionConnection: {
-    // field return type
-    edges: Array<NexusGenRootTypes["SessionEdge"] | null> | null; // [SessionEdge]
-    nodes: Array<NexusGenRootTypes["Session"] | null> | null; // [Session]
-    pageInfo: NexusGenRootTypes["PageInfo"]; // PageInfo!
-  };
   SessionEdge: {
     // field return type
     cursor: string; // String!
@@ -1143,25 +1391,33 @@ export interface NexusGenFieldTypes {
   User: {
     // field return type
     _count: NexusGenRootTypes["UserCount"]; // UserCount!
-    accounts: NexusGenRootTypes["AccountConnection"] | null; // AccountConnection
-    comments: NexusGenRootTypes["CommentConnection"] | null; // CommentConnection
+    accounts: NexusGenRootTypes["UserAccounts_Connection"] | null; // UserAccounts_Connection
+    comments: NexusGenRootTypes["UserComments_Connection"] | null; // UserComments_Connection
     email: string | null; // String
     emailVerified: NexusGenScalars["DateTime"] | null; // DateTime
-    entries: NexusGenRootTypes["EntryConnection"] | null; // EntryConnection
+    entries: NexusGenRootTypes["UserEntries_Connection"] | null; // UserEntries_Connection
     id: string; // String!
     image: string | null; // String
     imageMeta: NexusGenRootTypes["MediaItem"] | null; // MediaItem
     name: string | null; // String
     profile: NexusGenRootTypes["Profile"] | null; // Profile
     role: NexusGenEnums["Role"] | null; // Role
-    sessions: NexusGenRootTypes["SessionConnection"] | null; // SessionConnection
+    sessions: NexusGenRootTypes["UserSessions_Connection"] | null; // UserSessions_Connection
     status: NexusGenEnums["UserStatus"] | null; // UserStatus
   };
-  UserConnection: {
+  UserAccounts_Connection: {
     // field return type
-    edges: Array<NexusGenRootTypes["UserEdge"] | null> | null; // [UserEdge]
-    nodes: Array<NexusGenRootTypes["User"] | null> | null; // [User]
+    edges: Array<NexusGenRootTypes["AccountEdge"] | null> | null; // [AccountEdge]
+    nodes: Array<NexusGenRootTypes["Account"] | null> | null; // [Account]
     pageInfo: NexusGenRootTypes["PageInfo"]; // PageInfo!
+    totalCount: number; // Int!
+  };
+  UserComments_Connection: {
+    // field return type
+    edges: Array<NexusGenRootTypes["CommentEdge"] | null> | null; // [CommentEdge]
+    nodes: Array<NexusGenRootTypes["Comment"] | null> | null; // [Comment]
+    pageInfo: NexusGenRootTypes["PageInfo"]; // PageInfo!
+    totalCount: number; // Int!
   };
   UserCount: {
     // field return type
@@ -1175,18 +1431,26 @@ export interface NexusGenFieldTypes {
     cursor: string; // String!
     node: NexusGenRootTypes["User"] | null; // User
   };
+  UserEntries_Connection: {
+    // field return type
+    edges: Array<NexusGenRootTypes["EntryEdge"] | null> | null; // [EntryEdge]
+    nodes: Array<NexusGenRootTypes["Entry"] | null> | null; // [Entry]
+    pageInfo: NexusGenRootTypes["PageInfo"]; // PageInfo!
+    totalCount: number; // Int!
+  };
+  UserSessions_Connection: {
+    // field return type
+    edges: Array<NexusGenRootTypes["SessionEdge"] | null> | null; // [SessionEdge]
+    nodes: Array<NexusGenRootTypes["Session"] | null> | null; // [Session]
+    pageInfo: NexusGenRootTypes["PageInfo"]; // PageInfo!
+    totalCount: number; // Int!
+  };
   VerificationToken: {
     // field return type
     expires: NexusGenScalars["DateTime"] | null; // DateTime
     id: string; // String!
     identifier: string | null; // String
     token: string | null; // String
-  };
-  VerificationTokenConnection: {
-    // field return type
-    edges: Array<NexusGenRootTypes["VerificationTokenEdge"] | null> | null; // [VerificationTokenEdge]
-    nodes: Array<NexusGenRootTypes["VerificationToken"] | null> | null; // [VerificationToken]
-    pageInfo: NexusGenRootTypes["PageInfo"]; // PageInfo!
   };
   VerificationTokenEdge: {
     // field return type
@@ -1217,12 +1481,6 @@ export interface NexusGenFieldTypeNames {
     type: "String";
     user: "User";
     userId: "String";
-  };
-  AccountConnection: {
-    // field return type name
-    edges: "AccountEdge";
-    nodes: "Account";
-    pageInfo: "PageInfo";
   };
   AccountEdge: {
     // field return type name
@@ -1260,12 +1518,6 @@ export interface NexusGenFieldTypeNames {
     reactions: "Reaction";
     updatedAt: "DateTime";
   };
-  CommentConnection: {
-    // field return type name
-    edges: "CommentEdge";
-    nodes: "Comment";
-    pageInfo: "PageInfo";
-  };
   CommentEdge: {
     // field return type name
     cursor: "String";
@@ -1278,7 +1530,7 @@ export interface NexusGenFieldTypeNames {
     author: "User";
     authorId: "String";
     categories: "Category";
-    comments: "CommentConnection";
+    comments: "EntryComments_Connection";
     content: "String";
     createdAt: "DateTime";
     featuredImage: "MediaItem";
@@ -1288,11 +1540,12 @@ export interface NexusGenFieldTypeNames {
     title: "String";
     updatedAt: "DateTime";
   };
-  EntryConnection: {
+  EntryComments_Connection: {
     // field return type name
-    edges: "EntryEdge";
-    nodes: "Entry";
+    edges: "CommentEdge";
+    nodes: "Comment";
     pageInfo: "PageInfo";
+    totalCount: "Int";
   };
   EntryCount: {
     // field return type name
@@ -1356,12 +1609,6 @@ export interface NexusGenFieldTypeNames {
     user: "User";
     userId: "String";
   };
-  ProfileConnection: {
-    // field return type name
-    edges: "ProfileEdge";
-    nodes: "Profile";
-    pageInfo: "PageInfo";
-  };
   ProfileEdge: {
     // field return type name
     cursor: "String";
@@ -1369,28 +1616,147 @@ export interface NexusGenFieldTypeNames {
   };
   Query: {
     // field return type name
-    FilterUsers: "UserConnection";
-    GetAllEntries: "EntryConnection";
-    GetAllSessions: "SessionConnection";
+    FilterUsers: "QueryFilterUsers_Connection";
+    GetAllEntries: "QueryGetAllEntries_Connection";
     GetEntry: "Entry";
     GetSession: "Session";
-    SearchByUserEmail: "UserConnection";
-    SearchEntriesByTitle: "EntryConnection";
-    accounts: "AccountConnection";
-    allAccounts: "AccountConnection";
-    allEntries: "EntryConnection";
-    entries: "EntryConnection";
-    entryFeed: "EntryConnection";
-    getUserByAccount: "AccountConnection";
+    SearchByUserEmail: "QuerySearchByUserEmail_Connection";
+    SearchEntriesByTitle: "QuerySearchEntriesByTitle_Connection";
+    accounts: "QueryAccounts_Connection";
+    allAccounts: "QueryAllAccounts_Connection";
+    allEntries: "QueryAllEntries_Connection";
+    entries: "QueryEntries_Connection";
+    entryFeed: "QueryEntryFeed_Connection";
+    getUserByAccount: "QueryGetUserByAccount_Connection";
+    listProfiles: "QueryListProfiles_Connection";
+    listSessions: "QueryListSessions_Connection";
     node: "Node";
-    profiles: "ProfileConnection";
-    session: "SessionConnection";
-    userAccount: "AccountConnection";
+    session: "QuerySession_Connection";
+    userAccount: "QueryUserAccount_Connection";
     userByEmail: "User";
     userById: "User";
-    userEntries: "EntryConnection";
-    usersQuery: "UserConnection";
-    verificationTokens: "VerificationTokenConnection";
+    userEntries: "QueryUserEntries_Connection";
+    usersQuery: "QueryUsersQuery_Connection";
+    verificationTokens: "QueryVerificationTokens_Connection";
+  };
+  QueryAccounts_Connection: {
+    // field return type name
+    edges: "AccountEdge";
+    nodes: "Account";
+    pageInfo: "PageInfo";
+    totalCount: "Int";
+  };
+  QueryAllAccounts_Connection: {
+    // field return type name
+    edges: "AccountEdge";
+    nodes: "Account";
+    pageInfo: "PageInfo";
+    totalCount: "Int";
+  };
+  QueryAllEntries_Connection: {
+    // field return type name
+    edges: "EntryEdge";
+    nodes: "Entry";
+    pageInfo: "PageInfo";
+    totalCount: "Int";
+  };
+  QueryEntries_Connection: {
+    // field return type name
+    edges: "EntryEdge";
+    nodes: "Entry";
+    pageInfo: "PageInfo";
+    totalCount: "Int";
+  };
+  QueryEntryFeed_Connection: {
+    // field return type name
+    edges: "EntryEdge";
+    nodes: "Entry";
+    pageInfo: "PageInfo";
+    totalCount: "Int";
+  };
+  QueryFilterUsers_Connection: {
+    // field return type name
+    edges: "UserEdge";
+    nodes: "User";
+    pageInfo: "PageInfo";
+    totalCount: "Int";
+  };
+  QueryGetAllEntries_Connection: {
+    // field return type name
+    edges: "EntryEdge";
+    nodes: "Entry";
+    pageInfo: "PageInfo";
+    totalCount: "Int";
+  };
+  QueryGetUserByAccount_Connection: {
+    // field return type name
+    edges: "AccountEdge";
+    nodes: "Account";
+    pageInfo: "PageInfo";
+    totalCount: "Int";
+  };
+  QueryListProfiles_Connection: {
+    // field return type name
+    edges: "ProfileEdge";
+    nodes: "Profile";
+    pageInfo: "PageInfo";
+    totalCount: "Int";
+  };
+  QueryListSessions_Connection: {
+    // field return type name
+    edges: "SessionEdge";
+    nodes: "Session";
+    pageInfo: "PageInfo";
+    totalCount: "Int";
+  };
+  QuerySearchByUserEmail_Connection: {
+    // field return type name
+    edges: "UserEdge";
+    nodes: "User";
+    pageInfo: "PageInfo";
+    totalCount: "Int";
+  };
+  QuerySearchEntriesByTitle_Connection: {
+    // field return type name
+    edges: "EntryEdge";
+    nodes: "Entry";
+    pageInfo: "PageInfo";
+    totalCount: "Int";
+  };
+  QuerySession_Connection: {
+    // field return type name
+    edges: "SessionEdge";
+    nodes: "Session";
+    pageInfo: "PageInfo";
+    totalCount: "Int";
+  };
+  QueryUserAccount_Connection: {
+    // field return type name
+    edges: "AccountEdge";
+    nodes: "Account";
+    pageInfo: "PageInfo";
+    totalCount: "Int";
+  };
+  QueryUserEntries_Connection: {
+    // field return type name
+    edges: "EntryEdge";
+    nodes: "Entry";
+    pageInfo: "PageInfo";
+    totalCount: "Int";
+  };
+  QueryUsersQuery_Connection: {
+    // field return type name
+    edges: "UserEdge";
+    nodes: "User";
+    pageInfo: "PageInfo";
+    totalCount: "Int";
+  };
+  QueryVerificationTokens_Connection: {
+    // field return type name
+    edges: "VerificationTokenEdge";
+    nodes: "VerificationToken";
+    pageInfo: "PageInfo";
+    totalCount: "Int";
   };
   Session: {
     // field return type name
@@ -1400,12 +1766,6 @@ export interface NexusGenFieldTypeNames {
     user: "User";
     userId: "String";
   };
-  SessionConnection: {
-    // field return type name
-    edges: "SessionEdge";
-    nodes: "Session";
-    pageInfo: "PageInfo";
-  };
   SessionEdge: {
     // field return type name
     cursor: "String";
@@ -1414,25 +1774,33 @@ export interface NexusGenFieldTypeNames {
   User: {
     // field return type name
     _count: "UserCount";
-    accounts: "AccountConnection";
-    comments: "CommentConnection";
+    accounts: "UserAccounts_Connection";
+    comments: "UserComments_Connection";
     email: "String";
     emailVerified: "DateTime";
-    entries: "EntryConnection";
+    entries: "UserEntries_Connection";
     id: "String";
     image: "String";
     imageMeta: "MediaItem";
     name: "String";
     profile: "Profile";
     role: "Role";
-    sessions: "SessionConnection";
+    sessions: "UserSessions_Connection";
     status: "UserStatus";
   };
-  UserConnection: {
+  UserAccounts_Connection: {
     // field return type name
-    edges: "UserEdge";
-    nodes: "User";
+    edges: "AccountEdge";
+    nodes: "Account";
     pageInfo: "PageInfo";
+    totalCount: "Int";
+  };
+  UserComments_Connection: {
+    // field return type name
+    edges: "CommentEdge";
+    nodes: "Comment";
+    pageInfo: "PageInfo";
+    totalCount: "Int";
   };
   UserCount: {
     // field return type name
@@ -1446,18 +1814,26 @@ export interface NexusGenFieldTypeNames {
     cursor: "String";
     node: "User";
   };
+  UserEntries_Connection: {
+    // field return type name
+    edges: "EntryEdge";
+    nodes: "Entry";
+    pageInfo: "PageInfo";
+    totalCount: "Int";
+  };
+  UserSessions_Connection: {
+    // field return type name
+    edges: "SessionEdge";
+    nodes: "Session";
+    pageInfo: "PageInfo";
+    totalCount: "Int";
+  };
   VerificationToken: {
     // field return type name
     expires: "DateTime";
     id: "String";
     identifier: "String";
     token: "String";
-  };
-  VerificationTokenConnection: {
-    // field return type name
-    edges: "VerificationTokenEdge";
-    nodes: "VerificationToken";
-    pageInfo: "PageInfo";
   };
   VerificationTokenEdge: {
     // field return type name
@@ -1528,14 +1904,6 @@ export interface NexusGenArgTypes {
       last?: number | null; // Int
       searchString: string; // String!
       take?: number | null; // Int
-    };
-    GetAllSessions: {
-      // args
-      after?: string | null; // String
-      before?: string | null; // String
-      first?: number | null; // Int
-      last?: number | null; // Int
-      orderBy: NexusGenInputs["SessionOrderBy"]; // SessionOrderBy!
     };
     GetEntry: {
       // args
@@ -1612,17 +1980,25 @@ export interface NexusGenArgTypes {
       provider: string; // String!
       providerAccountId: string; // String!
     };
-    node: {
-      // args
-      id: string; // String!
-    };
-    profiles: {
+    listProfiles: {
       // args
       after?: string | null; // String
       before?: string | null; // String
       first?: number | null; // Int
       last?: number | null; // Int
       orderBy: NexusGenEnums["SortOrderEnum"]; // SortOrderEnum!
+    };
+    listSessions: {
+      // args
+      after?: string | null; // String
+      before?: string | null; // String
+      first?: number | null; // Int
+      last?: number | null; // Int
+      orderBy: NexusGenInputs["SessionOrderBy"]; // SessionOrderBy!
+    };
+    node: {
+      // args
+      id: string; // String!
     };
     session: {
       // args
@@ -1788,11 +2164,80 @@ declare global {
   interface NexusGenPluginFieldConfig<
     TypeName extends string,
     FieldName extends string
-  > {}
+  > {
+    /**
+     * The complexity for an individual field. Return a number
+     * or a function that returns a number to specify the
+     * complexity for this field.
+     */
+    complexity?: QueryComplexity<TypeName, FieldName>;
+    /**
+     * Whether the type can be null
+     * @default (depends on whether nullability is configured in type or schema)
+     * @see declarativeWrappingPlugin
+     */
+    nullable?: boolean;
+    /**
+     * Whether the type is list of values, or just a single value.
+     * If list is true, we assume the type is a list. If list is an array,
+     * we'll assume that it's a list with the depth. The boolean indicates whether
+     * the type is required (non-null), where true = nonNull, false = nullable.
+     * @see declarativeWrappingPlugin
+     */
+    list?: true | boolean[];
+    /**
+     * Whether the type should be non null, `required: true` = `nullable: false`
+     * @default (depends on whether nullability is configured in type or schema)
+     * @see declarativeWrappingPlugin
+     */
+    required?: boolean;
+  }
   interface NexusGenPluginInputFieldConfig<
     TypeName extends string,
     FieldName extends string
-  > {}
+  > {
+    /**
+     * Whether the type can be null
+     * @default (depends on whether nullability is configured in type or schema)
+     * @see declarativeWrappingPlugin
+     */
+    nullable?: boolean;
+    /**
+     * Whether the type is list of values, or just a single value.
+     * If list is true, we assume the type is a list. If list is an array,
+     * we'll assume that it's a list with the depth. The boolean indicates whether
+     * the type is required (non-null), where true = nonNull, false = nullable.
+     * @see declarativeWrappingPlugin
+     */
+    list?: true | boolean[];
+    /**
+     * Whether the type should be non null, `required: true` = `nullable: false`
+     * @default (depends on whether nullability is configured in type or schema)
+     * @see declarativeWrappingPlugin
+     */
+    required?: boolean;
+  }
   interface NexusGenPluginSchemaConfig {}
-  interface NexusGenPluginArgConfig {}
+  interface NexusGenPluginArgConfig {
+    /**
+     * Whether the type can be null
+     * @default (depends on whether nullability is configured in type or schema)
+     * @see declarativeWrappingPlugin
+     */
+    nullable?: boolean;
+    /**
+     * Whether the type is list of values, or just a single value.
+     * If list is true, we assume the type is a list. If list is an array,
+     * we'll assume that it's a list with the depth. The boolean indicates whether
+     * the type is required (non-null), where true = nonNull, false = nullable.
+     * @see declarativeWrappingPlugin
+     */
+    list?: true | boolean[];
+    /**
+     * Whether the type should be non null, `required: true` = `nullable: false`
+     * @default (depends on whether nullability is configured in type or schema)
+     * @see declarativeWrappingPlugin
+     */
+    required?: boolean;
+  }
 }

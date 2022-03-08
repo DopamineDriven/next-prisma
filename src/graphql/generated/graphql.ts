@@ -73,16 +73,6 @@ export type Account = Node & {
   userId?: Maybe<FieldWrapper<Scalars["String"]>>;
 };
 
-export type AccountConnection = {
-  __typename?: "AccountConnection";
-  /** https://facebook.github.io/relay/graphql/connections.htm#sec-Edge-Types */
-  edges?: Maybe<Array<Maybe<FieldWrapper<AccountEdge>>>>;
-  /** Flattened list of Account type */
-  nodes?: Maybe<Array<Maybe<FieldWrapper<Account>>>>;
-  /** https://facebook.github.io/relay/graphql/connections.htm#sec-undefined.PageInfo */
-  pageInfo: FieldWrapper<PageInfo>;
-};
-
 export type AccountEdge = {
   __typename?: "AccountEdge";
   /** https://facebook.github.io/relay/graphql/connections.htm#sec-Cursor */
@@ -189,16 +179,6 @@ export type Comment = Node & {
   updatedAt?: Maybe<FieldWrapper<Scalars["DateTime"]>>;
 };
 
-export type CommentConnection = {
-  __typename?: "CommentConnection";
-  /** https://facebook.github.io/relay/graphql/connections.htm#sec-Edge-Types */
-  edges?: Maybe<Array<Maybe<FieldWrapper<CommentEdge>>>>;
-  /** Flattened list of Comment type */
-  nodes?: Maybe<Array<Maybe<FieldWrapper<Comment>>>>;
-  /** https://facebook.github.io/relay/graphql/connections.htm#sec-undefined.PageInfo */
-  pageInfo: FieldWrapper<PageInfo>;
-};
-
 export type CommentEdge = {
   __typename?: "CommentEdge";
   /** https://facebook.github.io/relay/graphql/connections.htm#sec-Cursor */
@@ -263,7 +243,7 @@ export type Entry = Node & {
   author?: Maybe<FieldWrapper<User>>;
   authorId?: Maybe<FieldWrapper<Scalars["String"]>>;
   categories?: Maybe<Array<Maybe<FieldWrapper<Category>>>>;
-  comments?: Maybe<FieldWrapper<CommentConnection>>;
+  comments?: Maybe<FieldWrapper<EntryComments_Connection>>;
   content?: Maybe<FieldWrapper<Scalars["String"]>>;
   createdAt?: Maybe<FieldWrapper<Scalars["DateTime"]>>;
   featuredImage?: Maybe<FieldWrapper<MediaItem>>;
@@ -283,14 +263,15 @@ export type EntrycommentsArgs = {
   take?: InputMaybe<Scalars["Int"]>;
 };
 
-export type EntryConnection = {
-  __typename?: "EntryConnection";
+export type EntryComments_Connection = {
+  __typename?: "EntryComments_Connection";
   /** https://facebook.github.io/relay/graphql/connections.htm#sec-Edge-Types */
-  edges?: Maybe<Array<Maybe<FieldWrapper<EntryEdge>>>>;
-  /** Flattened list of Entry type */
-  nodes?: Maybe<Array<Maybe<FieldWrapper<Entry>>>>;
+  edges?: Maybe<Array<Maybe<FieldWrapper<CommentEdge>>>>;
+  /** Flattened list of Comment type */
+  nodes?: Maybe<Array<Maybe<FieldWrapper<Comment>>>>;
   /** https://facebook.github.io/relay/graphql/connections.htm#sec-undefined.PageInfo */
   pageInfo: FieldWrapper<PageInfo>;
+  totalCount?: Maybe<FieldWrapper<Scalars["Int"]>>;
 };
 
 export type EntryCount = {
@@ -733,16 +714,6 @@ export type Profile = Node & {
   userId?: Maybe<FieldWrapper<Scalars["String"]>>;
 };
 
-export type ProfileConnection = {
-  __typename?: "ProfileConnection";
-  /** https://facebook.github.io/relay/graphql/connections.htm#sec-Edge-Types */
-  edges?: Maybe<Array<Maybe<FieldWrapper<ProfileEdge>>>>;
-  /** Flattened list of Profile type */
-  nodes?: Maybe<Array<Maybe<FieldWrapper<Profile>>>>;
-  /** https://facebook.github.io/relay/graphql/connections.htm#sec-undefined.PageInfo */
-  pageInfo: FieldWrapper<PageInfo>;
-};
-
 export type ProfileEdge = {
   __typename?: "ProfileEdge";
   /** https://facebook.github.io/relay/graphql/connections.htm#sec-Cursor */
@@ -795,6 +766,23 @@ export type ProfileOrderByWithRelationAndSearchRelevanceInput = {
   userId?: InputMaybe<SortOrderEnum>;
 };
 
+export type ProfileOrderByWithRelationInput = {
+  activityFeed?: InputMaybe<SortOrderEnum>;
+  city?: InputMaybe<SortOrderEnum>;
+  country?: InputMaybe<SortOrderEnum>;
+  dob?: InputMaybe<SortOrderEnum>;
+  gender?: InputMaybe<SortOrderEnum>;
+  id?: InputMaybe<SortOrderEnum>;
+  lastSeen?: InputMaybe<SortOrderEnum>;
+  memberSince?: InputMaybe<SortOrderEnum>;
+  occupation?: InputMaybe<SortOrderEnum>;
+  phoneNumber?: InputMaybe<SortOrderEnum>;
+  pronouns?: InputMaybe<SortOrderEnum>;
+  recentActivity?: InputMaybe<SortOrderEnum>;
+  user?: InputMaybe<UserOrderByWithRelationInput>;
+  userId?: InputMaybe<SortOrderEnum>;
+};
+
 export type ProfileRelationFilter = {
   is?: InputMaybe<ProfileWhereInput>;
   isNot?: InputMaybe<ProfileWhereInput>;
@@ -833,28 +821,30 @@ export enum Pronouns {
 
 export type Query = {
   __typename?: "Query";
-  FilterUsers?: Maybe<FieldWrapper<UserConnection>>;
-  GetAllEntries?: Maybe<FieldWrapper<EntryConnection>>;
-  GetAllSessions?: Maybe<FieldWrapper<SessionConnection>>;
+  FilterUsers?: Maybe<FieldWrapper<QueryFilterUsers_Connection>>;
+  GetAllEntries?: Maybe<FieldWrapper<QueryGetAllEntries_Connection>>;
   GetEntry?: Maybe<FieldWrapper<Entry>>;
   GetSession?: Maybe<FieldWrapper<Session>>;
-  SearchByUserEmail?: Maybe<FieldWrapper<UserConnection>>;
-  SearchEntriesByTitle?: Maybe<FieldWrapper<EntryConnection>>;
-  accounts?: Maybe<FieldWrapper<AccountConnection>>;
-  allAccounts?: Maybe<FieldWrapper<AccountConnection>>;
-  allEntries?: Maybe<FieldWrapper<EntryConnection>>;
-  entries?: Maybe<FieldWrapper<EntryConnection>>;
-  entryFeed?: Maybe<FieldWrapper<EntryConnection>>;
-  getUserByAccount?: Maybe<FieldWrapper<AccountConnection>>;
+  SearchByUserEmail?: Maybe<FieldWrapper<QuerySearchByUserEmail_Connection>>;
+  SearchEntriesByTitle?: Maybe<
+    FieldWrapper<QuerySearchEntriesByTitle_Connection>
+  >;
+  accounts?: Maybe<FieldWrapper<QueryAccounts_Connection>>;
+  allAccounts?: Maybe<FieldWrapper<QueryAllAccounts_Connection>>;
+  allEntries?: Maybe<FieldWrapper<QueryAllEntries_Connection>>;
+  entries?: Maybe<FieldWrapper<QueryEntries_Connection>>;
+  entryFeed?: Maybe<FieldWrapper<QueryEntryFeed_Connection>>;
+  getUserByAccount?: Maybe<FieldWrapper<QueryGetUserByAccount_Connection>>;
+  listProfiles?: Maybe<FieldWrapper<QueryListProfiles_Connection>>;
+  listSessions?: Maybe<FieldWrapper<QueryListSessions_Connection>>;
   node?: Maybe<FieldWrapper<Node>>;
-  profiles?: Maybe<FieldWrapper<ProfileConnection>>;
-  session?: Maybe<FieldWrapper<SessionConnection>>;
-  userAccount?: Maybe<FieldWrapper<AccountConnection>>;
+  session?: Maybe<FieldWrapper<QuerySession_Connection>>;
+  userAccount?: Maybe<FieldWrapper<QueryUserAccount_Connection>>;
   userByEmail?: Maybe<FieldWrapper<User>>;
   userById?: Maybe<FieldWrapper<User>>;
-  userEntries?: Maybe<FieldWrapper<EntryConnection>>;
-  usersQuery?: Maybe<FieldWrapper<UserConnection>>;
-  verificationTokens?: Maybe<FieldWrapper<VerificationTokenConnection>>;
+  userEntries?: Maybe<FieldWrapper<QueryUserEntries_Connection>>;
+  usersQuery?: Maybe<FieldWrapper<QueryUsersQuery_Connection>>;
+  verificationTokens?: Maybe<FieldWrapper<QueryVerificationTokens_Connection>>;
 };
 
 export type QueryFilterUsersArgs = {
@@ -872,14 +862,6 @@ export type QueryGetAllEntriesArgs = {
   last?: InputMaybe<Scalars["Int"]>;
   searchString: Scalars["String"];
   take?: InputMaybe<Scalars["Int"]>;
-};
-
-export type QueryGetAllSessionsArgs = {
-  after?: InputMaybe<Scalars["String"]>;
-  before?: InputMaybe<Scalars["String"]>;
-  first?: InputMaybe<Scalars["Int"]>;
-  last?: InputMaybe<Scalars["Int"]>;
-  orderBy: SessionOrderBy;
 };
 
 export type QueryGetEntryArgs = {
@@ -957,16 +939,24 @@ export type QuerygetUserByAccountArgs = {
   providerAccountId: Scalars["String"];
 };
 
-export type QuerynodeArgs = {
-  id: Scalars["String"];
-};
-
-export type QueryprofilesArgs = {
+export type QuerylistProfilesArgs = {
   after?: InputMaybe<Scalars["String"]>;
   before?: InputMaybe<Scalars["String"]>;
   first?: InputMaybe<Scalars["Int"]>;
   last?: InputMaybe<Scalars["Int"]>;
   orderBy: SortOrderEnum;
+};
+
+export type QuerylistSessionsArgs = {
+  after?: InputMaybe<Scalars["String"]>;
+  before?: InputMaybe<Scalars["String"]>;
+  first?: InputMaybe<Scalars["Int"]>;
+  last?: InputMaybe<Scalars["Int"]>;
+  orderBy: SessionOrderBy;
+};
+
+export type QuerynodeArgs = {
+  id: Scalars["String"];
 };
 
 export type QuerysessionArgs = {
@@ -1013,10 +1003,197 @@ export type QueryverificationTokensArgs = {
   last?: InputMaybe<Scalars["Int"]>;
 };
 
+export type QueryAccounts_Connection = {
+  __typename?: "QueryAccounts_Connection";
+  /** https://facebook.github.io/relay/graphql/connections.htm#sec-Edge-Types */
+  edges?: Maybe<Array<Maybe<FieldWrapper<AccountEdge>>>>;
+  /** Flattened list of Account type */
+  nodes?: Maybe<Array<Maybe<FieldWrapper<Account>>>>;
+  /** https://facebook.github.io/relay/graphql/connections.htm#sec-undefined.PageInfo */
+  pageInfo: FieldWrapper<PageInfo>;
+  totalCount?: Maybe<FieldWrapper<Scalars["Int"]>>;
+};
+
+export type QueryAllAccounts_Connection = {
+  __typename?: "QueryAllAccounts_Connection";
+  /** https://facebook.github.io/relay/graphql/connections.htm#sec-Edge-Types */
+  edges?: Maybe<Array<Maybe<FieldWrapper<AccountEdge>>>>;
+  /** Flattened list of Account type */
+  nodes?: Maybe<Array<Maybe<FieldWrapper<Account>>>>;
+  /** https://facebook.github.io/relay/graphql/connections.htm#sec-undefined.PageInfo */
+  pageInfo: FieldWrapper<PageInfo>;
+  totalCount?: Maybe<FieldWrapper<Scalars["Int"]>>;
+};
+
+export type QueryAllEntries_Connection = {
+  __typename?: "QueryAllEntries_Connection";
+  /** https://facebook.github.io/relay/graphql/connections.htm#sec-Edge-Types */
+  edges?: Maybe<Array<Maybe<FieldWrapper<EntryEdge>>>>;
+  /** Flattened list of Entry type */
+  nodes?: Maybe<Array<Maybe<FieldWrapper<Entry>>>>;
+  /** https://facebook.github.io/relay/graphql/connections.htm#sec-undefined.PageInfo */
+  pageInfo: FieldWrapper<PageInfo>;
+  totalCount?: Maybe<FieldWrapper<Scalars["Int"]>>;
+};
+
+export type QueryEntries_Connection = {
+  __typename?: "QueryEntries_Connection";
+  /** https://facebook.github.io/relay/graphql/connections.htm#sec-Edge-Types */
+  edges?: Maybe<Array<Maybe<FieldWrapper<EntryEdge>>>>;
+  /** Flattened list of Entry type */
+  nodes?: Maybe<Array<Maybe<FieldWrapper<Entry>>>>;
+  /** https://facebook.github.io/relay/graphql/connections.htm#sec-undefined.PageInfo */
+  pageInfo: FieldWrapper<PageInfo>;
+  totalCount?: Maybe<FieldWrapper<Scalars["Int"]>>;
+};
+
+export type QueryEntryFeed_Connection = {
+  __typename?: "QueryEntryFeed_Connection";
+  /** https://facebook.github.io/relay/graphql/connections.htm#sec-Edge-Types */
+  edges?: Maybe<Array<Maybe<FieldWrapper<EntryEdge>>>>;
+  /** Flattened list of Entry type */
+  nodes?: Maybe<Array<Maybe<FieldWrapper<Entry>>>>;
+  /** https://facebook.github.io/relay/graphql/connections.htm#sec-undefined.PageInfo */
+  pageInfo: FieldWrapper<PageInfo>;
+  totalCount?: Maybe<FieldWrapper<Scalars["Int"]>>;
+};
+
+export type QueryFilterUsers_Connection = {
+  __typename?: "QueryFilterUsers_Connection";
+  /** https://facebook.github.io/relay/graphql/connections.htm#sec-Edge-Types */
+  edges?: Maybe<Array<Maybe<FieldWrapper<UserEdge>>>>;
+  /** Flattened list of User type */
+  nodes?: Maybe<Array<Maybe<FieldWrapper<User>>>>;
+  /** https://facebook.github.io/relay/graphql/connections.htm#sec-undefined.PageInfo */
+  pageInfo: FieldWrapper<PageInfo>;
+  totalCount?: Maybe<FieldWrapper<Scalars["Int"]>>;
+};
+
+export type QueryGetAllEntries_Connection = {
+  __typename?: "QueryGetAllEntries_Connection";
+  /** https://facebook.github.io/relay/graphql/connections.htm#sec-Edge-Types */
+  edges?: Maybe<Array<Maybe<FieldWrapper<EntryEdge>>>>;
+  /** Flattened list of Entry type */
+  nodes?: Maybe<Array<Maybe<FieldWrapper<Entry>>>>;
+  /** https://facebook.github.io/relay/graphql/connections.htm#sec-undefined.PageInfo */
+  pageInfo: FieldWrapper<PageInfo>;
+  totalCount?: Maybe<FieldWrapper<Scalars["Int"]>>;
+};
+
+export type QueryGetUserByAccount_Connection = {
+  __typename?: "QueryGetUserByAccount_Connection";
+  /** https://facebook.github.io/relay/graphql/connections.htm#sec-Edge-Types */
+  edges?: Maybe<Array<Maybe<FieldWrapper<AccountEdge>>>>;
+  /** Flattened list of Account type */
+  nodes?: Maybe<Array<Maybe<FieldWrapper<Account>>>>;
+  /** https://facebook.github.io/relay/graphql/connections.htm#sec-undefined.PageInfo */
+  pageInfo: FieldWrapper<PageInfo>;
+  totalCount?: Maybe<FieldWrapper<Scalars["Int"]>>;
+};
+
+export type QueryListProfiles_Connection = {
+  __typename?: "QueryListProfiles_Connection";
+  /** https://facebook.github.io/relay/graphql/connections.htm#sec-Edge-Types */
+  edges?: Maybe<Array<Maybe<FieldWrapper<ProfileEdge>>>>;
+  /** Flattened list of Profile type */
+  nodes?: Maybe<Array<Maybe<FieldWrapper<Profile>>>>;
+  /** https://facebook.github.io/relay/graphql/connections.htm#sec-undefined.PageInfo */
+  pageInfo: FieldWrapper<PageInfo>;
+  totalCount?: Maybe<FieldWrapper<Scalars["Int"]>>;
+};
+
+export type QueryListSessions_Connection = {
+  __typename?: "QueryListSessions_Connection";
+  /** https://facebook.github.io/relay/graphql/connections.htm#sec-Edge-Types */
+  edges?: Maybe<Array<Maybe<FieldWrapper<SessionEdge>>>>;
+  /** Flattened list of Session type */
+  nodes?: Maybe<Array<Maybe<FieldWrapper<Session>>>>;
+  /** https://facebook.github.io/relay/graphql/connections.htm#sec-undefined.PageInfo */
+  pageInfo: FieldWrapper<PageInfo>;
+  totalCount?: Maybe<FieldWrapper<Scalars["Int"]>>;
+};
+
 export enum QueryModeEnum {
   default = "default",
   insensitive = "insensitive"
 }
+
+export type QuerySearchByUserEmail_Connection = {
+  __typename?: "QuerySearchByUserEmail_Connection";
+  /** https://facebook.github.io/relay/graphql/connections.htm#sec-Edge-Types */
+  edges?: Maybe<Array<Maybe<FieldWrapper<UserEdge>>>>;
+  /** Flattened list of User type */
+  nodes?: Maybe<Array<Maybe<FieldWrapper<User>>>>;
+  /** https://facebook.github.io/relay/graphql/connections.htm#sec-undefined.PageInfo */
+  pageInfo: FieldWrapper<PageInfo>;
+  totalCount?: Maybe<FieldWrapper<Scalars["Int"]>>;
+};
+
+export type QuerySearchEntriesByTitle_Connection = {
+  __typename?: "QuerySearchEntriesByTitle_Connection";
+  /** https://facebook.github.io/relay/graphql/connections.htm#sec-Edge-Types */
+  edges?: Maybe<Array<Maybe<FieldWrapper<EntryEdge>>>>;
+  /** Flattened list of Entry type */
+  nodes?: Maybe<Array<Maybe<FieldWrapper<Entry>>>>;
+  /** https://facebook.github.io/relay/graphql/connections.htm#sec-undefined.PageInfo */
+  pageInfo: FieldWrapper<PageInfo>;
+  totalCount?: Maybe<FieldWrapper<Scalars["Int"]>>;
+};
+
+export type QuerySession_Connection = {
+  __typename?: "QuerySession_Connection";
+  /** https://facebook.github.io/relay/graphql/connections.htm#sec-Edge-Types */
+  edges?: Maybe<Array<Maybe<FieldWrapper<SessionEdge>>>>;
+  /** Flattened list of Session type */
+  nodes?: Maybe<Array<Maybe<FieldWrapper<Session>>>>;
+  /** https://facebook.github.io/relay/graphql/connections.htm#sec-undefined.PageInfo */
+  pageInfo: FieldWrapper<PageInfo>;
+  totalCount?: Maybe<FieldWrapper<Scalars["Int"]>>;
+};
+
+export type QueryUserAccount_Connection = {
+  __typename?: "QueryUserAccount_Connection";
+  /** https://facebook.github.io/relay/graphql/connections.htm#sec-Edge-Types */
+  edges?: Maybe<Array<Maybe<FieldWrapper<AccountEdge>>>>;
+  /** Flattened list of Account type */
+  nodes?: Maybe<Array<Maybe<FieldWrapper<Account>>>>;
+  /** https://facebook.github.io/relay/graphql/connections.htm#sec-undefined.PageInfo */
+  pageInfo: FieldWrapper<PageInfo>;
+  totalCount?: Maybe<FieldWrapper<Scalars["Int"]>>;
+};
+
+export type QueryUserEntries_Connection = {
+  __typename?: "QueryUserEntries_Connection";
+  /** https://facebook.github.io/relay/graphql/connections.htm#sec-Edge-Types */
+  edges?: Maybe<Array<Maybe<FieldWrapper<EntryEdge>>>>;
+  /** Flattened list of Entry type */
+  nodes?: Maybe<Array<Maybe<FieldWrapper<Entry>>>>;
+  /** https://facebook.github.io/relay/graphql/connections.htm#sec-undefined.PageInfo */
+  pageInfo: FieldWrapper<PageInfo>;
+  totalCount?: Maybe<FieldWrapper<Scalars["Int"]>>;
+};
+
+export type QueryUsersQuery_Connection = {
+  __typename?: "QueryUsersQuery_Connection";
+  /** https://facebook.github.io/relay/graphql/connections.htm#sec-Edge-Types */
+  edges?: Maybe<Array<Maybe<FieldWrapper<UserEdge>>>>;
+  /** Flattened list of User type */
+  nodes?: Maybe<Array<Maybe<FieldWrapper<User>>>>;
+  /** https://facebook.github.io/relay/graphql/connections.htm#sec-undefined.PageInfo */
+  pageInfo: FieldWrapper<PageInfo>;
+  totalCount?: Maybe<FieldWrapper<Scalars["Int"]>>;
+};
+
+export type QueryVerificationTokens_Connection = {
+  __typename?: "QueryVerificationTokens_Connection";
+  /** https://facebook.github.io/relay/graphql/connections.htm#sec-Edge-Types */
+  edges?: Maybe<Array<Maybe<FieldWrapper<VerificationTokenEdge>>>>;
+  /** Flattened list of VerificationToken type */
+  nodes?: Maybe<Array<Maybe<FieldWrapper<VerificationToken>>>>;
+  /** https://facebook.github.io/relay/graphql/connections.htm#sec-undefined.PageInfo */
+  pageInfo: FieldWrapper<PageInfo>;
+  totalCount?: Maybe<FieldWrapper<Scalars["Int"]>>;
+};
 
 /** Comment/Entry Reactions */
 export enum Reaction {
@@ -1050,16 +1227,6 @@ export type Session = Node & {
   userId?: Maybe<FieldWrapper<Scalars["String"]>>;
 };
 
-export type SessionConnection = {
-  __typename?: "SessionConnection";
-  /** https://facebook.github.io/relay/graphql/connections.htm#sec-Edge-Types */
-  edges?: Maybe<Array<Maybe<FieldWrapper<SessionEdge>>>>;
-  /** Flattened list of Session type */
-  nodes?: Maybe<Array<Maybe<FieldWrapper<Session>>>>;
-  /** https://facebook.github.io/relay/graphql/connections.htm#sec-undefined.PageInfo */
-  pageInfo: FieldWrapper<PageInfo>;
-};
-
 export type SessionEdge = {
   __typename?: "SessionEdge";
   /** https://facebook.github.io/relay/graphql/connections.htm#sec-Cursor */
@@ -1083,6 +1250,13 @@ export type SessionOrderBy = {
 
 export type SessionOrderByRelationAggregateInput = {
   _count?: InputMaybe<SortOrderEnum>;
+};
+
+export type SessionOrderByWithRelationshipInput = {
+  expires?: InputMaybe<SortOrderEnum>;
+  id?: InputMaybe<SortOrderEnum>;
+  sessionToken?: InputMaybe<SortOrderEnum>;
+  userId?: InputMaybe<SortOrderEnum>;
 };
 
 export type SessionWhereInput = {
@@ -1145,18 +1319,18 @@ export type StringNullableListFilter = {
 export type User = Node & {
   __typename?: "User";
   _count: FieldWrapper<UserCount>;
-  accounts?: Maybe<FieldWrapper<AccountConnection>>;
-  comments?: Maybe<FieldWrapper<CommentConnection>>;
+  accounts?: Maybe<FieldWrapper<UserAccounts_Connection>>;
+  comments?: Maybe<FieldWrapper<UserComments_Connection>>;
   email?: Maybe<FieldWrapper<Scalars["String"]>>;
   emailVerified?: Maybe<FieldWrapper<Scalars["DateTime"]>>;
-  entries?: Maybe<FieldWrapper<EntryConnection>>;
+  entries?: Maybe<FieldWrapper<UserEntries_Connection>>;
   id: FieldWrapper<Scalars["String"]>;
   image?: Maybe<FieldWrapper<Scalars["String"]>>;
   imageMeta?: Maybe<FieldWrapper<MediaItem>>;
   name?: Maybe<FieldWrapper<Scalars["String"]>>;
   profile?: Maybe<FieldWrapper<Profile>>;
   role?: Maybe<FieldWrapper<Role>>;
-  sessions?: Maybe<FieldWrapper<SessionConnection>>;
+  sessions?: Maybe<FieldWrapper<UserSessions_Connection>>;
   status?: Maybe<FieldWrapper<UserStatus>>;
 };
 
@@ -1188,14 +1362,26 @@ export type UsersessionsArgs = {
   last?: InputMaybe<Scalars["Int"]>;
 };
 
-export type UserConnection = {
-  __typename?: "UserConnection";
+export type UserAccounts_Connection = {
+  __typename?: "UserAccounts_Connection";
   /** https://facebook.github.io/relay/graphql/connections.htm#sec-Edge-Types */
-  edges?: Maybe<Array<Maybe<FieldWrapper<UserEdge>>>>;
-  /** Flattened list of User type */
-  nodes?: Maybe<Array<Maybe<FieldWrapper<User>>>>;
+  edges?: Maybe<Array<Maybe<FieldWrapper<AccountEdge>>>>;
+  /** Flattened list of Account type */
+  nodes?: Maybe<Array<Maybe<FieldWrapper<Account>>>>;
   /** https://facebook.github.io/relay/graphql/connections.htm#sec-undefined.PageInfo */
   pageInfo: FieldWrapper<PageInfo>;
+  totalCount?: Maybe<FieldWrapper<Scalars["Int"]>>;
+};
+
+export type UserComments_Connection = {
+  __typename?: "UserComments_Connection";
+  /** https://facebook.github.io/relay/graphql/connections.htm#sec-Edge-Types */
+  edges?: Maybe<Array<Maybe<FieldWrapper<CommentEdge>>>>;
+  /** Flattened list of Comment type */
+  nodes?: Maybe<Array<Maybe<FieldWrapper<Comment>>>>;
+  /** https://facebook.github.io/relay/graphql/connections.htm#sec-undefined.PageInfo */
+  pageInfo: FieldWrapper<PageInfo>;
+  totalCount?: Maybe<FieldWrapper<Scalars["Int"]>>;
 };
 
 export type UserCount = {
@@ -1212,6 +1398,17 @@ export type UserEdge = {
   cursor: FieldWrapper<Scalars["String"]>;
   /** https://facebook.github.io/relay/graphql/connections.htm#sec-Node */
   node?: Maybe<FieldWrapper<User>>;
+};
+
+export type UserEntries_Connection = {
+  __typename?: "UserEntries_Connection";
+  /** https://facebook.github.io/relay/graphql/connections.htm#sec-Edge-Types */
+  edges?: Maybe<Array<Maybe<FieldWrapper<EntryEdge>>>>;
+  /** Flattened list of Entry type */
+  nodes?: Maybe<Array<Maybe<FieldWrapper<Entry>>>>;
+  /** https://facebook.github.io/relay/graphql/connections.htm#sec-undefined.PageInfo */
+  pageInfo: FieldWrapper<PageInfo>;
+  totalCount?: Maybe<FieldWrapper<Scalars["Int"]>>;
 };
 
 export enum UserOrderByRelevanceFieldEnum {
@@ -1247,6 +1444,26 @@ export type UserOrderByWithRelationAndSearchRelevanceInput = {
   updatedAt?: InputMaybe<SortOrderEnum>;
 };
 
+export type UserOrderByWithRelationInput = {
+  UserOrderByWithRelationInput?: InputMaybe<
+    Array<InputMaybe<UserOrderByWithRelationInput>>
+  >;
+  accounts?: InputMaybe<AccountOrderByRelationAggregateInput>;
+  comments?: InputMaybe<CommentOrderByRelationAggregateInput>;
+  createdAt?: InputMaybe<SortOrderEnum>;
+  email?: InputMaybe<SortOrderEnum>;
+  emailVerified?: InputMaybe<SortOrderEnum>;
+  entries?: InputMaybe<EntryOrderByRelationAggregateInput>;
+  id?: InputMaybe<SortOrderEnum>;
+  image?: InputMaybe<SortOrderEnum>;
+  name?: InputMaybe<SortOrderEnum>;
+  profile?: InputMaybe<ProfileOrderByWithRelationInput>;
+  role?: InputMaybe<SortOrderEnum>;
+  sessions?: InputMaybe<SessionOrderByRelationAggregateInput>;
+  status?: InputMaybe<SortOrderEnum>;
+  updatedAt?: InputMaybe<SortOrderEnum>;
+};
+
 export type UserRelationFilter = {
   is?: InputMaybe<UserWhereInput>;
   isNot?: InputMaybe<UserWhereInput>;
@@ -1265,6 +1482,17 @@ export enum UserScalarFieldsEnum {
   status = "status",
   updatedAt = "updatedAt"
 }
+
+export type UserSessions_Connection = {
+  __typename?: "UserSessions_Connection";
+  /** https://facebook.github.io/relay/graphql/connections.htm#sec-Edge-Types */
+  edges?: Maybe<Array<Maybe<FieldWrapper<SessionEdge>>>>;
+  /** Flattened list of Session type */
+  nodes?: Maybe<Array<Maybe<FieldWrapper<Session>>>>;
+  /** https://facebook.github.io/relay/graphql/connections.htm#sec-undefined.PageInfo */
+  pageInfo: FieldWrapper<PageInfo>;
+  totalCount?: Maybe<FieldWrapper<Scalars["Int"]>>;
+};
 
 /** User Status */
 export enum UserStatus {
@@ -1308,16 +1536,6 @@ export type VerificationToken = Node & {
   id: FieldWrapper<Scalars["String"]>;
   identifier?: Maybe<FieldWrapper<Scalars["String"]>>;
   token?: Maybe<FieldWrapper<Scalars["String"]>>;
-};
-
-export type VerificationTokenConnection = {
-  __typename?: "VerificationTokenConnection";
-  /** https://facebook.github.io/relay/graphql/connections.htm#sec-Edge-Types */
-  edges?: Maybe<Array<Maybe<FieldWrapper<VerificationTokenEdge>>>>;
-  /** Flattened list of VerificationToken type */
-  nodes?: Maybe<Array<Maybe<FieldWrapper<VerificationToken>>>>;
-  /** https://facebook.github.io/relay/graphql/connections.htm#sec-undefined.PageInfo */
-  pageInfo: FieldWrapper<PageInfo>;
 };
 
 export type VerificationTokenEdge = {
@@ -1600,7 +1818,6 @@ export type DirectiveResolverFn<
 /** Mapping between all available schema types and the resolvers types */
 export type ResolversTypes = ResolversObject<{
   Account: ResolverTypeWrapper<DeepPartial<Account>>;
-  AccountConnection: ResolverTypeWrapper<DeepPartial<AccountConnection>>;
   AccountEdge: ResolverTypeWrapper<DeepPartial<AccountEdge>>;
   AccountListRelationFilter: ResolverTypeWrapper<
     DeepPartial<AccountListRelationFilter>
@@ -1620,7 +1837,6 @@ export type ResolversTypes = ResolversObject<{
   Boolean: ResolverTypeWrapper<DeepPartial<Scalars["Boolean"]>>;
   Category: ResolverTypeWrapper<DeepPartial<Category>>;
   Comment: ResolverTypeWrapper<DeepPartial<Comment>>;
-  CommentConnection: ResolverTypeWrapper<DeepPartial<CommentConnection>>;
   CommentEdge: ResolverTypeWrapper<DeepPartial<CommentEdge>>;
   CommentListRelationFilter: ResolverTypeWrapper<
     DeepPartial<CommentListRelationFilter>
@@ -1636,7 +1852,9 @@ export type ResolversTypes = ResolversObject<{
     DeepPartial<DateTimeNullableFilter>
   >;
   Entry: ResolverTypeWrapper<DeepPartial<Entry>>;
-  EntryConnection: ResolverTypeWrapper<DeepPartial<EntryConnection>>;
+  EntryComments_Connection: ResolverTypeWrapper<
+    DeepPartial<EntryComments_Connection>
+  >;
   EntryCount: ResolverTypeWrapper<DeepPartial<EntryCount>>;
   EntryEdge: ResolverTypeWrapper<DeepPartial<EntryEdge>>;
   EntryListRelationFilter: ResolverTypeWrapper<
@@ -1735,7 +1953,6 @@ export type ResolversTypes = ResolversObject<{
   PaginationArgsInput: ResolverTypeWrapper<DeepPartial<PaginationArgsInput>>;
   PhoneNumber: ResolverTypeWrapper<DeepPartial<Scalars["PhoneNumber"]>>;
   Profile: ResolverTypeWrapper<DeepPartial<Profile>>;
-  ProfileConnection: ResolverTypeWrapper<DeepPartial<ProfileConnection>>;
   ProfileEdge: ResolverTypeWrapper<DeepPartial<ProfileEdge>>;
   ProfileOrderBy: ResolverTypeWrapper<DeepPartial<ProfileOrderBy>>;
   ProfileOrderByRelevanceFieldEnum: ResolverTypeWrapper<
@@ -1747,17 +1964,70 @@ export type ResolversTypes = ResolversObject<{
   ProfileOrderByWithRelationAndSearchRelevanceInput: ResolverTypeWrapper<
     DeepPartial<ProfileOrderByWithRelationAndSearchRelevanceInput>
   >;
+  ProfileOrderByWithRelationInput: ResolverTypeWrapper<
+    DeepPartial<ProfileOrderByWithRelationInput>
+  >;
   ProfileRelationFilter: ResolverTypeWrapper<
     DeepPartial<ProfileRelationFilter>
   >;
   ProfileWhereInput: ResolverTypeWrapper<DeepPartial<ProfileWhereInput>>;
   Pronouns: ResolverTypeWrapper<DeepPartial<Pronouns>>;
   Query: ResolverTypeWrapper<{}>;
+  QueryAccounts_Connection: ResolverTypeWrapper<
+    DeepPartial<QueryAccounts_Connection>
+  >;
+  QueryAllAccounts_Connection: ResolverTypeWrapper<
+    DeepPartial<QueryAllAccounts_Connection>
+  >;
+  QueryAllEntries_Connection: ResolverTypeWrapper<
+    DeepPartial<QueryAllEntries_Connection>
+  >;
+  QueryEntries_Connection: ResolverTypeWrapper<
+    DeepPartial<QueryEntries_Connection>
+  >;
+  QueryEntryFeed_Connection: ResolverTypeWrapper<
+    DeepPartial<QueryEntryFeed_Connection>
+  >;
+  QueryFilterUsers_Connection: ResolverTypeWrapper<
+    DeepPartial<QueryFilterUsers_Connection>
+  >;
+  QueryGetAllEntries_Connection: ResolverTypeWrapper<
+    DeepPartial<QueryGetAllEntries_Connection>
+  >;
+  QueryGetUserByAccount_Connection: ResolverTypeWrapper<
+    DeepPartial<QueryGetUserByAccount_Connection>
+  >;
+  QueryListProfiles_Connection: ResolverTypeWrapper<
+    DeepPartial<QueryListProfiles_Connection>
+  >;
+  QueryListSessions_Connection: ResolverTypeWrapper<
+    DeepPartial<QueryListSessions_Connection>
+  >;
   QueryModeEnum: ResolverTypeWrapper<DeepPartial<QueryModeEnum>>;
+  QuerySearchByUserEmail_Connection: ResolverTypeWrapper<
+    DeepPartial<QuerySearchByUserEmail_Connection>
+  >;
+  QuerySearchEntriesByTitle_Connection: ResolverTypeWrapper<
+    DeepPartial<QuerySearchEntriesByTitle_Connection>
+  >;
+  QuerySession_Connection: ResolverTypeWrapper<
+    DeepPartial<QuerySession_Connection>
+  >;
+  QueryUserAccount_Connection: ResolverTypeWrapper<
+    DeepPartial<QueryUserAccount_Connection>
+  >;
+  QueryUserEntries_Connection: ResolverTypeWrapper<
+    DeepPartial<QueryUserEntries_Connection>
+  >;
+  QueryUsersQuery_Connection: ResolverTypeWrapper<
+    DeepPartial<QueryUsersQuery_Connection>
+  >;
+  QueryVerificationTokens_Connection: ResolverTypeWrapper<
+    DeepPartial<QueryVerificationTokens_Connection>
+  >;
   Reaction: ResolverTypeWrapper<DeepPartial<Reaction>>;
   Role: ResolverTypeWrapper<DeepPartial<Role>>;
   Session: ResolverTypeWrapper<DeepPartial<Session>>;
-  SessionConnection: ResolverTypeWrapper<DeepPartial<SessionConnection>>;
   SessionEdge: ResolverTypeWrapper<DeepPartial<SessionEdge>>;
   SessionListRelationFilter: ResolverTypeWrapper<
     DeepPartial<SessionListRelationFilter>
@@ -1765,6 +2035,9 @@ export type ResolversTypes = ResolversObject<{
   SessionOrderBy: ResolverTypeWrapper<DeepPartial<SessionOrderBy>>;
   SessionOrderByRelationAggregateInput: ResolverTypeWrapper<
     DeepPartial<SessionOrderByRelationAggregateInput>
+  >;
+  SessionOrderByWithRelationshipInput: ResolverTypeWrapper<
+    DeepPartial<SessionOrderByWithRelationshipInput>
   >;
   SessionWhereInput: ResolverTypeWrapper<DeepPartial<SessionWhereInput>>;
   SortOrderEnum: ResolverTypeWrapper<DeepPartial<SortOrderEnum>>;
@@ -1778,9 +2051,17 @@ export type ResolversTypes = ResolversObject<{
   UUID: ResolverTypeWrapper<DeepPartial<Scalars["UUID"]>>;
   Upload: ResolverTypeWrapper<DeepPartial<Scalars["Upload"]>>;
   User: ResolverTypeWrapper<DeepPartial<User>>;
-  UserConnection: ResolverTypeWrapper<DeepPartial<UserConnection>>;
+  UserAccounts_Connection: ResolverTypeWrapper<
+    DeepPartial<UserAccounts_Connection>
+  >;
+  UserComments_Connection: ResolverTypeWrapper<
+    DeepPartial<UserComments_Connection>
+  >;
   UserCount: ResolverTypeWrapper<DeepPartial<UserCount>>;
   UserEdge: ResolverTypeWrapper<DeepPartial<UserEdge>>;
+  UserEntries_Connection: ResolverTypeWrapper<
+    DeepPartial<UserEntries_Connection>
+  >;
   UserOrderByRelevanceFieldEnum: ResolverTypeWrapper<
     DeepPartial<UserOrderByRelevanceFieldEnum>
   >;
@@ -1790,15 +2071,18 @@ export type ResolversTypes = ResolversObject<{
   UserOrderByWithRelationAndSearchRelevanceInput: ResolverTypeWrapper<
     DeepPartial<UserOrderByWithRelationAndSearchRelevanceInput>
   >;
+  UserOrderByWithRelationInput: ResolverTypeWrapper<
+    DeepPartial<UserOrderByWithRelationInput>
+  >;
   UserRelationFilter: ResolverTypeWrapper<DeepPartial<UserRelationFilter>>;
   UserScalarFieldsEnum: ResolverTypeWrapper<DeepPartial<UserScalarFieldsEnum>>;
+  UserSessions_Connection: ResolverTypeWrapper<
+    DeepPartial<UserSessions_Connection>
+  >;
   UserStatus: ResolverTypeWrapper<DeepPartial<UserStatus>>;
   UserWhereInput: ResolverTypeWrapper<DeepPartial<UserWhereInput>>;
   UserWhereUniqueInput: ResolverTypeWrapper<DeepPartial<UserWhereUniqueInput>>;
   VerificationToken: ResolverTypeWrapper<DeepPartial<VerificationToken>>;
-  VerificationTokenConnection: ResolverTypeWrapper<
-    DeepPartial<VerificationTokenConnection>
-  >;
   VerificationTokenEdge: ResolverTypeWrapper<
     DeepPartial<VerificationTokenEdge>
   >;
@@ -1807,7 +2091,6 @@ export type ResolversTypes = ResolversObject<{
 /** Mapping between all available schema types and the resolvers parents */
 export type ResolversParentTypes = ResolversObject<{
   Account: DeepPartial<Account>;
-  AccountConnection: DeepPartial<AccountConnection>;
   AccountEdge: DeepPartial<AccountEdge>;
   AccountListRelationFilter: DeepPartial<AccountListRelationFilter>;
   AccountOrderBy: DeepPartial<AccountOrderBy>;
@@ -1821,7 +2104,6 @@ export type ResolversParentTypes = ResolversObject<{
   Boolean: DeepPartial<Scalars["Boolean"]>;
   Category: DeepPartial<Category>;
   Comment: DeepPartial<Comment>;
-  CommentConnection: DeepPartial<CommentConnection>;
   CommentEdge: DeepPartial<CommentEdge>;
   CommentListRelationFilter: DeepPartial<CommentListRelationFilter>;
   CommentOrderByRelationAggregateInput: DeepPartial<CommentOrderByRelationAggregateInput>;
@@ -1831,7 +2113,7 @@ export type ResolversParentTypes = ResolversObject<{
   DateTimeFilter: DeepPartial<DateTimeFilter>;
   DateTimeNullableFilter: DeepPartial<DateTimeNullableFilter>;
   Entry: DeepPartial<Entry>;
-  EntryConnection: DeepPartial<EntryConnection>;
+  EntryComments_Connection: DeepPartial<EntryComments_Connection>;
   EntryCount: DeepPartial<EntryCount>;
   EntryEdge: DeepPartial<EntryEdge>;
   EntryListRelationFilter: DeepPartial<EntryListRelationFilter>;
@@ -1883,20 +2165,37 @@ export type ResolversParentTypes = ResolversObject<{
   PaginationArgsInput: DeepPartial<PaginationArgsInput>;
   PhoneNumber: DeepPartial<Scalars["PhoneNumber"]>;
   Profile: DeepPartial<Profile>;
-  ProfileConnection: DeepPartial<ProfileConnection>;
   ProfileEdge: DeepPartial<ProfileEdge>;
   ProfileOrderBy: DeepPartial<ProfileOrderBy>;
   ProfileOrderByRelevanceInput: DeepPartial<ProfileOrderByRelevanceInput>;
   ProfileOrderByWithRelationAndSearchRelevanceInput: DeepPartial<ProfileOrderByWithRelationAndSearchRelevanceInput>;
+  ProfileOrderByWithRelationInput: DeepPartial<ProfileOrderByWithRelationInput>;
   ProfileRelationFilter: DeepPartial<ProfileRelationFilter>;
   ProfileWhereInput: DeepPartial<ProfileWhereInput>;
   Query: {};
+  QueryAccounts_Connection: DeepPartial<QueryAccounts_Connection>;
+  QueryAllAccounts_Connection: DeepPartial<QueryAllAccounts_Connection>;
+  QueryAllEntries_Connection: DeepPartial<QueryAllEntries_Connection>;
+  QueryEntries_Connection: DeepPartial<QueryEntries_Connection>;
+  QueryEntryFeed_Connection: DeepPartial<QueryEntryFeed_Connection>;
+  QueryFilterUsers_Connection: DeepPartial<QueryFilterUsers_Connection>;
+  QueryGetAllEntries_Connection: DeepPartial<QueryGetAllEntries_Connection>;
+  QueryGetUserByAccount_Connection: DeepPartial<QueryGetUserByAccount_Connection>;
+  QueryListProfiles_Connection: DeepPartial<QueryListProfiles_Connection>;
+  QueryListSessions_Connection: DeepPartial<QueryListSessions_Connection>;
+  QuerySearchByUserEmail_Connection: DeepPartial<QuerySearchByUserEmail_Connection>;
+  QuerySearchEntriesByTitle_Connection: DeepPartial<QuerySearchEntriesByTitle_Connection>;
+  QuerySession_Connection: DeepPartial<QuerySession_Connection>;
+  QueryUserAccount_Connection: DeepPartial<QueryUserAccount_Connection>;
+  QueryUserEntries_Connection: DeepPartial<QueryUserEntries_Connection>;
+  QueryUsersQuery_Connection: DeepPartial<QueryUsersQuery_Connection>;
+  QueryVerificationTokens_Connection: DeepPartial<QueryVerificationTokens_Connection>;
   Session: DeepPartial<Session>;
-  SessionConnection: DeepPartial<SessionConnection>;
   SessionEdge: DeepPartial<SessionEdge>;
   SessionListRelationFilter: DeepPartial<SessionListRelationFilter>;
   SessionOrderBy: DeepPartial<SessionOrderBy>;
   SessionOrderByRelationAggregateInput: DeepPartial<SessionOrderByRelationAggregateInput>;
+  SessionOrderByWithRelationshipInput: DeepPartial<SessionOrderByWithRelationshipInput>;
   SessionWhereInput: DeepPartial<SessionWhereInput>;
   String: DeepPartial<Scalars["String"]>;
   StringFilter: DeepPartial<StringFilter>;
@@ -1906,16 +2205,19 @@ export type ResolversParentTypes = ResolversObject<{
   UUID: DeepPartial<Scalars["UUID"]>;
   Upload: DeepPartial<Scalars["Upload"]>;
   User: DeepPartial<User>;
-  UserConnection: DeepPartial<UserConnection>;
+  UserAccounts_Connection: DeepPartial<UserAccounts_Connection>;
+  UserComments_Connection: DeepPartial<UserComments_Connection>;
   UserCount: DeepPartial<UserCount>;
   UserEdge: DeepPartial<UserEdge>;
+  UserEntries_Connection: DeepPartial<UserEntries_Connection>;
   UserOrderByRelevanceInput: DeepPartial<UserOrderByRelevanceInput>;
   UserOrderByWithRelationAndSearchRelevanceInput: DeepPartial<UserOrderByWithRelationAndSearchRelevanceInput>;
+  UserOrderByWithRelationInput: DeepPartial<UserOrderByWithRelationInput>;
   UserRelationFilter: DeepPartial<UserRelationFilter>;
+  UserSessions_Connection: DeepPartial<UserSessions_Connection>;
   UserWhereInput: DeepPartial<UserWhereInput>;
   UserWhereUniqueInput: DeepPartial<UserWhereUniqueInput>;
   VerificationToken: DeepPartial<VerificationToken>;
-  VerificationTokenConnection: DeepPartial<VerificationTokenConnection>;
   VerificationTokenEdge: DeepPartial<VerificationTokenEdge>;
 }>;
 
@@ -1966,24 +2268,6 @@ export type AccountResolvers<
   type?: Resolver<Maybe<ResolversTypes["String"]>, ParentType, ContextType>;
   user?: Resolver<Maybe<ResolversTypes["User"]>, ParentType, ContextType>;
   userId?: Resolver<Maybe<ResolversTypes["String"]>, ParentType, ContextType>;
-  __isTypeOf?: IsTypeOfResolverFn<ParentType, ContextType>;
-}>;
-
-export type AccountConnectionResolvers<
-  ContextType = any,
-  ParentType extends ResolversParentTypes["AccountConnection"] = ResolversParentTypes["AccountConnection"]
-> = ResolversObject<{
-  edges?: Resolver<
-    Maybe<Array<Maybe<ResolversTypes["AccountEdge"]>>>,
-    ParentType,
-    ContextType
-  >;
-  nodes?: Resolver<
-    Maybe<Array<Maybe<ResolversTypes["Account"]>>>,
-    ParentType,
-    ContextType
-  >;
-  pageInfo?: Resolver<ResolversTypes["PageInfo"], ParentType, ContextType>;
   __isTypeOf?: IsTypeOfResolverFn<ParentType, ContextType>;
 }>;
 
@@ -2071,24 +2355,6 @@ export type CommentResolvers<
   __isTypeOf?: IsTypeOfResolverFn<ParentType, ContextType>;
 }>;
 
-export type CommentConnectionResolvers<
-  ContextType = any,
-  ParentType extends ResolversParentTypes["CommentConnection"] = ResolversParentTypes["CommentConnection"]
-> = ResolversObject<{
-  edges?: Resolver<
-    Maybe<Array<Maybe<ResolversTypes["CommentEdge"]>>>,
-    ParentType,
-    ContextType
-  >;
-  nodes?: Resolver<
-    Maybe<Array<Maybe<ResolversTypes["Comment"]>>>,
-    ParentType,
-    ContextType
-  >;
-  pageInfo?: Resolver<ResolversTypes["PageInfo"], ParentType, ContextType>;
-  __isTypeOf?: IsTypeOfResolverFn<ParentType, ContextType>;
-}>;
-
 export type CommentEdgeResolvers<
   ContextType = any,
   ParentType extends ResolversParentTypes["CommentEdge"] = ResolversParentTypes["CommentEdge"]
@@ -2126,7 +2392,7 @@ export type EntryResolvers<
     ContextType
   >;
   comments?: Resolver<
-    Maybe<ResolversTypes["CommentConnection"]>,
+    Maybe<ResolversTypes["EntryComments_Connection"]>,
     ParentType,
     ContextType,
     RequireFields<EntrycommentsArgs, "searchString">
@@ -2162,21 +2428,22 @@ export type EntryResolvers<
   __isTypeOf?: IsTypeOfResolverFn<ParentType, ContextType>;
 }>;
 
-export type EntryConnectionResolvers<
+export type EntryComments_ConnectionResolvers<
   ContextType = any,
-  ParentType extends ResolversParentTypes["EntryConnection"] = ResolversParentTypes["EntryConnection"]
+  ParentType extends ResolversParentTypes["EntryComments_Connection"] = ResolversParentTypes["EntryComments_Connection"]
 > = ResolversObject<{
   edges?: Resolver<
-    Maybe<Array<Maybe<ResolversTypes["EntryEdge"]>>>,
+    Maybe<Array<Maybe<ResolversTypes["CommentEdge"]>>>,
     ParentType,
     ContextType
   >;
   nodes?: Resolver<
-    Maybe<Array<Maybe<ResolversTypes["Entry"]>>>,
+    Maybe<Array<Maybe<ResolversTypes["Comment"]>>>,
     ParentType,
     ContextType
   >;
   pageInfo?: Resolver<ResolversTypes["PageInfo"], ParentType, ContextType>;
+  totalCount?: Resolver<Maybe<ResolversTypes["Int"]>, ParentType, ContextType>;
   __isTypeOf?: IsTypeOfResolverFn<ParentType, ContextType>;
 }>;
 
@@ -2388,24 +2655,6 @@ export type ProfileResolvers<
   __isTypeOf?: IsTypeOfResolverFn<ParentType, ContextType>;
 }>;
 
-export type ProfileConnectionResolvers<
-  ContextType = any,
-  ParentType extends ResolversParentTypes["ProfileConnection"] = ResolversParentTypes["ProfileConnection"]
-> = ResolversObject<{
-  edges?: Resolver<
-    Maybe<Array<Maybe<ResolversTypes["ProfileEdge"]>>>,
-    ParentType,
-    ContextType
-  >;
-  nodes?: Resolver<
-    Maybe<Array<Maybe<ResolversTypes["Profile"]>>>,
-    ParentType,
-    ContextType
-  >;
-  pageInfo?: Resolver<ResolversTypes["PageInfo"], ParentType, ContextType>;
-  __isTypeOf?: IsTypeOfResolverFn<ParentType, ContextType>;
-}>;
-
 export type ProfileEdgeResolvers<
   ContextType = any,
   ParentType extends ResolversParentTypes["ProfileEdge"] = ResolversParentTypes["ProfileEdge"]
@@ -2420,22 +2669,16 @@ export type QueryResolvers<
   ParentType extends ResolversParentTypes["Query"] = ResolversParentTypes["Query"]
 > = ResolversObject<{
   FilterUsers?: Resolver<
-    Maybe<ResolversTypes["UserConnection"]>,
+    Maybe<ResolversTypes["QueryFilterUsers_Connection"]>,
     ParentType,
     ContextType,
     RequireFields<QueryFilterUsersArgs, "searchString">
   >;
   GetAllEntries?: Resolver<
-    Maybe<ResolversTypes["EntryConnection"]>,
+    Maybe<ResolversTypes["QueryGetAllEntries_Connection"]>,
     ParentType,
     ContextType,
     RequireFields<QueryGetAllEntriesArgs, "searchString">
-  >;
-  GetAllSessions?: Resolver<
-    Maybe<ResolversTypes["SessionConnection"]>,
-    ParentType,
-    ContextType,
-    RequireFields<QueryGetAllSessionsArgs, "orderBy">
   >;
   GetEntry?: Resolver<
     Maybe<ResolversTypes["Entry"]>,
@@ -2450,49 +2693,49 @@ export type QueryResolvers<
     RequireFields<QueryGetSessionArgs, "id">
   >;
   SearchByUserEmail?: Resolver<
-    Maybe<ResolversTypes["UserConnection"]>,
+    Maybe<ResolversTypes["QuerySearchByUserEmail_Connection"]>,
     ParentType,
     ContextType,
     RequireFields<QuerySearchByUserEmailArgs, "search">
   >;
   SearchEntriesByTitle?: Resolver<
-    Maybe<ResolversTypes["EntryConnection"]>,
+    Maybe<ResolversTypes["QuerySearchEntriesByTitle_Connection"]>,
     ParentType,
     ContextType,
     RequireFields<QuerySearchEntriesByTitleArgs, "searchString">
   >;
   accounts?: Resolver<
-    Maybe<ResolversTypes["AccountConnection"]>,
+    Maybe<ResolversTypes["QueryAccounts_Connection"]>,
     ParentType,
     ContextType,
     RequireFields<QueryaccountsArgs, "userId">
   >;
   allAccounts?: Resolver<
-    Maybe<ResolversTypes["AccountConnection"]>,
+    Maybe<ResolversTypes["QueryAllAccounts_Connection"]>,
     ParentType,
     ContextType,
     RequireFields<QueryallAccountsArgs, "take">
   >;
   allEntries?: Resolver<
-    Maybe<ResolversTypes["EntryConnection"]>,
+    Maybe<ResolversTypes["QueryAllEntries_Connection"]>,
     ParentType,
     ContextType,
     RequireFields<QueryallEntriesArgs, "take">
   >;
   entries?: Resolver<
-    Maybe<ResolversTypes["EntryConnection"]>,
+    Maybe<ResolversTypes["QueryEntries_Connection"]>,
     ParentType,
     ContextType,
     Partial<QueryentriesArgs>
   >;
   entryFeed?: Resolver<
-    Maybe<ResolversTypes["EntryConnection"]>,
+    Maybe<ResolversTypes["QueryEntryFeed_Connection"]>,
     ParentType,
     ContextType,
     RequireFields<QueryentryFeedArgs, "searchString" | "skip" | "take">
   >;
   getUserByAccount?: Resolver<
-    Maybe<ResolversTypes["AccountConnection"]>,
+    Maybe<ResolversTypes["QueryGetUserByAccount_Connection"]>,
     ParentType,
     ContextType,
     RequireFields<
@@ -2500,26 +2743,32 @@ export type QueryResolvers<
       "id" | "provider" | "providerAccountId"
     >
   >;
+  listProfiles?: Resolver<
+    Maybe<ResolversTypes["QueryListProfiles_Connection"]>,
+    ParentType,
+    ContextType,
+    RequireFields<QuerylistProfilesArgs, "orderBy">
+  >;
+  listSessions?: Resolver<
+    Maybe<ResolversTypes["QueryListSessions_Connection"]>,
+    ParentType,
+    ContextType,
+    RequireFields<QuerylistSessionsArgs, "orderBy">
+  >;
   node?: Resolver<
     Maybe<ResolversTypes["Node"]>,
     ParentType,
     ContextType,
     RequireFields<QuerynodeArgs, "id">
   >;
-  profiles?: Resolver<
-    Maybe<ResolversTypes["ProfileConnection"]>,
-    ParentType,
-    ContextType,
-    RequireFields<QueryprofilesArgs, "orderBy">
-  >;
   session?: Resolver<
-    Maybe<ResolversTypes["SessionConnection"]>,
+    Maybe<ResolversTypes["QuerySession_Connection"]>,
     ParentType,
     ContextType,
     Partial<QuerysessionArgs>
   >;
   userAccount?: Resolver<
-    Maybe<ResolversTypes["AccountConnection"]>,
+    Maybe<ResolversTypes["QueryUserAccount_Connection"]>,
     ParentType,
     ContextType,
     Partial<QueryuserAccountArgs>
@@ -2537,23 +2786,346 @@ export type QueryResolvers<
     RequireFields<QueryuserByIdArgs, "id">
   >;
   userEntries?: Resolver<
-    Maybe<ResolversTypes["EntryConnection"]>,
+    Maybe<ResolversTypes["QueryUserEntries_Connection"]>,
     ParentType,
     ContextType,
     Partial<QueryuserEntriesArgs>
   >;
   usersQuery?: Resolver<
-    Maybe<ResolversTypes["UserConnection"]>,
+    Maybe<ResolversTypes["QueryUsersQuery_Connection"]>,
     ParentType,
     ContextType,
     Partial<QueryusersQueryArgs>
   >;
   verificationTokens?: Resolver<
-    Maybe<ResolversTypes["VerificationTokenConnection"]>,
+    Maybe<ResolversTypes["QueryVerificationTokens_Connection"]>,
     ParentType,
     ContextType,
     Partial<QueryverificationTokensArgs>
   >;
+}>;
+
+export type QueryAccounts_ConnectionResolvers<
+  ContextType = any,
+  ParentType extends ResolversParentTypes["QueryAccounts_Connection"] = ResolversParentTypes["QueryAccounts_Connection"]
+> = ResolversObject<{
+  edges?: Resolver<
+    Maybe<Array<Maybe<ResolversTypes["AccountEdge"]>>>,
+    ParentType,
+    ContextType
+  >;
+  nodes?: Resolver<
+    Maybe<Array<Maybe<ResolversTypes["Account"]>>>,
+    ParentType,
+    ContextType
+  >;
+  pageInfo?: Resolver<ResolversTypes["PageInfo"], ParentType, ContextType>;
+  totalCount?: Resolver<Maybe<ResolversTypes["Int"]>, ParentType, ContextType>;
+  __isTypeOf?: IsTypeOfResolverFn<ParentType, ContextType>;
+}>;
+
+export type QueryAllAccounts_ConnectionResolvers<
+  ContextType = any,
+  ParentType extends ResolversParentTypes["QueryAllAccounts_Connection"] = ResolversParentTypes["QueryAllAccounts_Connection"]
+> = ResolversObject<{
+  edges?: Resolver<
+    Maybe<Array<Maybe<ResolversTypes["AccountEdge"]>>>,
+    ParentType,
+    ContextType
+  >;
+  nodes?: Resolver<
+    Maybe<Array<Maybe<ResolversTypes["Account"]>>>,
+    ParentType,
+    ContextType
+  >;
+  pageInfo?: Resolver<ResolversTypes["PageInfo"], ParentType, ContextType>;
+  totalCount?: Resolver<Maybe<ResolversTypes["Int"]>, ParentType, ContextType>;
+  __isTypeOf?: IsTypeOfResolverFn<ParentType, ContextType>;
+}>;
+
+export type QueryAllEntries_ConnectionResolvers<
+  ContextType = any,
+  ParentType extends ResolversParentTypes["QueryAllEntries_Connection"] = ResolversParentTypes["QueryAllEntries_Connection"]
+> = ResolversObject<{
+  edges?: Resolver<
+    Maybe<Array<Maybe<ResolversTypes["EntryEdge"]>>>,
+    ParentType,
+    ContextType
+  >;
+  nodes?: Resolver<
+    Maybe<Array<Maybe<ResolversTypes["Entry"]>>>,
+    ParentType,
+    ContextType
+  >;
+  pageInfo?: Resolver<ResolversTypes["PageInfo"], ParentType, ContextType>;
+  totalCount?: Resolver<Maybe<ResolversTypes["Int"]>, ParentType, ContextType>;
+  __isTypeOf?: IsTypeOfResolverFn<ParentType, ContextType>;
+}>;
+
+export type QueryEntries_ConnectionResolvers<
+  ContextType = any,
+  ParentType extends ResolversParentTypes["QueryEntries_Connection"] = ResolversParentTypes["QueryEntries_Connection"]
+> = ResolversObject<{
+  edges?: Resolver<
+    Maybe<Array<Maybe<ResolversTypes["EntryEdge"]>>>,
+    ParentType,
+    ContextType
+  >;
+  nodes?: Resolver<
+    Maybe<Array<Maybe<ResolversTypes["Entry"]>>>,
+    ParentType,
+    ContextType
+  >;
+  pageInfo?: Resolver<ResolversTypes["PageInfo"], ParentType, ContextType>;
+  totalCount?: Resolver<Maybe<ResolversTypes["Int"]>, ParentType, ContextType>;
+  __isTypeOf?: IsTypeOfResolverFn<ParentType, ContextType>;
+}>;
+
+export type QueryEntryFeed_ConnectionResolvers<
+  ContextType = any,
+  ParentType extends ResolversParentTypes["QueryEntryFeed_Connection"] = ResolversParentTypes["QueryEntryFeed_Connection"]
+> = ResolversObject<{
+  edges?: Resolver<
+    Maybe<Array<Maybe<ResolversTypes["EntryEdge"]>>>,
+    ParentType,
+    ContextType
+  >;
+  nodes?: Resolver<
+    Maybe<Array<Maybe<ResolversTypes["Entry"]>>>,
+    ParentType,
+    ContextType
+  >;
+  pageInfo?: Resolver<ResolversTypes["PageInfo"], ParentType, ContextType>;
+  totalCount?: Resolver<Maybe<ResolversTypes["Int"]>, ParentType, ContextType>;
+  __isTypeOf?: IsTypeOfResolverFn<ParentType, ContextType>;
+}>;
+
+export type QueryFilterUsers_ConnectionResolvers<
+  ContextType = any,
+  ParentType extends ResolversParentTypes["QueryFilterUsers_Connection"] = ResolversParentTypes["QueryFilterUsers_Connection"]
+> = ResolversObject<{
+  edges?: Resolver<
+    Maybe<Array<Maybe<ResolversTypes["UserEdge"]>>>,
+    ParentType,
+    ContextType
+  >;
+  nodes?: Resolver<
+    Maybe<Array<Maybe<ResolversTypes["User"]>>>,
+    ParentType,
+    ContextType
+  >;
+  pageInfo?: Resolver<ResolversTypes["PageInfo"], ParentType, ContextType>;
+  totalCount?: Resolver<Maybe<ResolversTypes["Int"]>, ParentType, ContextType>;
+  __isTypeOf?: IsTypeOfResolverFn<ParentType, ContextType>;
+}>;
+
+export type QueryGetAllEntries_ConnectionResolvers<
+  ContextType = any,
+  ParentType extends ResolversParentTypes["QueryGetAllEntries_Connection"] = ResolversParentTypes["QueryGetAllEntries_Connection"]
+> = ResolversObject<{
+  edges?: Resolver<
+    Maybe<Array<Maybe<ResolversTypes["EntryEdge"]>>>,
+    ParentType,
+    ContextType
+  >;
+  nodes?: Resolver<
+    Maybe<Array<Maybe<ResolversTypes["Entry"]>>>,
+    ParentType,
+    ContextType
+  >;
+  pageInfo?: Resolver<ResolversTypes["PageInfo"], ParentType, ContextType>;
+  totalCount?: Resolver<Maybe<ResolversTypes["Int"]>, ParentType, ContextType>;
+  __isTypeOf?: IsTypeOfResolverFn<ParentType, ContextType>;
+}>;
+
+export type QueryGetUserByAccount_ConnectionResolvers<
+  ContextType = any,
+  ParentType extends ResolversParentTypes["QueryGetUserByAccount_Connection"] = ResolversParentTypes["QueryGetUserByAccount_Connection"]
+> = ResolversObject<{
+  edges?: Resolver<
+    Maybe<Array<Maybe<ResolversTypes["AccountEdge"]>>>,
+    ParentType,
+    ContextType
+  >;
+  nodes?: Resolver<
+    Maybe<Array<Maybe<ResolversTypes["Account"]>>>,
+    ParentType,
+    ContextType
+  >;
+  pageInfo?: Resolver<ResolversTypes["PageInfo"], ParentType, ContextType>;
+  totalCount?: Resolver<Maybe<ResolversTypes["Int"]>, ParentType, ContextType>;
+  __isTypeOf?: IsTypeOfResolverFn<ParentType, ContextType>;
+}>;
+
+export type QueryListProfiles_ConnectionResolvers<
+  ContextType = any,
+  ParentType extends ResolversParentTypes["QueryListProfiles_Connection"] = ResolversParentTypes["QueryListProfiles_Connection"]
+> = ResolversObject<{
+  edges?: Resolver<
+    Maybe<Array<Maybe<ResolversTypes["ProfileEdge"]>>>,
+    ParentType,
+    ContextType
+  >;
+  nodes?: Resolver<
+    Maybe<Array<Maybe<ResolversTypes["Profile"]>>>,
+    ParentType,
+    ContextType
+  >;
+  pageInfo?: Resolver<ResolversTypes["PageInfo"], ParentType, ContextType>;
+  totalCount?: Resolver<Maybe<ResolversTypes["Int"]>, ParentType, ContextType>;
+  __isTypeOf?: IsTypeOfResolverFn<ParentType, ContextType>;
+}>;
+
+export type QueryListSessions_ConnectionResolvers<
+  ContextType = any,
+  ParentType extends ResolversParentTypes["QueryListSessions_Connection"] = ResolversParentTypes["QueryListSessions_Connection"]
+> = ResolversObject<{
+  edges?: Resolver<
+    Maybe<Array<Maybe<ResolversTypes["SessionEdge"]>>>,
+    ParentType,
+    ContextType
+  >;
+  nodes?: Resolver<
+    Maybe<Array<Maybe<ResolversTypes["Session"]>>>,
+    ParentType,
+    ContextType
+  >;
+  pageInfo?: Resolver<ResolversTypes["PageInfo"], ParentType, ContextType>;
+  totalCount?: Resolver<Maybe<ResolversTypes["Int"]>, ParentType, ContextType>;
+  __isTypeOf?: IsTypeOfResolverFn<ParentType, ContextType>;
+}>;
+
+export type QuerySearchByUserEmail_ConnectionResolvers<
+  ContextType = any,
+  ParentType extends ResolversParentTypes["QuerySearchByUserEmail_Connection"] = ResolversParentTypes["QuerySearchByUserEmail_Connection"]
+> = ResolversObject<{
+  edges?: Resolver<
+    Maybe<Array<Maybe<ResolversTypes["UserEdge"]>>>,
+    ParentType,
+    ContextType
+  >;
+  nodes?: Resolver<
+    Maybe<Array<Maybe<ResolversTypes["User"]>>>,
+    ParentType,
+    ContextType
+  >;
+  pageInfo?: Resolver<ResolversTypes["PageInfo"], ParentType, ContextType>;
+  totalCount?: Resolver<Maybe<ResolversTypes["Int"]>, ParentType, ContextType>;
+  __isTypeOf?: IsTypeOfResolverFn<ParentType, ContextType>;
+}>;
+
+export type QuerySearchEntriesByTitle_ConnectionResolvers<
+  ContextType = any,
+  ParentType extends ResolversParentTypes["QuerySearchEntriesByTitle_Connection"] = ResolversParentTypes["QuerySearchEntriesByTitle_Connection"]
+> = ResolversObject<{
+  edges?: Resolver<
+    Maybe<Array<Maybe<ResolversTypes["EntryEdge"]>>>,
+    ParentType,
+    ContextType
+  >;
+  nodes?: Resolver<
+    Maybe<Array<Maybe<ResolversTypes["Entry"]>>>,
+    ParentType,
+    ContextType
+  >;
+  pageInfo?: Resolver<ResolversTypes["PageInfo"], ParentType, ContextType>;
+  totalCount?: Resolver<Maybe<ResolversTypes["Int"]>, ParentType, ContextType>;
+  __isTypeOf?: IsTypeOfResolverFn<ParentType, ContextType>;
+}>;
+
+export type QuerySession_ConnectionResolvers<
+  ContextType = any,
+  ParentType extends ResolversParentTypes["QuerySession_Connection"] = ResolversParentTypes["QuerySession_Connection"]
+> = ResolversObject<{
+  edges?: Resolver<
+    Maybe<Array<Maybe<ResolversTypes["SessionEdge"]>>>,
+    ParentType,
+    ContextType
+  >;
+  nodes?: Resolver<
+    Maybe<Array<Maybe<ResolversTypes["Session"]>>>,
+    ParentType,
+    ContextType
+  >;
+  pageInfo?: Resolver<ResolversTypes["PageInfo"], ParentType, ContextType>;
+  totalCount?: Resolver<Maybe<ResolversTypes["Int"]>, ParentType, ContextType>;
+  __isTypeOf?: IsTypeOfResolverFn<ParentType, ContextType>;
+}>;
+
+export type QueryUserAccount_ConnectionResolvers<
+  ContextType = any,
+  ParentType extends ResolversParentTypes["QueryUserAccount_Connection"] = ResolversParentTypes["QueryUserAccount_Connection"]
+> = ResolversObject<{
+  edges?: Resolver<
+    Maybe<Array<Maybe<ResolversTypes["AccountEdge"]>>>,
+    ParentType,
+    ContextType
+  >;
+  nodes?: Resolver<
+    Maybe<Array<Maybe<ResolversTypes["Account"]>>>,
+    ParentType,
+    ContextType
+  >;
+  pageInfo?: Resolver<ResolversTypes["PageInfo"], ParentType, ContextType>;
+  totalCount?: Resolver<Maybe<ResolversTypes["Int"]>, ParentType, ContextType>;
+  __isTypeOf?: IsTypeOfResolverFn<ParentType, ContextType>;
+}>;
+
+export type QueryUserEntries_ConnectionResolvers<
+  ContextType = any,
+  ParentType extends ResolversParentTypes["QueryUserEntries_Connection"] = ResolversParentTypes["QueryUserEntries_Connection"]
+> = ResolversObject<{
+  edges?: Resolver<
+    Maybe<Array<Maybe<ResolversTypes["EntryEdge"]>>>,
+    ParentType,
+    ContextType
+  >;
+  nodes?: Resolver<
+    Maybe<Array<Maybe<ResolversTypes["Entry"]>>>,
+    ParentType,
+    ContextType
+  >;
+  pageInfo?: Resolver<ResolversTypes["PageInfo"], ParentType, ContextType>;
+  totalCount?: Resolver<Maybe<ResolversTypes["Int"]>, ParentType, ContextType>;
+  __isTypeOf?: IsTypeOfResolverFn<ParentType, ContextType>;
+}>;
+
+export type QueryUsersQuery_ConnectionResolvers<
+  ContextType = any,
+  ParentType extends ResolversParentTypes["QueryUsersQuery_Connection"] = ResolversParentTypes["QueryUsersQuery_Connection"]
+> = ResolversObject<{
+  edges?: Resolver<
+    Maybe<Array<Maybe<ResolversTypes["UserEdge"]>>>,
+    ParentType,
+    ContextType
+  >;
+  nodes?: Resolver<
+    Maybe<Array<Maybe<ResolversTypes["User"]>>>,
+    ParentType,
+    ContextType
+  >;
+  pageInfo?: Resolver<ResolversTypes["PageInfo"], ParentType, ContextType>;
+  totalCount?: Resolver<Maybe<ResolversTypes["Int"]>, ParentType, ContextType>;
+  __isTypeOf?: IsTypeOfResolverFn<ParentType, ContextType>;
+}>;
+
+export type QueryVerificationTokens_ConnectionResolvers<
+  ContextType = any,
+  ParentType extends ResolversParentTypes["QueryVerificationTokens_Connection"] = ResolversParentTypes["QueryVerificationTokens_Connection"]
+> = ResolversObject<{
+  edges?: Resolver<
+    Maybe<Array<Maybe<ResolversTypes["VerificationTokenEdge"]>>>,
+    ParentType,
+    ContextType
+  >;
+  nodes?: Resolver<
+    Maybe<Array<Maybe<ResolversTypes["VerificationToken"]>>>,
+    ParentType,
+    ContextType
+  >;
+  pageInfo?: Resolver<ResolversTypes["PageInfo"], ParentType, ContextType>;
+  totalCount?: Resolver<Maybe<ResolversTypes["Int"]>, ParentType, ContextType>;
+  __isTypeOf?: IsTypeOfResolverFn<ParentType, ContextType>;
 }>;
 
 export type SessionResolvers<
@@ -2573,24 +3145,6 @@ export type SessionResolvers<
   >;
   user?: Resolver<Maybe<ResolversTypes["User"]>, ParentType, ContextType>;
   userId?: Resolver<Maybe<ResolversTypes["String"]>, ParentType, ContextType>;
-  __isTypeOf?: IsTypeOfResolverFn<ParentType, ContextType>;
-}>;
-
-export type SessionConnectionResolvers<
-  ContextType = any,
-  ParentType extends ResolversParentTypes["SessionConnection"] = ResolversParentTypes["SessionConnection"]
-> = ResolversObject<{
-  edges?: Resolver<
-    Maybe<Array<Maybe<ResolversTypes["SessionEdge"]>>>,
-    ParentType,
-    ContextType
-  >;
-  nodes?: Resolver<
-    Maybe<Array<Maybe<ResolversTypes["Session"]>>>,
-    ParentType,
-    ContextType
-  >;
-  pageInfo?: Resolver<ResolversTypes["PageInfo"], ParentType, ContextType>;
   __isTypeOf?: IsTypeOfResolverFn<ParentType, ContextType>;
 }>;
 
@@ -2624,13 +3178,13 @@ export type UserResolvers<
 > = ResolversObject<{
   _count?: Resolver<ResolversTypes["UserCount"], ParentType, ContextType>;
   accounts?: Resolver<
-    Maybe<ResolversTypes["AccountConnection"]>,
+    Maybe<ResolversTypes["UserAccounts_Connection"]>,
     ParentType,
     ContextType,
     Partial<UseraccountsArgs>
   >;
   comments?: Resolver<
-    Maybe<ResolversTypes["CommentConnection"]>,
+    Maybe<ResolversTypes["UserComments_Connection"]>,
     ParentType,
     ContextType,
     Partial<UsercommentsArgs>
@@ -2642,7 +3196,7 @@ export type UserResolvers<
     ContextType
   >;
   entries?: Resolver<
-    Maybe<ResolversTypes["EntryConnection"]>,
+    Maybe<ResolversTypes["UserEntries_Connection"]>,
     ParentType,
     ContextType,
     Partial<UserentriesArgs>
@@ -2658,7 +3212,7 @@ export type UserResolvers<
   profile?: Resolver<Maybe<ResolversTypes["Profile"]>, ParentType, ContextType>;
   role?: Resolver<Maybe<ResolversTypes["Role"]>, ParentType, ContextType>;
   sessions?: Resolver<
-    Maybe<ResolversTypes["SessionConnection"]>,
+    Maybe<ResolversTypes["UserSessions_Connection"]>,
     ParentType,
     ContextType,
     Partial<UsersessionsArgs>
@@ -2671,21 +3225,41 @@ export type UserResolvers<
   __isTypeOf?: IsTypeOfResolverFn<ParentType, ContextType>;
 }>;
 
-export type UserConnectionResolvers<
+export type UserAccounts_ConnectionResolvers<
   ContextType = any,
-  ParentType extends ResolversParentTypes["UserConnection"] = ResolversParentTypes["UserConnection"]
+  ParentType extends ResolversParentTypes["UserAccounts_Connection"] = ResolversParentTypes["UserAccounts_Connection"]
 > = ResolversObject<{
   edges?: Resolver<
-    Maybe<Array<Maybe<ResolversTypes["UserEdge"]>>>,
+    Maybe<Array<Maybe<ResolversTypes["AccountEdge"]>>>,
     ParentType,
     ContextType
   >;
   nodes?: Resolver<
-    Maybe<Array<Maybe<ResolversTypes["User"]>>>,
+    Maybe<Array<Maybe<ResolversTypes["Account"]>>>,
     ParentType,
     ContextType
   >;
   pageInfo?: Resolver<ResolversTypes["PageInfo"], ParentType, ContextType>;
+  totalCount?: Resolver<Maybe<ResolversTypes["Int"]>, ParentType, ContextType>;
+  __isTypeOf?: IsTypeOfResolverFn<ParentType, ContextType>;
+}>;
+
+export type UserComments_ConnectionResolvers<
+  ContextType = any,
+  ParentType extends ResolversParentTypes["UserComments_Connection"] = ResolversParentTypes["UserComments_Connection"]
+> = ResolversObject<{
+  edges?: Resolver<
+    Maybe<Array<Maybe<ResolversTypes["CommentEdge"]>>>,
+    ParentType,
+    ContextType
+  >;
+  nodes?: Resolver<
+    Maybe<Array<Maybe<ResolversTypes["Comment"]>>>,
+    ParentType,
+    ContextType
+  >;
+  pageInfo?: Resolver<ResolversTypes["PageInfo"], ParentType, ContextType>;
+  totalCount?: Resolver<Maybe<ResolversTypes["Int"]>, ParentType, ContextType>;
   __isTypeOf?: IsTypeOfResolverFn<ParentType, ContextType>;
 }>;
 
@@ -2709,6 +3283,44 @@ export type UserEdgeResolvers<
   __isTypeOf?: IsTypeOfResolverFn<ParentType, ContextType>;
 }>;
 
+export type UserEntries_ConnectionResolvers<
+  ContextType = any,
+  ParentType extends ResolversParentTypes["UserEntries_Connection"] = ResolversParentTypes["UserEntries_Connection"]
+> = ResolversObject<{
+  edges?: Resolver<
+    Maybe<Array<Maybe<ResolversTypes["EntryEdge"]>>>,
+    ParentType,
+    ContextType
+  >;
+  nodes?: Resolver<
+    Maybe<Array<Maybe<ResolversTypes["Entry"]>>>,
+    ParentType,
+    ContextType
+  >;
+  pageInfo?: Resolver<ResolversTypes["PageInfo"], ParentType, ContextType>;
+  totalCount?: Resolver<Maybe<ResolversTypes["Int"]>, ParentType, ContextType>;
+  __isTypeOf?: IsTypeOfResolverFn<ParentType, ContextType>;
+}>;
+
+export type UserSessions_ConnectionResolvers<
+  ContextType = any,
+  ParentType extends ResolversParentTypes["UserSessions_Connection"] = ResolversParentTypes["UserSessions_Connection"]
+> = ResolversObject<{
+  edges?: Resolver<
+    Maybe<Array<Maybe<ResolversTypes["SessionEdge"]>>>,
+    ParentType,
+    ContextType
+  >;
+  nodes?: Resolver<
+    Maybe<Array<Maybe<ResolversTypes["Session"]>>>,
+    ParentType,
+    ContextType
+  >;
+  pageInfo?: Resolver<ResolversTypes["PageInfo"], ParentType, ContextType>;
+  totalCount?: Resolver<Maybe<ResolversTypes["Int"]>, ParentType, ContextType>;
+  __isTypeOf?: IsTypeOfResolverFn<ParentType, ContextType>;
+}>;
+
 export type VerificationTokenResolvers<
   ContextType = any,
   ParentType extends ResolversParentTypes["VerificationToken"] = ResolversParentTypes["VerificationToken"]
@@ -2728,24 +3340,6 @@ export type VerificationTokenResolvers<
   __isTypeOf?: IsTypeOfResolverFn<ParentType, ContextType>;
 }>;
 
-export type VerificationTokenConnectionResolvers<
-  ContextType = any,
-  ParentType extends ResolversParentTypes["VerificationTokenConnection"] = ResolversParentTypes["VerificationTokenConnection"]
-> = ResolversObject<{
-  edges?: Resolver<
-    Maybe<Array<Maybe<ResolversTypes["VerificationTokenEdge"]>>>,
-    ParentType,
-    ContextType
-  >;
-  nodes?: Resolver<
-    Maybe<Array<Maybe<ResolversTypes["VerificationToken"]>>>,
-    ParentType,
-    ContextType
-  >;
-  pageInfo?: Resolver<ResolversTypes["PageInfo"], ParentType, ContextType>;
-  __isTypeOf?: IsTypeOfResolverFn<ParentType, ContextType>;
-}>;
-
 export type VerificationTokenEdgeResolvers<
   ContextType = any,
   ParentType extends ResolversParentTypes["VerificationTokenEdge"] = ResolversParentTypes["VerificationTokenEdge"]
@@ -2761,17 +3355,15 @@ export type VerificationTokenEdgeResolvers<
 
 export type Resolvers<ContextType = any> = ResolversObject<{
   Account?: AccountResolvers<ContextType>;
-  AccountConnection?: AccountConnectionResolvers<ContextType>;
   AccountEdge?: AccountEdgeResolvers<ContextType>;
   Bio?: BioResolvers<ContextType>;
   Category?: CategoryResolvers<ContextType>;
   Comment?: CommentResolvers<ContextType>;
-  CommentConnection?: CommentConnectionResolvers<ContextType>;
   CommentEdge?: CommentEdgeResolvers<ContextType>;
   Date?: GraphQLScalarType;
   DateTime?: GraphQLScalarType;
   Entry?: EntryResolvers<ContextType>;
-  EntryConnection?: EntryConnectionResolvers<ContextType>;
+  EntryComments_Connection?: EntryComments_ConnectionResolvers<ContextType>;
   EntryCount?: EntryCountResolvers<ContextType>;
   EntryEdge?: EntryEdgeResolvers<ContextType>;
   Json?: GraphQLScalarType;
@@ -2781,21 +3373,38 @@ export type Resolvers<ContextType = any> = ResolversObject<{
   PageInfo?: PageInfoResolvers<ContextType>;
   PhoneNumber?: GraphQLScalarType;
   Profile?: ProfileResolvers<ContextType>;
-  ProfileConnection?: ProfileConnectionResolvers<ContextType>;
   ProfileEdge?: ProfileEdgeResolvers<ContextType>;
   Query?: QueryResolvers<ContextType>;
+  QueryAccounts_Connection?: QueryAccounts_ConnectionResolvers<ContextType>;
+  QueryAllAccounts_Connection?: QueryAllAccounts_ConnectionResolvers<ContextType>;
+  QueryAllEntries_Connection?: QueryAllEntries_ConnectionResolvers<ContextType>;
+  QueryEntries_Connection?: QueryEntries_ConnectionResolvers<ContextType>;
+  QueryEntryFeed_Connection?: QueryEntryFeed_ConnectionResolvers<ContextType>;
+  QueryFilterUsers_Connection?: QueryFilterUsers_ConnectionResolvers<ContextType>;
+  QueryGetAllEntries_Connection?: QueryGetAllEntries_ConnectionResolvers<ContextType>;
+  QueryGetUserByAccount_Connection?: QueryGetUserByAccount_ConnectionResolvers<ContextType>;
+  QueryListProfiles_Connection?: QueryListProfiles_ConnectionResolvers<ContextType>;
+  QueryListSessions_Connection?: QueryListSessions_ConnectionResolvers<ContextType>;
+  QuerySearchByUserEmail_Connection?: QuerySearchByUserEmail_ConnectionResolvers<ContextType>;
+  QuerySearchEntriesByTitle_Connection?: QuerySearchEntriesByTitle_ConnectionResolvers<ContextType>;
+  QuerySession_Connection?: QuerySession_ConnectionResolvers<ContextType>;
+  QueryUserAccount_Connection?: QueryUserAccount_ConnectionResolvers<ContextType>;
+  QueryUserEntries_Connection?: QueryUserEntries_ConnectionResolvers<ContextType>;
+  QueryUsersQuery_Connection?: QueryUsersQuery_ConnectionResolvers<ContextType>;
+  QueryVerificationTokens_Connection?: QueryVerificationTokens_ConnectionResolvers<ContextType>;
   Session?: SessionResolvers<ContextType>;
-  SessionConnection?: SessionConnectionResolvers<ContextType>;
   SessionEdge?: SessionEdgeResolvers<ContextType>;
   Time?: GraphQLScalarType;
   UUID?: GraphQLScalarType;
   Upload?: GraphQLScalarType;
   User?: UserResolvers<ContextType>;
-  UserConnection?: UserConnectionResolvers<ContextType>;
+  UserAccounts_Connection?: UserAccounts_ConnectionResolvers<ContextType>;
+  UserComments_Connection?: UserComments_ConnectionResolvers<ContextType>;
   UserCount?: UserCountResolvers<ContextType>;
   UserEdge?: UserEdgeResolvers<ContextType>;
+  UserEntries_Connection?: UserEntries_ConnectionResolvers<ContextType>;
+  UserSessions_Connection?: UserSessions_ConnectionResolvers<ContextType>;
   VerificationToken?: VerificationTokenResolvers<ContextType>;
-  VerificationTokenConnection?: VerificationTokenConnectionResolvers<ContextType>;
   VerificationTokenEdge?: VerificationTokenEdgeResolvers<ContextType>;
 }>;
 

@@ -7,6 +7,7 @@ import {
   StringNullableFilter,
   IntNullableFilter
 } from ".";
+import { GraphQLObjectType } from "graphql";
 
 export const Account: core.NexusObjectTypeDef<"Account"> = objectType({
   name: "Account",
@@ -31,20 +32,13 @@ export const Account: core.NexusObjectTypeDef<"Account"> = objectType({
         const user = await ctx.prisma.account
           .findFirst({
             where: {
-              user: { id: String(parent.userId) }
+              userId: parent.userId
             },
             include: {
               user: true
             }
           })
-          .user(() =>
-            ctx.prisma.profile
-              .findUnique({
-                where: { userId: String(parent.userId) }
-              })
-              .user()
-              .profile()
-          );
+          .user();
         return user;
       }
     });
@@ -70,7 +64,19 @@ export const AccountQuery: core.NexusExtendTypeDef<"Query"> =
           provider: nonNull(stringArg()),
           providerAccountId: nonNull(stringArg())
         },
-        async nodes(_root, args, ctx, _info) {
+        extendConnection(t) {
+          t.nonNull.field("totalCount", {
+            nullable: false,
+            type: "Int",
+            resolve: (source, args, ctx, info) => {
+              const totalCount: number | 0 = source?.edges?.length
+                ? source.edges.map(data => data?.cursor).length
+                : 0;
+              return { totalCount: totalCount }.totalCount;
+            }
+          });
+        },
+        async nodes(root, args, ctx, info) {
           return await ctx.prisma.account
             .findUnique({
               where: {
@@ -80,12 +86,30 @@ export const AccountQuery: core.NexusExtendTypeDef<"Query"> =
                   providerAccountId: args.providerAccountId
                 }
               },
-              include: {
+              select: {
                 user: true
               }
             })
             .user()
-            .accounts();
+            .accounts({
+              cursor: { id: args.after ? args.after : undefined }
+            })
+            .then(data => {
+              return { totalCount: data.length, ...data };
+            });
+        },
+        async totalCount(_source, _args, ctx, info) {
+          const getUserByAcct = (
+            await ctx.prisma.account.findMany({
+              where: { user: { status: { not: "BANNED" } } }
+            })
+          ).length;
+          console.log(getUserByAcct);
+          return (
+            {
+              totalCount: info.fieldNodes.length
+            }.totalCount ?? getUserByAcct
+          );
         }
       });
     }
@@ -96,7 +120,7 @@ export const AccountQuery: core.NexusExtendTypeDef<"Query"> =
 export const AccountOrderByRelationAggregateInput = core.inputObjectType({
   name: "AccountOrderByRelationAggregateInput",
   definition(t) {
-    t.field("_count", { type: SortOrderEnum });
+    t.nullable.field("_count", { type: SortOrderEnum });
   }
 });
 
@@ -117,7 +141,7 @@ const AccountWhereInput = core.inputObjectType({
     t.field("session_state", { type: StringNullableFilter });
     t.field("token_type", { type: StringNullableFilter });
     t.field("oauth_token_secret", { type: StringNullableFilter });
-    t.field("oauth_token", {type: StringNullableFilter})
+    t.field("oauth_token", { type: StringNullableFilter });
     t.field("type", { type: StringFilter });
     t.field("user", { type: UserRelationFilter });
     t.field("userId", { type: StringFilter });

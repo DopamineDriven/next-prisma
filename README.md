@@ -127,3 +127,7 @@ query listUsers {
   }
 }
 ```
+
+## Nexus in detail
+
+- https://github.com/seed-of-apricot/nexus/blob/master/docs/api/modules/main/exports/schema.md
