@@ -23,15 +23,26 @@
     @apply stroke-gray-300 stroke-[1.25] shadow-magical;
   }
 }
-
+.anchorMappedChild {
+  @apply appearance-none w-auto scale-[1.125] inline-flex justify-center p-1.5 border
+    border-gray-300 rounded-md shadow-sm bg-transparent text-sm font-medium text-gray-500
+    hover:bg-gray-200 hover:scale-[1.025] hover:ease-in-out;
+  & > *:nth-child(2n + 1) {
+    @apply sr-only;
+  }
+  & > *:nth-child(2n + 2) {
+    @apply hover:scale-[1.025] grayscale hover:duration-200 hover:bg-opacity-[80]
+      hover:ease-in-out hover:shadow-magical;
+  }
+}
 .mapped {
   @apply mt-1 grid grid-cols-4;
-  & > *:nth-child(5n + 1) {
+  & > *:nth-child(3n + 1) {
     @apply absolute left-0;
     & > a {
       @apply appearance-none w-auto scale-[1.125] inline-flex justify-center p-1.5 border
     border-gray-300 rounded-md shadow-sm bg-transparent text-sm font-medium text-gray-500
-    hover:bg-gray-50 hover:scale-[1.025] hover:ease-in-out;
+    hover:bg-gray-200 hover:scale-[1.025] hover:ease-in-out;
       & > *:nth-child(2n + 1) {
         @apply sr-only;
       }
@@ -41,12 +52,12 @@
       }
     }
   }
-  & > *:nth-child(5n + 2) {
+  & > *:nth-child(3n + 2) {
     @apply absolute left-[6rem];
     & > a {
       @apply appearance-none w-auto scale-[1.125] inline-flex justify-center p-1.5 border
     border-gray-300 rounded-md shadow-sm bg-transparent text-sm font-medium text-gray-500
-    hover:bg-gray-50 hover:scale-[1.025] hover:ease-in-out;
+    hover:bg-gray-200 hover:scale-[1.025] hover:ease-in-out;
       & > *:nth-child(2n + 1) {
         @apply sr-only;
       }
@@ -56,42 +67,12 @@
       }
     }
   }
-  & > *:nth-child(5n + 3) {
+  & > *:nth-child(3n + 3) {
     @apply absolute left-[12rem];
     & > a {
       @apply appearance-none w-auto scale-[1.125] inline-flex justify-center p-1.5 border
     border-gray-300 rounded-md shadow-sm bg-transparent text-sm font-medium text-gray-500
-    hover:bg-gray-50 hover:scale-[1.025] hover:ease-in-out;
-      & > *:nth-child(2n + 1) {
-        @apply sr-only;
-      }
-      & > *:nth-child(2n + 2) {
-        @apply hover:scale-[1.025] grayscale hover:duration-200 hover:bg-opacity-[80]
-      hover:ease-in-out hover:shadow-magical;
-      }
-    }
-  }
-  & > *:nth-child(5n + 4) {
-    @apply absolute top-16 left-[3rem];
-    & > a {
-      @apply appearance-none w-auto scale-[1.125] inline-flex justify-center p-1.5 border
-    border-gray-300 rounded-md shadow-sm bg-transparent text-sm font-medium text-gray-500
-    hover:bg-gray-50 hover:scale-[1.025] hover:ease-in-out;
-      & > *:nth-child(2n + 1) {
-        @apply sr-only;
-      }
-      & > *:nth-child(2n + 2) {
-        @apply hover:scale-[1.025] grayscale hover:duration-200 hover:bg-opacity-[80]
-      hover:ease-in-out hover:shadow-magical;
-      }
-    }
-  }
-  & > *:nth-child(5n + 5) {
-    @apply absolute top-16 left-[9rem];
-    & > a {
-      @apply appearance-none w-auto scale-[1.125] inline-flex justify-center p-1.5 border
-    border-gray-300 rounded-md shadow-sm bg-transparent text-sm font-medium text-gray-500
-    hover:bg-gray-50 hover:scale-[1.025] hover:ease-in-out;
+    hover:bg-gray-200 hover:scale-[1.025] hover:ease-in-out;
       & > *:nth-child(2n + 1) {
         @apply sr-only;
       }
