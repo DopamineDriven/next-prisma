@@ -47,12 +47,12 @@ export type IndexInferServerSideProps<
   [P in keyof T]?: T[P];
 } & Record<string, unknown>;
 
-export type IndexServerSidePropsInferrerd = UnwrapPromise<
+export type IndexServerSidePropsInferred = UnwrapPromise<
   ReturnType<typeof getServerSideProps>
 >;
 
 export type UnwrappingIndexServerSidePropsInferred =
-  IndexInferServerSideProps<IndexServerSidePropsInferrerd>;
+  IndexInferServerSideProps<IndexServerSidePropsInferred>;
 
 export const getServerSideProps = async <T extends ParsedUrlQuery>(
   ctx: GetServerSidePropsContext<T>

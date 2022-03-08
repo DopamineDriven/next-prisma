@@ -1,5 +1,12 @@
 import { join } from "path";
-import { makeSchema, connectionPlugin, queryComplexityPlugin } from "nexus";
+import {
+  makeSchema,
+  connectionPlugin,
+  queryComplexityPlugin,
+  declarativeWrappingPlugin,
+  intArg,
+  core
+} from "nexus";
 import * as types from "./Constituents";
 import { SchemaBuilder } from "nexus/dist/builder";
 import { GraphQLFileLoader } from "@graphql-tools/graphql-file-loader";
@@ -45,10 +52,18 @@ export const LoadSchemaSync: GraphQLSchema = loadSchemaSync(
   }
 );
 
-export const schema = makeSchema({
+export const schema = core.makeSchema({
   types: { ...types },
   plugins: [
-    connectionPlugin({
+    core.connectionPlugin({
+      // additionalArgs: { totalCount: "Int" },
+      extendConnection: {
+        totalCount: {
+          type: "Int",
+          args: { totalCount: core.intArg({ default: 0 }) },
+          requireResolver: true
+        }
+      },
       includeNodesField: true,
       strictArgs: true,
       disableBackwardPagination: false,
@@ -56,7 +71,9 @@ export const schema = makeSchema({
       cursorFromNode(node) {
         return node.id;
       }
-    })
+    }),
+    queryComplexityPlugin(),
+    declarativeWrappingPlugin()
     // queryComplexityPlugin()
   ],
   sourceTypes: {

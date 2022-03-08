@@ -1,5 +1,5 @@
 import { Prisma } from "@prisma/client";
-import { core, stringArg } from "nexus";
+import { core } from "nexus";
 import {
   Role,
   EntryListRelationFilter,
@@ -23,9 +23,8 @@ import {
   ProfileOrderByWithRelationAndSearchRelevanceInput,
   AccountOrderByRelationAggregateInput,
   SessionOrderByRelationAggregateInput,
-  MediaItemWhereInput,
-  MediaItemInput,
   MediaItemRelationFilter,
+  ProfileOrderByWithRelationInput,
   UserStatus
 } from ".";
 
@@ -88,63 +87,134 @@ export const User: core.NexusObjectTypeDef<"User"> = core.objectType({
           .findFirst({
             where: {
               profile: {
-                userId: String(root.id)
+                userId: root.id
               }
             }
           })
-          .profile(args);
+          .profile();
         return userToProfile;
       }
     }) as core.FieldResolver<"User", "profile"> | undefined;
     t.connectionField<"accounts">("accounts", {
       type: "Account",
       inheritAdditionalArgs: true,
+      extendConnection(t) {
+        t.nonNull.field("totalCount", {
+          nullable: false,
+          type: "Int",
+          resolve: source => {
+            const totalCount: number | 0 = source?.edges?.length
+              ? source.edges.length
+              : 0;
+            return { totalCount: totalCount }.totalCount;
+          }
+        });
+      },
       async nodes(root, args, ctx, _info) {
         const accounts = await ctx.prisma.user
           .findFirst({
             cursor: { id: root.id }
           })
-          .accounts();
+          .accounts({ cursor: { id: args.after ? args.after : undefined } });
         return accounts;
+      },
+      totalCount(_source, _args, ctx, info) {
+        return {
+          totalCount: info.fieldNodes.length
+        }.totalCount;
       }
     });
     t.connectionField<"comments">("comments", {
       type: "Comment",
       inheritAdditionalArgs: true,
+      extendConnection(t) {
+        t.nonNull.field("totalCount", {
+          nullable: false,
+          type: "Int",
+          resolve: source => {
+            const totalCount: number | 0 = source?.edges?.length
+              ? source.edges.length
+              : 0;
+            return { totalCount: totalCount }.totalCount;
+          }
+        });
+      },
       async nodes(root, args, ctx, _info) {
         const comments = await ctx.prisma.user
           .findFirst({
             cursor: { id: root.id },
             where: { id: root.id }
           })
-          .comments();
+          .comments({ cursor: { id: args.after ? args.after : undefined } });
         return comments;
+      },
+      totalCount(_source, _args, ctx, info) {
+        return {
+          totalCount: info.fieldNodes.length
+        }.totalCount;
       }
     });
     t.connectionField("entries", {
       type: "Entry",
-      async nodes(root, _args, ctx, _info) {
+      extendConnection(t) {
+        t.nonNull.field("totalCount", {
+          nullable: false,
+          type: "Int",
+          resolve: source => {
+            const totalCount: number | 0 = source?.edges?.length
+              ? source.edges.length
+              : 0;
+            return { totalCount: totalCount }.totalCount;
+          }
+        });
+      },
+      async nodes(root, args, ctx, _info) {
         const entries = await ctx.prisma.user
           .findFirst({
             where: {
               entries: { every: { authorId: root.id } }
             }
           })
-          .entries();
+          .entries({ cursor: { id: args.after ? args.after : undefined } });
         return entries;
+      },
+      totalCount(_source, _args, ctx, info) {
+        return {
+          totalCount: info.fieldNodes.length
+        }.totalCount;
       }
     });
     t.connectionField("sessions", {
       type: "Session",
-      async nodes(root, _args, ctx, _info) {
+      extendConnection(t) {
+        t.nonNull.field("totalCount", {
+          nullable: false,
+          type: "Int",
+          resolve: source => {
+            const totalCount: number | 0 = source?.edges?.length
+              ? source.edges.length
+              : 0;
+            return { totalCount: totalCount }.totalCount;
+          }
+        });
+      },
+      async nodes(root, args, ctx, _info) {
         const sessions = await ctx.prisma.user
           .findFirst({
             cursor: { id: root.id },
             where: { id: root.id }
           })
-          .sessions();
-
+          .sessions({
+            cursor: { id: args.after ? args.after : undefined }
+          });
+        // TODO IMPORTANT
+        // or like dis with globalid: .sessions({cursor: {id: toGlobalId("Session", args!.after!)}, take: args.first});
         return sessions;
+      },
+      totalCount(_source, _args, ctx, info) {
+        return {
+          totalCount: info.fieldNodes.length
+        }.totalCount;
       }
     });
   }
@@ -204,25 +274,76 @@ export const UserExtended: core.NexusExtendTypeDef<"Query"> =
       // });
       t.connectionField("userAccount", {
         type: "Account",
+        extendConnection(t) {
+          t.nonNull.field("totalCount", {
+            nullable: false,
+            type: "Int",
+            resolve: source => {
+              const totalCount: number | 0 = source?.edges?.length
+                ? source.edges.length
+                : 0;
+              return { totalCount: totalCount }.totalCount;
+            }
+          });
+        },
         async nodes(root, args, ctx, info) {
           // const idToBase = base64Encode(String(root.id))
           return await ctx.prisma.account.findMany({
             include: { user: true }
           });
+        },
+        totalCount(_source, _args, ctx, info) {
+          return {
+            totalCount: info.fieldNodes.length
+          }.totalCount;
         }
       });
       t.connectionField("session", {
         type: "Session",
+        extendConnection(t) {
+          t.nonNull.field("totalCount", {
+            nullable: false,
+            type: "Int",
+            resolve: source => {
+              const totalCount: number | 0 = source?.edges?.length
+                ? source.edges.length
+                : 0;
+              return { totalCount: totalCount }.totalCount;
+            }
+          });
+        },
         nodes(root, args, ctx, info) {
           return ctx.prisma.session.findMany({
             include: { user: true }
           });
+        },
+        totalCount(_source, _args, ctx, info) {
+          return {
+            totalCount: info.fieldNodes.length
+          }.totalCount;
         }
       });
       t.connectionField("entries", {
         type: "Entry",
+        extendConnection(t) {
+          t.nonNull.field("totalCount", {
+            nullable: false,
+            type: "Int",
+            resolve: (source, args, ctx, info) => {
+              const totalCount: number | 0 = source?.edges?.length
+                ? source.edges.length
+                : 0;
+              return { totalCount: totalCount }.totalCount;
+            }
+          });
+        },
         nodes: (root, args, ctx, info) => {
           return ctx.prisma.entry.findMany({ include: { author: true } });
+        },
+        totalCount(_source, _args, ctx, info) {
+          return {
+            totalCount: info.fieldNodes.length
+          }.totalCount;
         }
       });
     }
@@ -286,6 +407,58 @@ export const UserOrderByRelevanceInput = core.inputObjectType({
     });
     t.nonNull.string("search");
     t.nonNull.field("sort", { type: SortOrderEnum });
+  }
+});
+
+/**UserOrderByWithRelationInput
+ *     id?: SortOrder
+    name?: SortOrder
+    email?: SortOrder
+    image?: SortOrder
+    role?: SortOrder
+    status?: SortOrder
+    createdAt?: SortOrder
+    updatedAt?: SortOrder
+    emailVerified?: SortOrder
+    profile?: ProfileOrderByWithRelationInput
+    accounts?: AccountOrderByRelationAggregateInput
+    sessions?: SessionOrderByRelationAggregateInput
+    entries?: EntryOrderByRelationAggregateInput
+    comments?: CommentOrderByRelationAggregateInput
+ */
+
+export const UserOrderByWithRelationInput =
+  core.inputObjectType<"UserOrderByWithRelationInput">({
+    name: "UserOrderByWithRelationInput",
+    definition(t) {
+      t.nullable.field("id", { type: SortOrderEnum });
+      t.nullable.field("name", { type: SortOrderEnum });
+      t.nullable.field("email", { type: SortOrderEnum });
+      t.nullable.field("image", { type: SortOrderEnum });
+      t.nullable.field("role", { type: SortOrderEnum });
+      t.nullable.field("status", { type: SortOrderEnum });
+      t.nullable.field("createdAt", { type: SortOrderEnum });
+      t.nullable.field("updatedAt", { type: SortOrderEnum });
+      t.nullable.field("emailVerified", { type: SortOrderEnum });
+      t.nullable.field("profile", { type: ProfileOrderByWithRelationInput });
+      t.nullable.field("accounts", {
+        type: AccountOrderByRelationAggregateInput
+      });
+      t.nullable.field("sessions", {
+        type: SessionOrderByRelationAggregateInput
+      });
+      t.nullable.field("entries", { type: EntryOrderByRelationAggregateInput });
+      t.nullable.field("comments", {
+        type: CommentOrderByRelationAggregateInput
+      });
+    }
+  });
+export const UserOrderByWithRelationInputEnumerable = core.extendInputType({
+  type: "UserOrderByWithRelationInput",
+  definition(t) {
+    t.nullable.list.nullable.field("UserOrderByWithRelationInput", {
+      type: UserOrderByWithRelationInput
+    });
   }
 });
 

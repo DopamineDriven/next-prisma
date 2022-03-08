@@ -24,7 +24,7 @@ import {
   MediaItemListRelationFilter
 } from ".";
 import { nodeDefinitions } from "graphql-relay";
-import { Prisma } from "@prisma/client";
+import { prisma, Prisma } from "@prisma/client";
 
 export const Entry: core.NexusObjectTypeDef<"Entry"> = objectType({
   name: "Entry",
@@ -84,6 +84,18 @@ export const Entry: core.NexusObjectTypeDef<"Entry"> = objectType({
         take: intArg(),
         searchString: nonNull(stringArg())
       },
+      extendConnection(t) {
+        t.nonNull.field("totalCount", {
+          nullable: false,
+          type: "Int",
+          resolve: source => {
+            const totalCount: number | 0 = source?.edges?.length
+              ? source.edges.length
+              : 0;
+            return { totalCount: totalCount }.totalCount;
+          }
+        });
+      },
       async nodes(root, args, ctx, _info) {
         return await ctx.prisma.comment
           .findFirst({
@@ -94,7 +106,14 @@ export const Entry: core.NexusObjectTypeDef<"Entry"> = objectType({
           })
           .entry()
           .author()
-          .comments({ take: args.take ? args.take : 10 });
+          .comments({
+            cursor: { id: args.after ? args.after : undefined }
+          });
+      },
+      totalCount(_source, _args, ctx, info) {
+        return {
+          totalCount: info.fieldNodes.length
+        }.totalCount;
       }
     });
   }
@@ -125,6 +144,18 @@ export const EntryQuery = extendType({
     t.connectionField("GetAllEntries", {
       type: "Entry",
       inheritAdditionalArgs: true,
+      extendConnection(t) {
+        t.nonNull.field("totalCount", {
+          nullable: false,
+          type: "Int",
+          resolve: source => {
+            const totalCount: number | 0 = source?.edges?.length
+              ? source.edges.length
+              : 0;
+            return { totalCount: totalCount }.totalCount;
+          }
+        });
+      },
       additionalArgs: {
         take: intArg(),
         searchString: nonNull(stringArg())
@@ -134,18 +165,41 @@ export const EntryQuery = extendType({
           take: Number(args.first),
           where: { title: { in: [args.searchString] } }
         });
+      },
+      totalCount(_source, _args, ctx, info) {
+        return {
+          totalCount: info.fieldNodes.length
+        }.totalCount;
       }
     });
     t.connectionField("SearchEntriesByTitle", {
       type: "Entry",
       inheritAdditionalArgs: true,
+      extendConnection(t) {
+        t.nonNull.field("totalCount", {
+          nullable: false,
+          type: "Int",
+          resolve: source => {
+            const totalCount: number | 0 = source?.edges?.length
+              ? source.edges.length
+              : 0;
+            return { totalCount: totalCount }.totalCount;
+          }
+        });
+      },
       additionalArgs: {
         searchString: nonNull(stringArg())
       },
-      async nodes(_root, args, ctx, _info) {
+      async nodes(root, args, ctx, _info) {
         return await ctx.prisma.entry.findMany({
-          where: { title: { contains: args.searchString } }
+          where: { title: { contains: args.searchString } },
+          take: args.first ? args.first : 10
         });
+      },
+      totalCount(_source, _args, ctx, info) {
+        return {
+          totalCount: info.fieldNodes.length
+        }.totalCount;
       }
     });
   }
@@ -211,7 +265,7 @@ export const EntryListRelationFilter = core.inputObjectType({
 export const EntryOrderByRelationAggregateInput = core.inputObjectType({
   name: "EntryOrderByRelationAggregateInput",
   definition(t) {
-    t.field("_count", { type: SortOrderEnum });
+    t.nullable.field("_count", { type: SortOrderEnum });
   }
 });
 

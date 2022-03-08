@@ -52,11 +52,23 @@ export const SessionQuery = core.extendType<"Query">({
         });
       }
     });
-    t.connectionField("GetAllSessions", {
+    t.connectionField("listSessions", {
       type: "Session",
       inheritAdditionalArgs: true,
       additionalArgs: {
         orderBy: core.nonNull(SessionsOrderByArg)
+      },
+      extendConnection(t) {
+        t.nonNull.field("totalCount", {
+          nullable: false,
+          type: "Int",
+          resolve: source => {
+            const totalCount: number | 0 = source?.edges?.length
+              ? source.edges.length
+              : 0;
+            return { totalCount: totalCount }.totalCount;
+          }
+        });
       },
       async nodes(_root, args, ctx, _info) {
         return await ctx.prisma.session.findMany({
@@ -66,12 +78,38 @@ export const SessionQuery = core.extendType<"Query">({
             }
           }
         });
+      },
+      totalCount(_source, _args, ctx, info) {
+        return {
+          totalCount: info.fieldNodes.length
+        }.totalCount;
       }
     });
   }
 });
 
 // Input Types
+/**
+ * {
+  id?: SortOrder
+  sessionToken?: SortOrder
+  userId?: SortOrder
+  expires?: SortOrder
+  user?: UserOrderByWithRelationInput
+}
+ */
+
+export const SessionOrderByWithRelationshipInput =
+  core.inputObjectType<"SessionOrderByWithRelationshipInput">({
+    name: "SessionOrderByWithRelationshipInput",
+    definition(t) {
+      t.nullable.field("id", { type: SortOrderEnum });
+      t.nullable.field("sessionToken", { type: SortOrderEnum });
+      t.nullable.field("userId", { type: SortOrderEnum });
+      t.nullable.field("expires", { type: SortOrderEnum });
+      // t.nullable.field("user", {type: UserORder})
+    }
+  });
 
 export const SessionListRelationFilter = core.inputObjectType({
   name: "SessionListRelationFilter",
@@ -82,12 +120,13 @@ export const SessionListRelationFilter = core.inputObjectType({
   }
 });
 
-export const SessionOrderByRelationAggregateInput = core.inputObjectType({
-  name: "SessionOrderByRelationAggregateInput",
-  definition(t) {
-    t.field("_count", { type: SortOrderEnum });
-  }
-});
+export const SessionOrderByRelationAggregateInput =
+  core.inputObjectType<"SessionOrderByRelationAggregateInput">({
+    name: "SessionOrderByRelationAggregateInput",
+    definition(t) {
+      t.nullable.field("_count", { type: SortOrderEnum });
+    }
+  });
 
 export const SessionWhereInput = core.inputObjectType({
   name: "SessionWhereInput",
@@ -95,10 +134,16 @@ export const SessionWhereInput = core.inputObjectType({
     t.list.nonNull.field("AND", { type: SessionWhereInput });
     t.list.nonNull.field("NOT", { type: SessionWhereInput });
     t.list.nonNull.field("OR", { type: SessionWhereInput });
-    t.nonNull.field("id", { type: StringFilter })
+    t.nonNull.field("id", { type: StringFilter });
     t.field("sessionToken", { type: StringNullableFilter });
     t.field("userId", { type: StringNullableFilter });
     t.field("expires", { type: DateTimeNullableFilter });
     t.field("user", { type: UserRelationFilter });
   }
 });
+
+/**
+ *   export type SessionOrderByRelationAggregateInput = {
+    _count?: SortOrder
+  }
+ */
