@@ -1,20 +1,18 @@
 import Image from "next/image";
 import Link from "next/link";
 import css from "./login.module.css";
-import {
-  Google,
-  GitHub,
-  Logo,
-  TwitterLogin,
-  GitlabIcon,
-  MediumIcon
-} from "@/components/Icons";
+import { Google, GitHub, Logo, TwitterLogin } from "@/components/Icons";
 import { signIn } from "node_modules/next-auth/react";
 import { useRouter } from "next/router";
 import { RedirectableProviderType } from "next-auth/providers";
 import { SVGAttribs } from "@/types/mapped";
 import Bg from "../../../public/dope-bg.avif";
 import cn from "classnames";
+import { ProviderUnion } from "@/types/enums";
+
+export type SvgSharedProps = SVGAttribs<
+  "className" | "aria-hidden" | "width" | "height"
+>;
 
 export type DynamicCase<T extends string> =
   | Capitalize<T>
@@ -22,55 +20,23 @@ export type DynamicCase<T extends string> =
   | Uppercase<T>;
 
 export type LoginProviderProps = {
-  providerName: string;
-  svg: ({
-    ...props
-  }: SVGAttribs<
-    "className" | "aria-hidden" | "width" | "height"
-  >) => JSX.Element;
+  providerName: keyof typeof ProviderUnion;
+  svg: ({ ...props }: SvgSharedProps) => JSX.Element;
 };
 
 export const authPropsPopulated: Array<LoginProviderProps> = [
   {
     providerName: "github",
-    svg: ({
-      ...props
-    }: SVGAttribs<"className" | "aria-hidden" | "width" | "height">) => (
-      <GitHub {...props} />
-    )
+    svg: ({ ...props }: SvgSharedProps) => <GitHub {...props} />
   },
   {
     providerName: "google",
-    svg: ({
-      ...props
-    }: SVGAttribs<"className" | "aria-hidden" | "width" | "height">) => (
-      <Google {...props} />
-    )
+    svg: ({ ...props }: SvgSharedProps) => <Google {...props} />
   },
   {
     providerName: "twitter",
-    svg: ({
-      ...props
-    }: SVGAttribs<"className" | "aria-hidden" | "width" | "height">) => (
-      <TwitterLogin {...props} />
-    )
+    svg: ({ ...props }: SvgSharedProps) => <TwitterLogin {...props} />
   }
-  // {
-  //   providerName: "gitlab",
-  //   svg: ({
-  //     ...props
-  //   }: SVGAttribs<"className" | "aria-hidden" | "width" | "height">) => (
-  //     <GitlabIcon {...props} />
-  //   )
-  // },
-  // {
-  //   providerName: "medium",
-  //   svg: ({
-  //     ...props
-  //   }: SVGAttribs<"className" | "aria-hidden" | "width" | "height">) => (
-  //     <MediumIcon {...props} />
-  //   )
-  // }
 ];
 
 export default function Login() {
@@ -120,7 +86,7 @@ export default function Login() {
                               value.providerName
                             );
                           }}>
-                          <span className='sr-only'>
+                          <span className='sr-only capitalize'>
                             {"Sign in with "
                               .concat(
                                 value.providerName as Capitalize<`${typeof value.providerName}`>
@@ -158,7 +124,7 @@ export default function Login() {
           height={Bg.height}
           quality='100'
           priority={true}
-          className='absolute inset-0 top-50 w-full min-h-screen object-cover mix-blend-exclusion filter-grayscale '
+          className='absolute inset-0 top-50 w-full min-h-screen object-cover mix-blend-exclusion'
           src={Bg.src}
           alt='Login'
         />
@@ -166,3 +132,19 @@ export default function Login() {
     </div>
   );
 }
+// {
+//   providerName: "gitlab",
+//   svg: ({
+//     ...props
+//   }: SVGAttribs<"className" | "aria-hidden" | "width" | "height">) => (
+//     <GitlabIcon {...props} />
+//   )
+// },
+// {
+//   providerName: "medium",
+//   svg: ({
+//     ...props
+//   }: SVGAttribs<"className" | "aria-hidden" | "width" | "height">) => (
+//     <MediumIcon {...props} />
+//   )
+// }

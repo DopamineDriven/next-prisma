@@ -20,10 +20,13 @@ import { getToken, JWT } from "next-auth/jwt";
 import * as Jose from "jose";
 import { decode } from "jsonwebtoken";
 import { UnwrapPromise } from "@/types/mapped";
+import { getCookie } from "cookies-next";
+import { CookieValueTypes } from "cookies-next/lib/types";
 export type IndexProps = {
   session: Session | null;
   initialApolloState: NormalizedCacheObject;
   jwt: JWT | null;
+  cookies: CookieValueTypes | null;
 };
 
 // the definition of this page
@@ -59,13 +62,19 @@ export const getServerSideProps = async <T extends ParsedUrlQuery>(
   const token = await getToken({ req: ctx.req });
   console.log(JSON.stringify(session, null, 2));
   console.log(params ?? "");
-  const getCookies = ctx.req.cookies["next-auth.session-token"];
+  const getCookies = getCookie("next-auth.session-token", {
+    req: ctx.req,
+    res: ctx.res
+  });
+
   const apolloClient = initializeApollo(null, ctx.params);
+  getCookie("next-auth.session-token", { req: ctx.req, res: ctx.res });
 
   return {
     props: {
-      jwt: token,
-      session,
+      cookies: getCookies ?? null,
+      jwt: token ?? null,
+      session: session ?? null,
       initialApolloState: apolloClient.cache.extract(true)
     }
   };
@@ -73,6 +82,7 @@ export const getServerSideProps = async <T extends ParsedUrlQuery>(
 
 export default function Index<T extends typeof getServerSideProps>({
   initialApolloState,
+  cookies,
   session,
   jwt
 }: InferGetServerSidePropsType<T>) {
@@ -97,7 +107,18 @@ export default function Index<T extends typeof getServerSideProps>({
           <div className='fit font-interVar py-10'>
             <main>
               {session ? (
-                <Inspector>{JSON.stringify(jwt, null, 2)}</Inspector>
+                <Inspector>
+                  {JSON.stringify(
+                    {
+                      session: session,
+                      token: jwt,
+                      sessionClient: data,
+                      cookies: cookies?.valueOf() ?? "no cookies for you"
+                    },
+                    null,
+                    2
+                  )}
+                </Inspector>
               ) : <div>loading...</div> ? (
                 <div className='py-[2rem] prose-pre:prose-sm prose-gray font-normal font-sans max-w-3xl flex-col'>
                   <Inspector>{session}</Inspector>
