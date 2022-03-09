@@ -19,13 +19,15 @@ export const Session: core.NexusObjectTypeDef<"Session"> =
       t.DateTime("expires");
       t.string("sessionToken");
       t.field("user", {
+        nullable: true,
         type: "User",
         async resolve(parent, args, ctx, info) {
           return await ctx.prisma.session
             .findFirst({
               include: { user: true },
               where: {
-                user: { id: parent.userId }
+                id: parent.id,
+                sessionToken: parent.sessionToken
               }
             })
             .user();
@@ -45,11 +47,14 @@ export const SessionQuery = core.extendType<"Query">({
   definition(t) {
     t.field("GetSession", {
       type: "Session",
+      nullable: true,
       args: { id: core.nonNull(core.stringArg()) },
-      resolve(_root, args, ctx, _info) {
-        return ctx.prisma.session.findUnique({
-          where: { id: String(args?.id) }
-        });
+      async resolve(_root, args, ctx, _info) {
+        return await ctx.prisma.session
+          .findUnique({
+            where: { id: args.id }
+          })
+          .then(data => data);
       }
     });
     t.connectionField("listSessions", {

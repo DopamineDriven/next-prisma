@@ -8,15 +8,15 @@ type Account implements Node {
   id_token: String
   oauth_token: String
   oauth_token_secret: String
-  provider: String
-  providerAccountId: String
+  provider: String!
+  providerAccountId: String!
   refresh_token: String
   scope: String
   session_state: String
   token_type: String
-  type: String
+  type: String!
   user: User
-  userId: String
+  userId: String!
 }
 
 type AccountEdge {
@@ -28,7 +28,7 @@ type AccountEdge {
   """
   https://facebook.github.io/relay/graphql/connections.htm#sec-Node
   """
-  node: Account
+  node: Account!
 }
 
 input AccountListRelationFilter {
@@ -69,8 +69,8 @@ input AccountWhereInput {
 
 type Bio {
   body: String
-  createdAt: DateTime
-  headline: String
+  createdAt: DateTime!
+  headline: String!
   intro: String
   status: String
   updatedAt: DateTime
@@ -105,24 +105,24 @@ input BoolFilter {
 }
 
 type Category {
-  createdAt: DateTime
+  createdAt: DateTime!
   creatorId: String
-  name: String
-  root: Boolean
+  name: String!
+  root: Boolean!
   updatedAt: DateTime
 }
 
 type Comment implements Node {
   attachment: MediaItem
   author: User
-  authorId: String
+  authorId: String!
   body: String
   createdAt: DateTime!
   entry: Entry
-  entryId: String
+  entryId: String!
   id: String!
   position: String
-  reactions: [Reaction]
+  reactions: [Reaction!]!
   updatedAt: DateTime
 }
 
@@ -135,7 +135,7 @@ type CommentEdge {
   """
   https://facebook.github.io/relay/graphql/connections.htm#sec-Node
   """
-  node: Comment
+  node: Comment!
 }
 
 input CommentListRelationFilter {
@@ -199,10 +199,10 @@ input DateTimeNullableFilter {
 
 type Entry implements Node {
   _count: EntryCount!
-  attachments: [MediaItem]
+  attachments: [MediaItem!]!
   author: User
-  authorId: String
-  categories: [Category]
+  authorId: String!
+  categories: [Category!]!
   comments(
     """
     Returns the elements in the list that come after the specified cursor
@@ -225,14 +225,14 @@ type Entry implements Node {
     last: Int
     searchString: String!
     take: Int
-  ): EntryComments_Connection
+  ): EntryComments_Connection!
   content: String
-  createdAt: DateTime
+  createdAt: DateTime!
   featuredImage: MediaItem
   id: String!
-  published: Boolean
-  reactions: [Reaction]
-  title: String
+  published: Boolean!
+  reactions: [Reaction!]!
+  title: String!
   updatedAt: DateTime
 }
 
@@ -240,12 +240,12 @@ type EntryComments_Connection {
   """
   https://facebook.github.io/relay/graphql/connections.htm#sec-Edge-Types
   """
-  edges: [CommentEdge]
+  edges: [CommentEdge!]!
 
   """
   Flattened list of Comment type
   """
-  nodes: [Comment]
+  nodes: [Comment!]!
 
   """
   https://facebook.github.io/relay/graphql/connections.htm#sec-undefined.PageInfo
@@ -267,7 +267,7 @@ type EntryEdge {
   """
   https://facebook.github.io/relay/graphql/connections.htm#sec-Node
   """
-  node: Entry
+  node: Entry!
 }
 
 input EntryListRelationFilter {
@@ -423,14 +423,14 @@ type MediaItem {
   filename: String
   filetype: MimeType
   height: Float!
-  id: String
+  id: String!
   quality: Int!
   size: String
   src: String
   srcSet: String
   title: String
   updatedAt: DateTime
-  uploadedAt: DateTime
+  uploadedAt: DateTime!
   width: Float!
 }
 
@@ -522,8 +522,8 @@ type Mutation {
     image: String
     name: String
     sessionToken: String!
-  ): User
-  DeleteUser(id: String!): User
+  ): User!
+  DeleteUser(id: String!): User!
   createEntry(
     """
     Entry Content
@@ -545,7 +545,7 @@ type Mutation {
     User Id
     """
     userId: String
-  ): Entry
+  ): Entry!
   createProfile(
     dob: String
     email: String!
@@ -555,7 +555,7 @@ type Mutation {
     """
     phoneNumber: String
     userId: String
-  ): Profile
+  ): Profile!
 }
 
 input NestedBoolFilter {
@@ -713,6 +713,7 @@ input PaginationArgsInput {
   before: String = null
   first: Int = 10
   last: Int = null
+  skip: Int = null
 }
 
 """
@@ -726,17 +727,17 @@ type Profile implements Node {
   city: String
   country: String
   coverPhoto: MediaItem
-  dob: Date
-  gender: Gender
+  dob: Date!
+  gender: Gender!
   id: String!
   lastSeen: DateTime
-  memberSince: DateTime
+  memberSince: DateTime!
   occupation: String
-  phoneNumber: PhoneNumber
-  pronouns: Pronouns
+  phoneNumber: PhoneNumber!
+  pronouns: Pronouns!
   recentActivity: String
   user: User
-  userId: String
+  userId: String!
 }
 
 type ProfileEdge {
@@ -748,7 +749,7 @@ type ProfileEdge {
   """
   https://facebook.github.io/relay/graphql/connections.htm#sec-Node
   """
-  node: Profile
+  node: Profile!
 }
 
 input ProfileOrderBy {
@@ -872,7 +873,7 @@ type Query {
     """
     last: Int
     searchString: String!
-  ): QueryFilterUsers_Connection
+  ): QueryFilterUsers_Connection!
   GetAllEntries(
     """
     Returns the elements in the list that come after the specified cursor
@@ -895,8 +896,7 @@ type Query {
     last: Int
     searchString: String!
     take: Int
-  ): QueryGetAllEntries_Connection
-  GetEntry(id: String!): Entry
+  ): QueryGetAllEntries_Connection!
   GetSession(id: String!): Session
   SearchByUserEmail(
     """
@@ -919,7 +919,7 @@ type Query {
     """
     last: Int
     search: String! = ""
-  ): QuerySearchByUserEmail_Connection
+  ): QuerySearchByUserEmail_Connection!
   SearchEntriesByTitle(
     """
     Returns the elements in the list that come after the specified cursor
@@ -941,7 +941,7 @@ type Query {
     """
     last: Int
     searchString: String!
-  ): QuerySearchEntriesByTitle_Connection
+  ): QuerySearchEntriesByTitle_Connection!
   accounts(
     """
     Returns the elements in the list that come after the specified cursor
@@ -963,7 +963,7 @@ type Query {
     """
     last: Int
     userId: String!
-  ): QueryAccounts_Connection
+  ): QueryAccounts_Connection!
   allAccounts(
     """
     Returns the elements in the list that come after the specified cursor
@@ -985,7 +985,7 @@ type Query {
     """
     last: Int
     take: Int = 10
-  ): QueryAllAccounts_Connection
+  ): QueryAllAccounts_Connection!
   allEntries(
     """
     Returns the elements in the list that come after the specified cursor
@@ -1007,7 +1007,7 @@ type Query {
     """
     last: Int
     take: Int!
-  ): QueryAllEntries_Connection
+  ): QueryAllEntries_Connection!
   entries(
     """
     Returns the elements in the list that come after the specified cursor
@@ -1028,7 +1028,7 @@ type Query {
     Returns the last n elements from the list.
     """
     last: Int
-  ): QueryEntries_Connection
+  ): QueryEntries_Connection!
   entryFeed(
     """
     Returns the elements in the list that come after the specified cursor
@@ -1052,7 +1052,8 @@ type Query {
     searchString: String = ""
     skip: Int = 0
     take: Int = 10
-  ): QueryEntryFeed_Connection
+  ): QueryEntryFeed_Connection!
+  findEntryById(id: String!): Entry
   getUserByAccount(
     """
     Returns the elements in the list that come after the specified cursor
@@ -1076,7 +1077,7 @@ type Query {
     last: Int
     provider: String!
     providerAccountId: String!
-  ): QueryGetUserByAccount_Connection
+  ): QueryGetUserByAccount_Connection!
   listProfiles(
     """
     Returns the elements in the list that come after the specified cursor
@@ -1098,7 +1099,7 @@ type Query {
     """
     last: Int
     orderBy: SortOrderEnum!
-  ): QueryListProfiles_Connection
+  ): QueryListProfiles_Connection!
   listSessions(
     """
     Returns the elements in the list that come after the specified cursor
@@ -1120,8 +1121,8 @@ type Query {
     """
     last: Int
     orderBy: SessionOrderBy!
-  ): QueryListSessions_Connection
-  node(id: String!): Node
+  ): QueryListSessions_Connection!
+  node(id: String!): Node!
   session(
     """
     Returns the elements in the list that come after the specified cursor
@@ -1142,7 +1143,7 @@ type Query {
     Returns the last n elements from the list.
     """
     last: Int
-  ): QuerySession_Connection
+  ): QuerySession_Connection!
   userAccount(
     """
     Returns the elements in the list that come after the specified cursor
@@ -1163,7 +1164,7 @@ type Query {
     Returns the last n elements from the list.
     """
     last: Int
-  ): QueryUserAccount_Connection
+  ): QueryUserAccount_Connection!
   userByEmail(email: String!): User
   userById(id: String!): User
   userEntries(
@@ -1187,7 +1188,7 @@ type Query {
     Returns the last n elements from the list.
     """
     last: Int
-  ): QueryUserEntries_Connection
+  ): QueryUserEntries_Connection!
   usersQuery(
     """
     Returns the elements in the list that come after the specified cursor
@@ -1208,7 +1209,7 @@ type Query {
     Returns the last n elements from the list.
     """
     last: Int
-  ): QueryUsersQuery_Connection
+  ): QueryUsersQuery_Connection!
   verificationTokens(
     """
     Returns the elements in the list that come after the specified cursor
@@ -1229,19 +1230,19 @@ type Query {
     Returns the last n elements from the list.
     """
     last: Int
-  ): QueryVerificationTokens_Connection
+  ): QueryVerificationTokens_Connection!
 }
 
 type QueryAccounts_Connection {
   """
   https://facebook.github.io/relay/graphql/connections.htm#sec-Edge-Types
   """
-  edges: [AccountEdge]
+  edges: [AccountEdge!]!
 
   """
   Flattened list of Account type
   """
-  nodes: [Account]
+  nodes: [Account!]!
 
   """
   https://facebook.github.io/relay/graphql/connections.htm#sec-undefined.PageInfo
@@ -1254,12 +1255,12 @@ type QueryAllAccounts_Connection {
   """
   https://facebook.github.io/relay/graphql/connections.htm#sec-Edge-Types
   """
-  edges: [AccountEdge]
+  edges: [AccountEdge!]!
 
   """
   Flattened list of Account type
   """
-  nodes: [Account]
+  nodes: [Account!]!
 
   """
   https://facebook.github.io/relay/graphql/connections.htm#sec-undefined.PageInfo
@@ -1272,12 +1273,12 @@ type QueryAllEntries_Connection {
   """
   https://facebook.github.io/relay/graphql/connections.htm#sec-Edge-Types
   """
-  edges: [EntryEdge]
+  edges: [EntryEdge!]!
 
   """
   Flattened list of Entry type
   """
-  nodes: [Entry]
+  nodes: [Entry!]!
 
   """
   https://facebook.github.io/relay/graphql/connections.htm#sec-undefined.PageInfo
@@ -1290,12 +1291,12 @@ type QueryEntries_Connection {
   """
   https://facebook.github.io/relay/graphql/connections.htm#sec-Edge-Types
   """
-  edges: [EntryEdge]
+  edges: [EntryEdge!]!
 
   """
   Flattened list of Entry type
   """
-  nodes: [Entry]
+  nodes: [Entry!]!
 
   """
   https://facebook.github.io/relay/graphql/connections.htm#sec-undefined.PageInfo
@@ -1308,12 +1309,12 @@ type QueryEntryFeed_Connection {
   """
   https://facebook.github.io/relay/graphql/connections.htm#sec-Edge-Types
   """
-  edges: [EntryEdge]
+  edges: [EntryEdge!]!
 
   """
   Flattened list of Entry type
   """
-  nodes: [Entry]
+  nodes: [Entry!]!
 
   """
   https://facebook.github.io/relay/graphql/connections.htm#sec-undefined.PageInfo
@@ -1326,12 +1327,12 @@ type QueryFilterUsers_Connection {
   """
   https://facebook.github.io/relay/graphql/connections.htm#sec-Edge-Types
   """
-  edges: [UserEdge]
+  edges: [UserEdge!]!
 
   """
   Flattened list of User type
   """
-  nodes: [User]
+  nodes: [User!]!
 
   """
   https://facebook.github.io/relay/graphql/connections.htm#sec-undefined.PageInfo
@@ -1344,12 +1345,12 @@ type QueryGetAllEntries_Connection {
   """
   https://facebook.github.io/relay/graphql/connections.htm#sec-Edge-Types
   """
-  edges: [EntryEdge]
+  edges: [EntryEdge!]!
 
   """
   Flattened list of Entry type
   """
-  nodes: [Entry]
+  nodes: [Entry!]!
 
   """
   https://facebook.github.io/relay/graphql/connections.htm#sec-undefined.PageInfo
@@ -1362,12 +1363,12 @@ type QueryGetUserByAccount_Connection {
   """
   https://facebook.github.io/relay/graphql/connections.htm#sec-Edge-Types
   """
-  edges: [AccountEdge]
+  edges: [AccountEdge!]!
 
   """
   Flattened list of Account type
   """
-  nodes: [Account]
+  nodes: [Account!]!
 
   """
   https://facebook.github.io/relay/graphql/connections.htm#sec-undefined.PageInfo
@@ -1380,12 +1381,12 @@ type QueryListProfiles_Connection {
   """
   https://facebook.github.io/relay/graphql/connections.htm#sec-Edge-Types
   """
-  edges: [ProfileEdge]
+  edges: [ProfileEdge!]!
 
   """
   Flattened list of Profile type
   """
-  nodes: [Profile]
+  nodes: [Profile!]!
 
   """
   https://facebook.github.io/relay/graphql/connections.htm#sec-undefined.PageInfo
@@ -1398,12 +1399,12 @@ type QueryListSessions_Connection {
   """
   https://facebook.github.io/relay/graphql/connections.htm#sec-Edge-Types
   """
-  edges: [SessionEdge]
+  edges: [SessionEdge!]!
 
   """
   Flattened list of Session type
   """
-  nodes: [Session]
+  nodes: [Session!]!
 
   """
   https://facebook.github.io/relay/graphql/connections.htm#sec-undefined.PageInfo
@@ -1421,12 +1422,12 @@ type QuerySearchByUserEmail_Connection {
   """
   https://facebook.github.io/relay/graphql/connections.htm#sec-Edge-Types
   """
-  edges: [UserEdge]
+  edges: [UserEdge!]!
 
   """
   Flattened list of User type
   """
-  nodes: [User]
+  nodes: [User!]!
 
   """
   https://facebook.github.io/relay/graphql/connections.htm#sec-undefined.PageInfo
@@ -1439,12 +1440,12 @@ type QuerySearchEntriesByTitle_Connection {
   """
   https://facebook.github.io/relay/graphql/connections.htm#sec-Edge-Types
   """
-  edges: [EntryEdge]
+  edges: [EntryEdge!]!
 
   """
   Flattened list of Entry type
   """
-  nodes: [Entry]
+  nodes: [Entry!]!
 
   """
   https://facebook.github.io/relay/graphql/connections.htm#sec-undefined.PageInfo
@@ -1457,12 +1458,12 @@ type QuerySession_Connection {
   """
   https://facebook.github.io/relay/graphql/connections.htm#sec-Edge-Types
   """
-  edges: [SessionEdge]
+  edges: [SessionEdge!]!
 
   """
   Flattened list of Session type
   """
-  nodes: [Session]
+  nodes: [Session!]!
 
   """
   https://facebook.github.io/relay/graphql/connections.htm#sec-undefined.PageInfo
@@ -1475,12 +1476,12 @@ type QueryUserAccount_Connection {
   """
   https://facebook.github.io/relay/graphql/connections.htm#sec-Edge-Types
   """
-  edges: [AccountEdge]
+  edges: [AccountEdge!]!
 
   """
   Flattened list of Account type
   """
-  nodes: [Account]
+  nodes: [Account!]!
 
   """
   https://facebook.github.io/relay/graphql/connections.htm#sec-undefined.PageInfo
@@ -1493,12 +1494,12 @@ type QueryUserEntries_Connection {
   """
   https://facebook.github.io/relay/graphql/connections.htm#sec-Edge-Types
   """
-  edges: [EntryEdge]
+  edges: [EntryEdge!]!
 
   """
   Flattened list of Entry type
   """
-  nodes: [Entry]
+  nodes: [Entry!]!
 
   """
   https://facebook.github.io/relay/graphql/connections.htm#sec-undefined.PageInfo
@@ -1511,12 +1512,12 @@ type QueryUsersQuery_Connection {
   """
   https://facebook.github.io/relay/graphql/connections.htm#sec-Edge-Types
   """
-  edges: [UserEdge]
+  edges: [UserEdge!]!
 
   """
   Flattened list of User type
   """
-  nodes: [User]
+  nodes: [User!]!
 
   """
   https://facebook.github.io/relay/graphql/connections.htm#sec-undefined.PageInfo
@@ -1529,12 +1530,12 @@ type QueryVerificationTokens_Connection {
   """
   https://facebook.github.io/relay/graphql/connections.htm#sec-Edge-Types
   """
-  edges: [VerificationTokenEdge]
+  edges: [VerificationTokenEdge!]!
 
   """
   Flattened list of VerificationToken type
   """
-  nodes: [VerificationToken]
+  nodes: [VerificationToken!]!
 
   """
   https://facebook.github.io/relay/graphql/connections.htm#sec-undefined.PageInfo
@@ -1571,11 +1572,11 @@ enum Role {
 }
 
 type Session implements Node {
-  expires: DateTime
+  expires: DateTime!
   id: String!
-  sessionToken: String
+  sessionToken: String!
   user: User
-  userId: String
+  userId: String!
 }
 
 type SessionEdge {
@@ -1587,7 +1588,7 @@ type SessionEdge {
   """
   https://facebook.github.io/relay/graphql/connections.htm#sec-Node
   """
-  node: Session
+  node: Session!
 }
 
 input SessionListRelationFilter {
@@ -1710,7 +1711,7 @@ type User implements Node {
     Returns the last n elements from the list.
     """
     last: Int
-  ): UserAccounts_Connection
+  ): UserAccounts_Connection!
   comments(
     """
     Returns the elements in the list that come after the specified cursor
@@ -1731,7 +1732,7 @@ type User implements Node {
     Returns the last n elements from the list.
     """
     last: Int
-  ): UserComments_Connection
+  ): UserComments_Connection!
   email: String
   emailVerified: DateTime
   entries(
@@ -1754,13 +1755,13 @@ type User implements Node {
     Returns the last n elements from the list.
     """
     last: Int
-  ): UserEntries_Connection
+  ): UserEntries_Connection!
   id: String!
   image: String
   imageMeta: MediaItem
   name: String
   profile: Profile
-  role: Role
+  role: Role!
   sessions(
     """
     Returns the elements in the list that come after the specified cursor
@@ -1781,7 +1782,7 @@ type User implements Node {
     Returns the last n elements from the list.
     """
     last: Int
-  ): UserSessions_Connection
+  ): UserSessions_Connection!
   status: UserStatus
 }
 
@@ -1789,12 +1790,12 @@ type UserAccounts_Connection {
   """
   https://facebook.github.io/relay/graphql/connections.htm#sec-Edge-Types
   """
-  edges: [AccountEdge]
+  edges: [AccountEdge!]!
 
   """
   Flattened list of Account type
   """
-  nodes: [Account]
+  nodes: [Account!]!
 
   """
   https://facebook.github.io/relay/graphql/connections.htm#sec-undefined.PageInfo
@@ -1807,12 +1808,12 @@ type UserComments_Connection {
   """
   https://facebook.github.io/relay/graphql/connections.htm#sec-Edge-Types
   """
-  edges: [CommentEdge]
+  edges: [CommentEdge!]!
 
   """
   Flattened list of Comment type
   """
-  nodes: [Comment]
+  nodes: [Comment!]!
 
   """
   https://facebook.github.io/relay/graphql/connections.htm#sec-undefined.PageInfo
@@ -1837,19 +1838,19 @@ type UserEdge {
   """
   https://facebook.github.io/relay/graphql/connections.htm#sec-Node
   """
-  node: User
+  node: User!
 }
 
 type UserEntries_Connection {
   """
   https://facebook.github.io/relay/graphql/connections.htm#sec-Edge-Types
   """
-  edges: [EntryEdge]
+  edges: [EntryEdge!]!
 
   """
   Flattened list of Entry type
   """
-  nodes: [Entry]
+  nodes: [Entry!]!
 
   """
   https://facebook.github.io/relay/graphql/connections.htm#sec-undefined.PageInfo
@@ -1932,12 +1933,12 @@ type UserSessions_Connection {
   """
   https://facebook.github.io/relay/graphql/connections.htm#sec-Edge-Types
   """
-  edges: [SessionEdge]
+  edges: [SessionEdge!]!
 
   """
   Flattened list of Session type
   """
-  nodes: [Session]
+  nodes: [Session!]!
 
   """
   https://facebook.github.io/relay/graphql/connections.htm#sec-undefined.PageInfo
@@ -1985,10 +1986,10 @@ input UserWhereUniqueInput {
 }
 
 type VerificationToken implements Node {
-  expires: DateTime
+  expires: DateTime!
   id: String!
-  identifier: String
-  token: String
+  identifier: String!
+  token: String!
 }
 
 type VerificationTokenEdge {
@@ -2000,5 +2001,5 @@ type VerificationTokenEdge {
   """
   https://facebook.github.io/relay/graphql/connections.htm#sec-Node
   """
-  node: VerificationToken
+  node: VerificationToken!
 }

@@ -25,6 +25,8 @@ import {
   VerificationToken
 } from "@/graphql/generated/resolver-types";
 import { fromGlobalId, toGlobalId } from "graphql-relay";
+import { loggingMiddleware } from "./Context";
+import { connectionType } from "./Constituents/Abstract/connection-strategy";
 export const MONGO_DB_URI = process.env.DATABASE_URL ?? "";
 
 export const ConnectDb = async () => {
@@ -42,20 +44,12 @@ export const ConnectDb = async () => {
     accounts: db.collection<Account>("accounts")
   };
 };
-
-export enum CoreConnectionFields {
-  User = "User",
-  Node = "Node",
-  Account = "Account",
-  Profile = "Profile",
-  Entry = "Entry",
-  Comment = "Comment",
-  Session = "Session",
-  VerificationToken = "VerificationToken",
-  MediaItem = "MediaItem",
-  Category = "Category"
-}
-
+const middle = core.composeMiddlewareFns(
+  [loggingMiddleware],
+  (src, args, context, info) => {
+    return info.fieldName;
+  }
+);
 export const LoadSchemaSync: GraphQLSchema = loadSchemaSync(
   join(process.cwd(), "/src/server/NexusSchema/schema.gql"),
   {
@@ -95,7 +89,8 @@ export const schema = core.makeSchema({
         toGlobalId(possibleGlobalIdTypeNames, cursor),
       cursorFromNode(node: { id: string }, args, ctx, info, { index, nodes }) {
         if (args.last && !args.before) {
-          const totalCount = nodes.length;
+          const totalCount = info.fieldNodes.length;
+
           return `${info.returnType.toString()}:${
             totalCount - args.last! + index + 1
           }`;
@@ -113,9 +108,7 @@ export const schema = core.makeSchema({
       }
     }),
     queryComplexityPlugin(),
-
     declarativeWrappingPlugin()
-    // queryComplexityPlugin()
   ],
   sourceTypes: {
     modules: [
@@ -162,6 +155,7 @@ export const schema = core.makeSchema({
     typegen: join(process.cwd(), "/src/server/NexusSchema/nexus.ts")
   }
 });
+
 function tsTypeMatch(type: GraphQLNamedType, defaultMatch: RegExp) {
   if (isNodeType(type)) {
     return [

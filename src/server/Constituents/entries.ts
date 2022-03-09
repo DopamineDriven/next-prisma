@@ -132,13 +132,16 @@ export const AllEntriesOrderByArg = AllEntriesOrderBy.asArg({
 export const EntryQuery = extendType({
   type: "Query",
   definition(t) {
-    t.field("GetEntry", {
+    t.field("findEntryById", {
       type: "Entry",
+      nullable: true,
       args: { id: nonNull(stringArg()) },
-      resolve(_root, args, ctx, _info) {
-        return ctx.prisma.entry.findUnique({
-          where: { id: String(args?.id) }
-        });
+      async resolve(_root, args, ctx, _info) {
+        return await ctx.prisma.entry
+          .findUnique({
+            where: { id: args.id }
+          })
+          .then(data => data);
       }
     });
     t.connectionField("GetAllEntries", {

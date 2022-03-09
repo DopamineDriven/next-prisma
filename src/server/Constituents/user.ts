@@ -3,6 +3,7 @@ import { core } from "nexus";
 import {
   Role,
   EntryListRelationFilter,
+  connectionType,
   SessionListRelationFilter,
   CommentListRelationFilter,
   MediaItem,
@@ -27,6 +28,10 @@ import {
   ProfileOrderByWithRelationInput,
   UserStatus
 } from ".";
+
+// export const UserConnection = connectionType("User");
+// export const UserEdge = connectionType("User");
+// export const UserPageInfo = connectionType("User");
 
 export const User: core.NexusObjectTypeDef<"User"> = core.objectType({
   name: "User",
@@ -78,23 +83,30 @@ export const User: core.NexusObjectTypeDef<"User"> = core.objectType({
       }
     });
 
-    t.field("role", { type: Role });
+    t.field("role", {
+      type: Role,
+      resolve(source) {
+        return source.role ? source.role : "USER";
+      }
+    });
     t.nullable.field("status", { type: UserStatus });
     t.field("profile", {
+      nullable: true,
       type: "Profile",
       async resolve(root, args, ctx, _info) {
         const userToProfile = await ctx.prisma.user
           .findFirst({
+            include: { profile: true },
             where: {
               profile: {
                 userId: root.id
               }
             }
           })
-          .profile();
+          .then(data => (data?.profile ? data.profile : null));
         return userToProfile;
       }
-    }) as core.FieldResolver<"User", "profile"> | undefined;
+    });
     t.connectionField<"accounts">("accounts", {
       type: "Account",
       inheritAdditionalArgs: true,
@@ -230,18 +242,21 @@ export const UserExtended: core.NexusExtendTypeDef<"Query"> =
         args: {
           id: core.nonNull(core.stringArg()) as core.NexusNonNullDef<"String">
         },
-        resolve(_root, args, ctx, _info) {
-          return ctx.prisma.user.findUnique({
-            where: { id: args.id },
-            include: {
-              accounts: true,
-              entries: true,
-              sessions: true,
-              comments: true,
-              _count: true,
-              profile: true
-            }
-          });
+        nullable: true,
+        async resolve(root, args, ctx, _info) {
+          return await ctx.prisma.user
+            .findFirst({
+              where: { id: args.id },
+              include: {
+                accounts: true,
+                entries: true,
+                sessions: true,
+                comments: true,
+                _count: true,
+                profile: true
+              }
+            })
+            .then(data => data);
         }
       });
 
@@ -252,15 +267,19 @@ export const UserExtended: core.NexusExtendTypeDef<"Query"> =
             core.stringArg()
           ) as core.NexusNonNullDef<"String">
         },
-        resolve(_root, args, ctx, _info) {
-          return ctx.prisma.user.findUnique({
-            where: { email: args.email },
-            include: {
-              accounts: true,
-              entries: true,
-              sessions: true
-            }
-          });
+        nullable: true,
+        async resolve(_root, args, ctx, _info) {
+          return await ctx.prisma.user
+            .findFirst({
+              where: { email: args.email },
+              include: {
+                accounts: true,
+                entries: true,
+                sessions: true
+              }
+            })
+            .profile()
+            .user();
         }
       });
 
