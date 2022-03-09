@@ -1,10 +1,11 @@
 {
   "compilerOptions": {
     "module": "CommonJS",
-    "target": "ES2021",
-    "lib": ["DOM", "DOM.Iterable", "ES2021", "ESNext.AsyncIterable"],
+    "target": "ES2015",
+    "lib": ["DOM", "DOM.Iterable", "ESNext", "ESNext.AsyncIterable"],
     "declaration": true,
     "strict": true,
+    "pretty": true,
     "noImplicitAny": true,
     "strictNullChecks": true,
     "noImplicitThis": true,
@@ -65,6 +66,6 @@
     "src/**/*.tsx",
     "src/**/*.js",
     "schema.gql"
-   ],
+  ],
   "exclude": ["node_modules"]
 }

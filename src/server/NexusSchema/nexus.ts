@@ -130,7 +130,7 @@ declare global {
         TypeName,
         FieldName
       > & {
-        totalCount: connectionPluginCore.ConnectionFieldResolver<
+        totalCount?: connectionPluginCore.ConnectionFieldResolver<
           TypeName,
           FieldName,
           "totalCount"

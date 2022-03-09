@@ -520,3 +520,10 @@ export const tree = (inp: number[]) => {
     return "";
   }
 };
+
+export const inverseValsOfKeys = (x: number, y: number) =>
+  (x || y) === 0
+    ? new Error("zero values disallowed")
+    : x * (y * x ** -1) === y && y * (x / y) === x
+    ? { x: x * (y / x), y: y * (x * y ** -1) }
+    : { x, y };

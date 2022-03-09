@@ -7,11 +7,12 @@ import {
   intArg,
   core
 } from "nexus";
+import { GraphQLNamedType, isObjectType } from "graphql";
 import * as types from "./Constituents";
 import { SchemaBuilder } from "nexus/dist/builder";
 import { GraphQLFileLoader } from "@graphql-tools/graphql-file-loader";
 import { loadSchemaSync } from "@graphql-tools/load";
-import { GraphQLSchema } from "graphql";
+import { GraphQLResolveInfo, GraphQLSchema } from "graphql";
 import { NexusPlugin } from "nexus/dist/plugin";
 import { Logger, MongoClient } from "mongodb";
 import {
@@ -23,6 +24,7 @@ import {
   Session,
   VerificationToken
 } from "@/graphql/generated/resolver-types";
+import { fromGlobalId, toGlobalId } from "graphql-relay";
 export const MONGO_DB_URI = process.env.DATABASE_URL ?? "";
 
 export const ConnectDb = async () => {
@@ -41,6 +43,19 @@ export const ConnectDb = async () => {
   };
 };
 
+export enum CoreConnectionFields {
+  User = "User",
+  Node = "Node",
+  Account = "Account",
+  Profile = "Profile",
+  Entry = "Entry",
+  Comment = "Comment",
+  Session = "Session",
+  VerificationToken = "VerificationToken",
+  MediaItem = "MediaItem",
+  Category = "Category"
+}
+
 export const LoadSchemaSync: GraphQLSchema = loadSchemaSync(
   join(process.cwd(), "/src/server/NexusSchema/schema.gql"),
   {
@@ -51,7 +66,7 @@ export const LoadSchemaSync: GraphQLSchema = loadSchemaSync(
     commentDescriptions: true
   }
 );
-
+let possibleGlobalIdTypeNames: core.GetGen2<"abstractTypeMembers", "Node">;
 export const schema = core.makeSchema({
   types: { ...types },
   plugins: [
@@ -60,19 +75,45 @@ export const schema = core.makeSchema({
       extendConnection: {
         totalCount: {
           type: "Int",
-          args: { totalCount: core.intArg({ default: 0 }) },
-          requireResolver: true
+          args: {
+            totalCount: core.nonNull(
+              core.intArg({ default: 0 })
+            ) as core.NexusNonNullDef<"Int">
+          },
+          requireResolver: false
         }
+      },
+      additionalArgs: {
+        first: core.nonNull(core.intArg({ default: 10 }))
       },
       includeNodesField: true,
       strictArgs: true,
       disableBackwardPagination: false,
       disableForwardPagination: false,
-      cursorFromNode(node) {
-        return node.id;
+      decodeCursor: (cursor: string) => fromGlobalId(cursor).id,
+      encodeCursor: (cursor: string) =>
+        toGlobalId(possibleGlobalIdTypeNames, cursor),
+      cursorFromNode(node: { id: string }, args, ctx, info, { index, nodes }) {
+        if (args.last && !args.before) {
+          const totalCount = nodes.length;
+          return `${info.returnType.toString()}:${
+            totalCount - args.last! + index + 1
+          }`;
+        }
+        return connectionPlugin.defaultCursorFromNode(
+          node.id,
+          args,
+          ctx,
+          info,
+          {
+            index,
+            nodes
+          }
+        );
       }
     }),
     queryComplexityPlugin(),
+
     declarativeWrappingPlugin()
     // queryComplexityPlugin()
   ],
@@ -81,9 +122,22 @@ export const schema = core.makeSchema({
       {
         module: join(process.cwd(), "/node_modules/.prisma/client/index.d.ts"),
         alias: "Prisma"
+      },
+      {
+        alias: "ts",
+        module: "typescript",
+        glob: false,
+        typeMatch: tsTypeMatch
+      },
+      {
+        alias: "t",
+        module: join(process.cwd(), "/src/server/NexusSchema/nexus.ts"),
+        onlyTypes: []
       }
-      // {module: join(process.cwd(), "/src/server/Services/index.ts"), alias: "t"}
     ]
+  },
+  nonNullDefaults: {
+    output: true
   },
   features: {
     abstractTypeStrategies: {
@@ -98,12 +152,27 @@ export const schema = core.makeSchema({
     export: "Context",
     alias: "ctx"
   },
+  formatTypegen: core.typegenFormatPrettier(
+    join(process.cwd(), "/.prettierrc.yaml")
+  ),
   prettierConfig: join(process.cwd(), "/.prettierrc.yaml"),
   shouldGenerateArtifacts: true,
   outputs: {
     schema: join(process.cwd(), "/src/server/NexusSchema/schema.gql"),
     typegen: join(process.cwd(), "/src/server/NexusSchema/nexus.ts")
   }
-
-  // printSchema function to output gql wrapped TS file of GraphQLSchema
 });
+function tsTypeMatch(type: GraphQLNamedType, defaultMatch: RegExp) {
+  if (isNodeType(type)) {
+    return [
+      new RegExp(`(?:interface|type|class)\\s+(${type.name}Node)\\W`, "g"),
+      defaultMatch
+    ];
+  }
+  return defaultMatch;
+}
+
+const isNodeType = (type: GraphQLNamedType) =>
+  Boolean(
+    isObjectType(type) && type.getInterfaces().find(i => i.name === "Node")
+  );

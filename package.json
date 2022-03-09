@@ -77,7 +77,6 @@
     "include": [
       "src/apollo",
       "src/components",
-      "src/gql",
       "src/graphql",
       "src/lib",
       "src/pages",
@@ -125,6 +124,7 @@
     "faker": "^5.5.3",
     "graphql": "^15.8.0",
     "graphql-let": "^0.18.6",
+    "graphql-query-complexity": "^0.11.0",
     "graphql-relay": "^0.9.0",
     "graphql-scalars": "^1.14.1",
     "graphql-upload": "^13.0.0",

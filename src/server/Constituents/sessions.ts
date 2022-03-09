@@ -141,9 +141,3 @@ export const SessionWhereInput = core.inputObjectType({
     t.field("user", { type: UserRelationFilter });
   }
 });
-
-/**
- *   export type SessionOrderByRelationAggregateInput = {
-    _count?: SortOrder
-  }
- */
