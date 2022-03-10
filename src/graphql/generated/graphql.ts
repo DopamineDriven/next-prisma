@@ -4,11 +4,15 @@ import {
   GraphQLDate,
   GraphQLDateTime,
   GraphQLTime,
+  GraphQLHexadecimal,
   GraphQLJSON,
+  GraphQLPhoneNumber,
+  GraphQLUUID,
   GraphQLJSONObject,
   JSONResolver,
   GraphQLBigInt
 } from "graphql-scalars";
+import { Prisma } from "@prisma/client";
 import { DeepPartial } from "utility-types";
 import {
   GraphQLResolveInfo,
@@ -42,14 +46,18 @@ export type Scalars = {
   Date: typeof GraphQLDate;
   /** A date-time string at UTC, such as 2007-12-03T10:15:30Z, compliant with the `date-time` format outlined in section 5.6 of the RFC 3339 profile of the ISO 8601 standard for representation of dates and times using the Gregorian calendar. */
   DateTime: Date;
+  /** An arbitrary-precision Decimal type */
+  Decimal: Prisma.Decimal.Value;
+  /** scalar Hexadecimal */
+  Hexadecimal: typeof GraphQLHexadecimal;
   /** The `JSONObject` scalar type represents JSON objects as specified by [ECMA-404](http://www.ecma-international.org/publications/files/ECMA-ST/ECMA-404.pdf). */
   Json: typeof GraphQLJSON;
   /** A field whose value conforms to the standard E.164 format as specified in: https://en.wikipedia.org/wiki/E.164. Basically this is +17895551234. */
-  PhoneNumber: typeof String;
+  PhoneNumber: typeof GraphQLPhoneNumber;
   /** A time string at UTC, such as 10:15:30Z, compliant with the `full-time` format outlined in section 5.6 of the RFC 3339profile of the ISO 8601 standard for representation of dates and times using the Gregorian calendar. */
   Time: typeof GraphQLTime;
   /** A field whose value is a generic Universally Unique Identifier: https://en.wikipedia.org/wiki/Universally_unique_identifier. */
-  UUID: typeof String;
+  UUID: typeof GraphQLUUID;
   /** The `Upload` scalar type represents a file upload. */
   Upload: File;
 };
@@ -62,15 +70,15 @@ export type Account = Node & {
   id_token?: Maybe<FieldWrapper<Scalars["String"]>>;
   oauth_token?: Maybe<FieldWrapper<Scalars["String"]>>;
   oauth_token_secret?: Maybe<FieldWrapper<Scalars["String"]>>;
-  provider?: Maybe<FieldWrapper<Scalars["String"]>>;
-  providerAccountId?: Maybe<FieldWrapper<Scalars["String"]>>;
+  provider: FieldWrapper<Scalars["String"]>;
+  providerAccountId: FieldWrapper<Scalars["String"]>;
   refresh_token?: Maybe<FieldWrapper<Scalars["String"]>>;
   scope?: Maybe<FieldWrapper<Scalars["String"]>>;
   session_state?: Maybe<FieldWrapper<Scalars["String"]>>;
   token_type?: Maybe<FieldWrapper<Scalars["String"]>>;
-  type?: Maybe<FieldWrapper<Scalars["String"]>>;
+  type: FieldWrapper<Scalars["String"]>;
   user?: Maybe<FieldWrapper<User>>;
-  userId?: Maybe<FieldWrapper<Scalars["String"]>>;
+  userId: FieldWrapper<Scalars["String"]>;
 };
 
 export type AccountEdge = {
@@ -78,7 +86,7 @@ export type AccountEdge = {
   /** https://facebook.github.io/relay/graphql/connections.htm#sec-Cursor */
   cursor: FieldWrapper<Scalars["String"]>;
   /** https://facebook.github.io/relay/graphql/connections.htm#sec-Node */
-  node?: Maybe<FieldWrapper<Account>>;
+  node: FieldWrapper<Account>;
 };
 
 export type AccountListRelationFilter = {
@@ -120,8 +128,8 @@ export type AccountWhereInput = {
 export type Bio = {
   __typename?: "Bio";
   body?: Maybe<FieldWrapper<Scalars["String"]>>;
-  createdAt?: Maybe<FieldWrapper<Scalars["DateTime"]>>;
-  headline?: Maybe<FieldWrapper<Scalars["String"]>>;
+  createdAt: FieldWrapper<Scalars["DateTime"]>;
+  headline: FieldWrapper<Scalars["String"]>;
   intro?: Maybe<FieldWrapper<Scalars["String"]>>;
   status?: Maybe<FieldWrapper<Scalars["String"]>>;
   updatedAt?: Maybe<FieldWrapper<Scalars["DateTime"]>>;
@@ -157,10 +165,10 @@ export type BoolFilter = {
 
 export type Category = {
   __typename?: "Category";
-  createdAt?: Maybe<FieldWrapper<Scalars["DateTime"]>>;
+  createdAt: FieldWrapper<Scalars["DateTime"]>;
   creatorId?: Maybe<FieldWrapper<Scalars["String"]>>;
-  name?: Maybe<FieldWrapper<Scalars["String"]>>;
-  root?: Maybe<FieldWrapper<Scalars["Boolean"]>>;
+  name: FieldWrapper<Scalars["String"]>;
+  root: FieldWrapper<Scalars["Boolean"]>;
   updatedAt?: Maybe<FieldWrapper<Scalars["DateTime"]>>;
 };
 
@@ -168,14 +176,14 @@ export type Comment = Node & {
   __typename?: "Comment";
   attachment?: Maybe<FieldWrapper<MediaItem>>;
   author?: Maybe<FieldWrapper<User>>;
-  authorId?: Maybe<FieldWrapper<Scalars["String"]>>;
+  authorId: FieldWrapper<Scalars["String"]>;
   body?: Maybe<FieldWrapper<Scalars["String"]>>;
   createdAt: FieldWrapper<Scalars["DateTime"]>;
   entry?: Maybe<FieldWrapper<Entry>>;
-  entryId?: Maybe<FieldWrapper<Scalars["String"]>>;
+  entryId: FieldWrapper<Scalars["String"]>;
   id: FieldWrapper<Scalars["String"]>;
   position?: Maybe<FieldWrapper<Scalars["String"]>>;
-  reactions?: Maybe<Array<Maybe<FieldWrapper<Reaction>>>>;
+  reactions: Array<FieldWrapper<Reaction>>;
   updatedAt?: Maybe<FieldWrapper<Scalars["DateTime"]>>;
 };
 
@@ -184,7 +192,7 @@ export type CommentEdge = {
   /** https://facebook.github.io/relay/graphql/connections.htm#sec-Cursor */
   cursor: FieldWrapper<Scalars["String"]>;
   /** https://facebook.github.io/relay/graphql/connections.htm#sec-Node */
-  node?: Maybe<FieldWrapper<Comment>>;
+  node: FieldWrapper<Comment>;
 };
 
 export type CommentListRelationFilter = {
@@ -239,18 +247,18 @@ export type DateTimeNullableFilter = {
 export type Entry = Node & {
   __typename?: "Entry";
   _count: FieldWrapper<EntryCount>;
-  attachments?: Maybe<Array<Maybe<FieldWrapper<MediaItem>>>>;
+  attachments: Array<FieldWrapper<MediaItem>>;
   author?: Maybe<FieldWrapper<User>>;
-  authorId?: Maybe<FieldWrapper<Scalars["String"]>>;
-  categories?: Maybe<Array<Maybe<FieldWrapper<Category>>>>;
-  comments?: Maybe<FieldWrapper<EntryComments_Connection>>;
+  authorId: FieldWrapper<Scalars["String"]>;
+  categories: Array<FieldWrapper<Category>>;
+  comments: FieldWrapper<EntryComments_Connection>;
   content?: Maybe<FieldWrapper<Scalars["String"]>>;
-  createdAt?: Maybe<FieldWrapper<Scalars["DateTime"]>>;
+  createdAt: FieldWrapper<Scalars["DateTime"]>;
   featuredImage?: Maybe<FieldWrapper<MediaItem>>;
   id: FieldWrapper<Scalars["String"]>;
-  published?: Maybe<FieldWrapper<Scalars["Boolean"]>>;
-  reactions?: Maybe<Array<Maybe<FieldWrapper<Reaction>>>>;
-  title?: Maybe<FieldWrapper<Scalars["String"]>>;
+  published: FieldWrapper<Scalars["Boolean"]>;
+  reactions: Array<FieldWrapper<Reaction>>;
+  title: FieldWrapper<Scalars["String"]>;
   updatedAt?: Maybe<FieldWrapper<Scalars["DateTime"]>>;
 };
 
@@ -266,12 +274,12 @@ export type EntrycommentsArgs = {
 export type EntryComments_Connection = {
   __typename?: "EntryComments_Connection";
   /** https://facebook.github.io/relay/graphql/connections.htm#sec-Edge-Types */
-  edges?: Maybe<Array<Maybe<FieldWrapper<CommentEdge>>>>;
+  edges: Array<FieldWrapper<CommentEdge>>;
   /** Flattened list of Comment type */
-  nodes?: Maybe<Array<Maybe<FieldWrapper<Comment>>>>;
+  nodes: Array<FieldWrapper<Comment>>;
   /** https://facebook.github.io/relay/graphql/connections.htm#sec-undefined.PageInfo */
   pageInfo: FieldWrapper<PageInfo>;
-  totalCount?: Maybe<FieldWrapper<Scalars["Int"]>>;
+  totalCount: FieldWrapper<Scalars["Int"]>;
 };
 
 export type EntryCount = {
@@ -284,7 +292,7 @@ export type EntryEdge = {
   /** https://facebook.github.io/relay/graphql/connections.htm#sec-Cursor */
   cursor: FieldWrapper<Scalars["String"]>;
   /** https://facebook.github.io/relay/graphql/connections.htm#sec-Node */
-  node?: Maybe<FieldWrapper<Entry>>;
+  node: FieldWrapper<Entry>;
 };
 
 export type EntryListRelationFilter = {
@@ -426,14 +434,14 @@ export type MediaItem = {
   filename?: Maybe<FieldWrapper<Scalars["String"]>>;
   filetype?: Maybe<FieldWrapper<MimeType>>;
   height: FieldWrapper<Scalars["Float"]>;
-  id?: Maybe<FieldWrapper<Scalars["String"]>>;
+  id: FieldWrapper<Scalars["String"]>;
   quality: FieldWrapper<Scalars["Int"]>;
   size?: Maybe<FieldWrapper<Scalars["String"]>>;
   src?: Maybe<FieldWrapper<Scalars["String"]>>;
   srcSet?: Maybe<FieldWrapper<Scalars["String"]>>;
   title?: Maybe<FieldWrapper<Scalars["String"]>>;
   updatedAt?: Maybe<FieldWrapper<Scalars["DateTime"]>>;
-  uploadedAt?: Maybe<FieldWrapper<Scalars["DateTime"]>>;
+  uploadedAt: FieldWrapper<Scalars["DateTime"]>;
   width: FieldWrapper<Scalars["Float"]>;
 };
 
@@ -516,10 +524,10 @@ export enum MimeType {
 
 export type Mutation = {
   __typename?: "Mutation";
-  CreateNewUser?: Maybe<FieldWrapper<User>>;
-  DeleteUser?: Maybe<FieldWrapper<User>>;
-  createEntry?: Maybe<FieldWrapper<Entry>>;
-  createProfile?: Maybe<FieldWrapper<Profile>>;
+  CreateNewUser: FieldWrapper<User>;
+  DeleteUser: FieldWrapper<User>;
+  createEntry: FieldWrapper<Entry>;
+  createProfile: FieldWrapper<Profile>;
 };
 
 export type MutationCreateNewUserArgs = {
@@ -692,6 +700,7 @@ export type PaginationArgsInput = {
   before?: InputMaybe<Scalars["String"]>;
   first?: InputMaybe<Scalars["Int"]>;
   last?: InputMaybe<Scalars["Int"]>;
+  skip?: InputMaybe<Scalars["Int"]>;
 };
 
 export type Profile = Node & {
@@ -701,17 +710,17 @@ export type Profile = Node & {
   city?: Maybe<FieldWrapper<Scalars["String"]>>;
   country?: Maybe<FieldWrapper<Scalars["String"]>>;
   coverPhoto?: Maybe<FieldWrapper<MediaItem>>;
-  dob?: Maybe<FieldWrapper<Scalars["Date"]>>;
-  gender?: Maybe<FieldWrapper<Gender>>;
+  dob: FieldWrapper<Scalars["Date"]>;
+  gender: FieldWrapper<Gender>;
   id: FieldWrapper<Scalars["String"]>;
   lastSeen?: Maybe<FieldWrapper<Scalars["DateTime"]>>;
-  memberSince?: Maybe<FieldWrapper<Scalars["DateTime"]>>;
+  memberSince: FieldWrapper<Scalars["DateTime"]>;
   occupation?: Maybe<FieldWrapper<Scalars["String"]>>;
-  phoneNumber?: Maybe<FieldWrapper<Scalars["PhoneNumber"]>>;
-  pronouns?: Maybe<FieldWrapper<Pronouns>>;
+  phoneNumber: FieldWrapper<Scalars["PhoneNumber"]>;
+  pronouns: FieldWrapper<Pronouns>;
   recentActivity?: Maybe<FieldWrapper<Scalars["String"]>>;
   user?: Maybe<FieldWrapper<User>>;
-  userId?: Maybe<FieldWrapper<Scalars["String"]>>;
+  userId: FieldWrapper<Scalars["String"]>;
 };
 
 export type ProfileEdge = {
@@ -719,7 +728,7 @@ export type ProfileEdge = {
   /** https://facebook.github.io/relay/graphql/connections.htm#sec-Cursor */
   cursor: FieldWrapper<Scalars["String"]>;
   /** https://facebook.github.io/relay/graphql/connections.htm#sec-Node */
-  node?: Maybe<FieldWrapper<Profile>>;
+  node: FieldWrapper<Profile>;
 };
 
 export type ProfileOrderBy = {
@@ -821,30 +830,28 @@ export enum Pronouns {
 
 export type Query = {
   __typename?: "Query";
-  FilterUsers?: Maybe<FieldWrapper<QueryFilterUsers_Connection>>;
-  GetAllEntries?: Maybe<FieldWrapper<QueryGetAllEntries_Connection>>;
-  GetEntry?: Maybe<FieldWrapper<Entry>>;
+  FilterUsers: FieldWrapper<QueryFilterUsers_Connection>;
+  GetAllEntries: FieldWrapper<QueryGetAllEntries_Connection>;
   GetSession?: Maybe<FieldWrapper<Session>>;
-  SearchByUserEmail?: Maybe<FieldWrapper<QuerySearchByUserEmail_Connection>>;
-  SearchEntriesByTitle?: Maybe<
-    FieldWrapper<QuerySearchEntriesByTitle_Connection>
-  >;
-  accounts?: Maybe<FieldWrapper<QueryAccounts_Connection>>;
-  allAccounts?: Maybe<FieldWrapper<QueryAllAccounts_Connection>>;
-  allEntries?: Maybe<FieldWrapper<QueryAllEntries_Connection>>;
-  entries?: Maybe<FieldWrapper<QueryEntries_Connection>>;
-  entryFeed?: Maybe<FieldWrapper<QueryEntryFeed_Connection>>;
-  getUserByAccount?: Maybe<FieldWrapper<QueryGetUserByAccount_Connection>>;
-  listProfiles?: Maybe<FieldWrapper<QueryListProfiles_Connection>>;
-  listSessions?: Maybe<FieldWrapper<QueryListSessions_Connection>>;
-  node?: Maybe<FieldWrapper<Node>>;
-  session?: Maybe<FieldWrapper<QuerySession_Connection>>;
-  userAccount?: Maybe<FieldWrapper<QueryUserAccount_Connection>>;
+  SearchByUserEmail: FieldWrapper<QuerySearchByUserEmail_Connection>;
+  SearchEntriesByTitle: FieldWrapper<QuerySearchEntriesByTitle_Connection>;
+  accounts: FieldWrapper<QueryAccounts_Connection>;
+  allAccounts: FieldWrapper<QueryAllAccounts_Connection>;
+  allEntries: FieldWrapper<QueryAllEntries_Connection>;
+  entries: FieldWrapper<QueryEntries_Connection>;
+  entryFeed: FieldWrapper<QueryEntryFeed_Connection>;
+  findEntryById?: Maybe<FieldWrapper<Entry>>;
+  getUserByAccount: FieldWrapper<QueryGetUserByAccount_Connection>;
+  listProfiles: FieldWrapper<QueryListProfiles_Connection>;
+  listSessions: FieldWrapper<QueryListSessions_Connection>;
+  node: FieldWrapper<Node>;
+  session: FieldWrapper<QuerySession_Connection>;
+  userAccount: FieldWrapper<QueryUserAccount_Connection>;
   userByEmail?: Maybe<FieldWrapper<User>>;
   userById?: Maybe<FieldWrapper<User>>;
-  userEntries?: Maybe<FieldWrapper<QueryUserEntries_Connection>>;
-  usersQuery?: Maybe<FieldWrapper<QueryUsersQuery_Connection>>;
-  verificationTokens?: Maybe<FieldWrapper<QueryVerificationTokens_Connection>>;
+  userEntries: FieldWrapper<QueryUserEntries_Connection>;
+  usersQuery: FieldWrapper<QueryUsersQuery_Connection>;
+  verificationTokens: FieldWrapper<QueryVerificationTokens_Connection>;
 };
 
 export type QueryFilterUsersArgs = {
@@ -862,10 +869,6 @@ export type QueryGetAllEntriesArgs = {
   last?: InputMaybe<Scalars["Int"]>;
   searchString: Scalars["String"];
   take?: InputMaybe<Scalars["Int"]>;
-};
-
-export type QueryGetEntryArgs = {
-  id: Scalars["String"];
 };
 
 export type QueryGetSessionArgs = {
@@ -927,6 +930,10 @@ export type QueryentryFeedArgs = {
   searchString?: InputMaybe<Scalars["String"]>;
   skip?: InputMaybe<Scalars["Int"]>;
   take?: InputMaybe<Scalars["Int"]>;
+};
+
+export type QueryfindEntryByIdArgs = {
+  id: Scalars["String"];
 };
 
 export type QuerygetUserByAccountArgs = {
@@ -1006,111 +1013,111 @@ export type QueryverificationTokensArgs = {
 export type QueryAccounts_Connection = {
   __typename?: "QueryAccounts_Connection";
   /** https://facebook.github.io/relay/graphql/connections.htm#sec-Edge-Types */
-  edges?: Maybe<Array<Maybe<FieldWrapper<AccountEdge>>>>;
+  edges: Array<FieldWrapper<AccountEdge>>;
   /** Flattened list of Account type */
-  nodes?: Maybe<Array<Maybe<FieldWrapper<Account>>>>;
+  nodes: Array<FieldWrapper<Account>>;
   /** https://facebook.github.io/relay/graphql/connections.htm#sec-undefined.PageInfo */
   pageInfo: FieldWrapper<PageInfo>;
-  totalCount?: Maybe<FieldWrapper<Scalars["Int"]>>;
+  totalCount: FieldWrapper<Scalars["Int"]>;
 };
 
 export type QueryAllAccounts_Connection = {
   __typename?: "QueryAllAccounts_Connection";
   /** https://facebook.github.io/relay/graphql/connections.htm#sec-Edge-Types */
-  edges?: Maybe<Array<Maybe<FieldWrapper<AccountEdge>>>>;
+  edges: Array<FieldWrapper<AccountEdge>>;
   /** Flattened list of Account type */
-  nodes?: Maybe<Array<Maybe<FieldWrapper<Account>>>>;
+  nodes: Array<FieldWrapper<Account>>;
   /** https://facebook.github.io/relay/graphql/connections.htm#sec-undefined.PageInfo */
   pageInfo: FieldWrapper<PageInfo>;
-  totalCount?: Maybe<FieldWrapper<Scalars["Int"]>>;
+  totalCount: FieldWrapper<Scalars["Int"]>;
 };
 
 export type QueryAllEntries_Connection = {
   __typename?: "QueryAllEntries_Connection";
   /** https://facebook.github.io/relay/graphql/connections.htm#sec-Edge-Types */
-  edges?: Maybe<Array<Maybe<FieldWrapper<EntryEdge>>>>;
+  edges: Array<FieldWrapper<EntryEdge>>;
   /** Flattened list of Entry type */
-  nodes?: Maybe<Array<Maybe<FieldWrapper<Entry>>>>;
+  nodes: Array<FieldWrapper<Entry>>;
   /** https://facebook.github.io/relay/graphql/connections.htm#sec-undefined.PageInfo */
   pageInfo: FieldWrapper<PageInfo>;
-  totalCount?: Maybe<FieldWrapper<Scalars["Int"]>>;
+  totalCount: FieldWrapper<Scalars["Int"]>;
 };
 
 export type QueryEntries_Connection = {
   __typename?: "QueryEntries_Connection";
   /** https://facebook.github.io/relay/graphql/connections.htm#sec-Edge-Types */
-  edges?: Maybe<Array<Maybe<FieldWrapper<EntryEdge>>>>;
+  edges: Array<FieldWrapper<EntryEdge>>;
   /** Flattened list of Entry type */
-  nodes?: Maybe<Array<Maybe<FieldWrapper<Entry>>>>;
+  nodes: Array<FieldWrapper<Entry>>;
   /** https://facebook.github.io/relay/graphql/connections.htm#sec-undefined.PageInfo */
   pageInfo: FieldWrapper<PageInfo>;
-  totalCount?: Maybe<FieldWrapper<Scalars["Int"]>>;
+  totalCount: FieldWrapper<Scalars["Int"]>;
 };
 
 export type QueryEntryFeed_Connection = {
   __typename?: "QueryEntryFeed_Connection";
   /** https://facebook.github.io/relay/graphql/connections.htm#sec-Edge-Types */
-  edges?: Maybe<Array<Maybe<FieldWrapper<EntryEdge>>>>;
+  edges: Array<FieldWrapper<EntryEdge>>;
   /** Flattened list of Entry type */
-  nodes?: Maybe<Array<Maybe<FieldWrapper<Entry>>>>;
+  nodes: Array<FieldWrapper<Entry>>;
   /** https://facebook.github.io/relay/graphql/connections.htm#sec-undefined.PageInfo */
   pageInfo: FieldWrapper<PageInfo>;
-  totalCount?: Maybe<FieldWrapper<Scalars["Int"]>>;
+  totalCount: FieldWrapper<Scalars["Int"]>;
 };
 
 export type QueryFilterUsers_Connection = {
   __typename?: "QueryFilterUsers_Connection";
   /** https://facebook.github.io/relay/graphql/connections.htm#sec-Edge-Types */
-  edges?: Maybe<Array<Maybe<FieldWrapper<UserEdge>>>>;
+  edges: Array<FieldWrapper<UserEdge>>;
   /** Flattened list of User type */
-  nodes?: Maybe<Array<Maybe<FieldWrapper<User>>>>;
+  nodes: Array<FieldWrapper<User>>;
   /** https://facebook.github.io/relay/graphql/connections.htm#sec-undefined.PageInfo */
   pageInfo: FieldWrapper<PageInfo>;
-  totalCount?: Maybe<FieldWrapper<Scalars["Int"]>>;
+  totalCount: FieldWrapper<Scalars["Int"]>;
 };
 
 export type QueryGetAllEntries_Connection = {
   __typename?: "QueryGetAllEntries_Connection";
   /** https://facebook.github.io/relay/graphql/connections.htm#sec-Edge-Types */
-  edges?: Maybe<Array<Maybe<FieldWrapper<EntryEdge>>>>;
+  edges: Array<FieldWrapper<EntryEdge>>;
   /** Flattened list of Entry type */
-  nodes?: Maybe<Array<Maybe<FieldWrapper<Entry>>>>;
+  nodes: Array<FieldWrapper<Entry>>;
   /** https://facebook.github.io/relay/graphql/connections.htm#sec-undefined.PageInfo */
   pageInfo: FieldWrapper<PageInfo>;
-  totalCount?: Maybe<FieldWrapper<Scalars["Int"]>>;
+  totalCount: FieldWrapper<Scalars["Int"]>;
 };
 
 export type QueryGetUserByAccount_Connection = {
   __typename?: "QueryGetUserByAccount_Connection";
   /** https://facebook.github.io/relay/graphql/connections.htm#sec-Edge-Types */
-  edges?: Maybe<Array<Maybe<FieldWrapper<AccountEdge>>>>;
+  edges: Array<FieldWrapper<AccountEdge>>;
   /** Flattened list of Account type */
-  nodes?: Maybe<Array<Maybe<FieldWrapper<Account>>>>;
+  nodes: Array<FieldWrapper<Account>>;
   /** https://facebook.github.io/relay/graphql/connections.htm#sec-undefined.PageInfo */
   pageInfo: FieldWrapper<PageInfo>;
-  totalCount?: Maybe<FieldWrapper<Scalars["Int"]>>;
+  totalCount: FieldWrapper<Scalars["Int"]>;
 };
 
 export type QueryListProfiles_Connection = {
   __typename?: "QueryListProfiles_Connection";
   /** https://facebook.github.io/relay/graphql/connections.htm#sec-Edge-Types */
-  edges?: Maybe<Array<Maybe<FieldWrapper<ProfileEdge>>>>;
+  edges: Array<FieldWrapper<ProfileEdge>>;
   /** Flattened list of Profile type */
-  nodes?: Maybe<Array<Maybe<FieldWrapper<Profile>>>>;
+  nodes: Array<FieldWrapper<Profile>>;
   /** https://facebook.github.io/relay/graphql/connections.htm#sec-undefined.PageInfo */
   pageInfo: FieldWrapper<PageInfo>;
-  totalCount?: Maybe<FieldWrapper<Scalars["Int"]>>;
+  totalCount: FieldWrapper<Scalars["Int"]>;
 };
 
 export type QueryListSessions_Connection = {
   __typename?: "QueryListSessions_Connection";
   /** https://facebook.github.io/relay/graphql/connections.htm#sec-Edge-Types */
-  edges?: Maybe<Array<Maybe<FieldWrapper<SessionEdge>>>>;
+  edges: Array<FieldWrapper<SessionEdge>>;
   /** Flattened list of Session type */
-  nodes?: Maybe<Array<Maybe<FieldWrapper<Session>>>>;
+  nodes: Array<FieldWrapper<Session>>;
   /** https://facebook.github.io/relay/graphql/connections.htm#sec-undefined.PageInfo */
   pageInfo: FieldWrapper<PageInfo>;
-  totalCount?: Maybe<FieldWrapper<Scalars["Int"]>>;
+  totalCount: FieldWrapper<Scalars["Int"]>;
 };
 
 export enum QueryModeEnum {
@@ -1121,78 +1128,78 @@ export enum QueryModeEnum {
 export type QuerySearchByUserEmail_Connection = {
   __typename?: "QuerySearchByUserEmail_Connection";
   /** https://facebook.github.io/relay/graphql/connections.htm#sec-Edge-Types */
-  edges?: Maybe<Array<Maybe<FieldWrapper<UserEdge>>>>;
+  edges: Array<FieldWrapper<UserEdge>>;
   /** Flattened list of User type */
-  nodes?: Maybe<Array<Maybe<FieldWrapper<User>>>>;
+  nodes: Array<FieldWrapper<User>>;
   /** https://facebook.github.io/relay/graphql/connections.htm#sec-undefined.PageInfo */
   pageInfo: FieldWrapper<PageInfo>;
-  totalCount?: Maybe<FieldWrapper<Scalars["Int"]>>;
+  totalCount: FieldWrapper<Scalars["Int"]>;
 };
 
 export type QuerySearchEntriesByTitle_Connection = {
   __typename?: "QuerySearchEntriesByTitle_Connection";
   /** https://facebook.github.io/relay/graphql/connections.htm#sec-Edge-Types */
-  edges?: Maybe<Array<Maybe<FieldWrapper<EntryEdge>>>>;
+  edges: Array<FieldWrapper<EntryEdge>>;
   /** Flattened list of Entry type */
-  nodes?: Maybe<Array<Maybe<FieldWrapper<Entry>>>>;
+  nodes: Array<FieldWrapper<Entry>>;
   /** https://facebook.github.io/relay/graphql/connections.htm#sec-undefined.PageInfo */
   pageInfo: FieldWrapper<PageInfo>;
-  totalCount?: Maybe<FieldWrapper<Scalars["Int"]>>;
+  totalCount: FieldWrapper<Scalars["Int"]>;
 };
 
 export type QuerySession_Connection = {
   __typename?: "QuerySession_Connection";
   /** https://facebook.github.io/relay/graphql/connections.htm#sec-Edge-Types */
-  edges?: Maybe<Array<Maybe<FieldWrapper<SessionEdge>>>>;
+  edges: Array<FieldWrapper<SessionEdge>>;
   /** Flattened list of Session type */
-  nodes?: Maybe<Array<Maybe<FieldWrapper<Session>>>>;
+  nodes: Array<FieldWrapper<Session>>;
   /** https://facebook.github.io/relay/graphql/connections.htm#sec-undefined.PageInfo */
   pageInfo: FieldWrapper<PageInfo>;
-  totalCount?: Maybe<FieldWrapper<Scalars["Int"]>>;
+  totalCount: FieldWrapper<Scalars["Int"]>;
 };
 
 export type QueryUserAccount_Connection = {
   __typename?: "QueryUserAccount_Connection";
   /** https://facebook.github.io/relay/graphql/connections.htm#sec-Edge-Types */
-  edges?: Maybe<Array<Maybe<FieldWrapper<AccountEdge>>>>;
+  edges: Array<FieldWrapper<AccountEdge>>;
   /** Flattened list of Account type */
-  nodes?: Maybe<Array<Maybe<FieldWrapper<Account>>>>;
+  nodes: Array<FieldWrapper<Account>>;
   /** https://facebook.github.io/relay/graphql/connections.htm#sec-undefined.PageInfo */
   pageInfo: FieldWrapper<PageInfo>;
-  totalCount?: Maybe<FieldWrapper<Scalars["Int"]>>;
+  totalCount: FieldWrapper<Scalars["Int"]>;
 };
 
 export type QueryUserEntries_Connection = {
   __typename?: "QueryUserEntries_Connection";
   /** https://facebook.github.io/relay/graphql/connections.htm#sec-Edge-Types */
-  edges?: Maybe<Array<Maybe<FieldWrapper<EntryEdge>>>>;
+  edges: Array<FieldWrapper<EntryEdge>>;
   /** Flattened list of Entry type */
-  nodes?: Maybe<Array<Maybe<FieldWrapper<Entry>>>>;
+  nodes: Array<FieldWrapper<Entry>>;
   /** https://facebook.github.io/relay/graphql/connections.htm#sec-undefined.PageInfo */
   pageInfo: FieldWrapper<PageInfo>;
-  totalCount?: Maybe<FieldWrapper<Scalars["Int"]>>;
+  totalCount: FieldWrapper<Scalars["Int"]>;
 };
 
 export type QueryUsersQuery_Connection = {
   __typename?: "QueryUsersQuery_Connection";
   /** https://facebook.github.io/relay/graphql/connections.htm#sec-Edge-Types */
-  edges?: Maybe<Array<Maybe<FieldWrapper<UserEdge>>>>;
+  edges: Array<FieldWrapper<UserEdge>>;
   /** Flattened list of User type */
-  nodes?: Maybe<Array<Maybe<FieldWrapper<User>>>>;
+  nodes: Array<FieldWrapper<User>>;
   /** https://facebook.github.io/relay/graphql/connections.htm#sec-undefined.PageInfo */
   pageInfo: FieldWrapper<PageInfo>;
-  totalCount?: Maybe<FieldWrapper<Scalars["Int"]>>;
+  totalCount: FieldWrapper<Scalars["Int"]>;
 };
 
 export type QueryVerificationTokens_Connection = {
   __typename?: "QueryVerificationTokens_Connection";
   /** https://facebook.github.io/relay/graphql/connections.htm#sec-Edge-Types */
-  edges?: Maybe<Array<Maybe<FieldWrapper<VerificationTokenEdge>>>>;
+  edges: Array<FieldWrapper<VerificationTokenEdge>>;
   /** Flattened list of VerificationToken type */
-  nodes?: Maybe<Array<Maybe<FieldWrapper<VerificationToken>>>>;
+  nodes: Array<FieldWrapper<VerificationToken>>;
   /** https://facebook.github.io/relay/graphql/connections.htm#sec-undefined.PageInfo */
   pageInfo: FieldWrapper<PageInfo>;
-  totalCount?: Maybe<FieldWrapper<Scalars["Int"]>>;
+  totalCount: FieldWrapper<Scalars["Int"]>;
 };
 
 /** Comment/Entry Reactions */
@@ -1220,11 +1227,11 @@ export enum Role {
 
 export type Session = Node & {
   __typename?: "Session";
-  expires?: Maybe<FieldWrapper<Scalars["DateTime"]>>;
+  expires: FieldWrapper<Scalars["DateTime"]>;
   id: FieldWrapper<Scalars["String"]>;
-  sessionToken?: Maybe<FieldWrapper<Scalars["String"]>>;
+  sessionToken: FieldWrapper<Scalars["String"]>;
   user?: Maybe<FieldWrapper<User>>;
-  userId?: Maybe<FieldWrapper<Scalars["String"]>>;
+  userId: FieldWrapper<Scalars["String"]>;
 };
 
 export type SessionEdge = {
@@ -1232,7 +1239,7 @@ export type SessionEdge = {
   /** https://facebook.github.io/relay/graphql/connections.htm#sec-Cursor */
   cursor: FieldWrapper<Scalars["String"]>;
   /** https://facebook.github.io/relay/graphql/connections.htm#sec-Node */
-  node?: Maybe<FieldWrapper<Session>>;
+  node: FieldWrapper<Session>;
 };
 
 export type SessionListRelationFilter = {
@@ -1319,18 +1326,18 @@ export type StringNullableListFilter = {
 export type User = Node & {
   __typename?: "User";
   _count: FieldWrapper<UserCount>;
-  accounts?: Maybe<FieldWrapper<UserAccounts_Connection>>;
-  comments?: Maybe<FieldWrapper<UserComments_Connection>>;
+  accounts: FieldWrapper<UserAccounts_Connection>;
+  comments: FieldWrapper<UserComments_Connection>;
   email?: Maybe<FieldWrapper<Scalars["String"]>>;
   emailVerified?: Maybe<FieldWrapper<Scalars["DateTime"]>>;
-  entries?: Maybe<FieldWrapper<UserEntries_Connection>>;
+  entries: FieldWrapper<UserEntries_Connection>;
   id: FieldWrapper<Scalars["String"]>;
   image?: Maybe<FieldWrapper<Scalars["String"]>>;
   imageMeta?: Maybe<FieldWrapper<MediaItem>>;
   name?: Maybe<FieldWrapper<Scalars["String"]>>;
   profile?: Maybe<FieldWrapper<Profile>>;
-  role?: Maybe<FieldWrapper<Role>>;
-  sessions?: Maybe<FieldWrapper<UserSessions_Connection>>;
+  role: FieldWrapper<Role>;
+  sessions: FieldWrapper<UserSessions_Connection>;
   status?: Maybe<FieldWrapper<UserStatus>>;
 };
 
@@ -1365,23 +1372,23 @@ export type UsersessionsArgs = {
 export type UserAccounts_Connection = {
   __typename?: "UserAccounts_Connection";
   /** https://facebook.github.io/relay/graphql/connections.htm#sec-Edge-Types */
-  edges?: Maybe<Array<Maybe<FieldWrapper<AccountEdge>>>>;
+  edges: Array<FieldWrapper<AccountEdge>>;
   /** Flattened list of Account type */
-  nodes?: Maybe<Array<Maybe<FieldWrapper<Account>>>>;
+  nodes: Array<FieldWrapper<Account>>;
   /** https://facebook.github.io/relay/graphql/connections.htm#sec-undefined.PageInfo */
   pageInfo: FieldWrapper<PageInfo>;
-  totalCount?: Maybe<FieldWrapper<Scalars["Int"]>>;
+  totalCount: FieldWrapper<Scalars["Int"]>;
 };
 
 export type UserComments_Connection = {
   __typename?: "UserComments_Connection";
   /** https://facebook.github.io/relay/graphql/connections.htm#sec-Edge-Types */
-  edges?: Maybe<Array<Maybe<FieldWrapper<CommentEdge>>>>;
+  edges: Array<FieldWrapper<CommentEdge>>;
   /** Flattened list of Comment type */
-  nodes?: Maybe<Array<Maybe<FieldWrapper<Comment>>>>;
+  nodes: Array<FieldWrapper<Comment>>;
   /** https://facebook.github.io/relay/graphql/connections.htm#sec-undefined.PageInfo */
   pageInfo: FieldWrapper<PageInfo>;
-  totalCount?: Maybe<FieldWrapper<Scalars["Int"]>>;
+  totalCount: FieldWrapper<Scalars["Int"]>;
 };
 
 export type UserCount = {
@@ -1397,18 +1404,18 @@ export type UserEdge = {
   /** https://facebook.github.io/relay/graphql/connections.htm#sec-Cursor */
   cursor: FieldWrapper<Scalars["String"]>;
   /** https://facebook.github.io/relay/graphql/connections.htm#sec-Node */
-  node?: Maybe<FieldWrapper<User>>;
+  node: FieldWrapper<User>;
 };
 
 export type UserEntries_Connection = {
   __typename?: "UserEntries_Connection";
   /** https://facebook.github.io/relay/graphql/connections.htm#sec-Edge-Types */
-  edges?: Maybe<Array<Maybe<FieldWrapper<EntryEdge>>>>;
+  edges: Array<FieldWrapper<EntryEdge>>;
   /** Flattened list of Entry type */
-  nodes?: Maybe<Array<Maybe<FieldWrapper<Entry>>>>;
+  nodes: Array<FieldWrapper<Entry>>;
   /** https://facebook.github.io/relay/graphql/connections.htm#sec-undefined.PageInfo */
   pageInfo: FieldWrapper<PageInfo>;
-  totalCount?: Maybe<FieldWrapper<Scalars["Int"]>>;
+  totalCount: FieldWrapper<Scalars["Int"]>;
 };
 
 export enum UserOrderByRelevanceFieldEnum {
@@ -1486,12 +1493,12 @@ export enum UserScalarFieldsEnum {
 export type UserSessions_Connection = {
   __typename?: "UserSessions_Connection";
   /** https://facebook.github.io/relay/graphql/connections.htm#sec-Edge-Types */
-  edges?: Maybe<Array<Maybe<FieldWrapper<SessionEdge>>>>;
+  edges: Array<FieldWrapper<SessionEdge>>;
   /** Flattened list of Session type */
-  nodes?: Maybe<Array<Maybe<FieldWrapper<Session>>>>;
+  nodes: Array<FieldWrapper<Session>>;
   /** https://facebook.github.io/relay/graphql/connections.htm#sec-undefined.PageInfo */
   pageInfo: FieldWrapper<PageInfo>;
-  totalCount?: Maybe<FieldWrapper<Scalars["Int"]>>;
+  totalCount: FieldWrapper<Scalars["Int"]>;
 };
 
 /** User Status */
@@ -1532,10 +1539,10 @@ export type UserWhereUniqueInput = {
 
 export type VerificationToken = Node & {
   __typename?: "VerificationToken";
-  expires?: Maybe<FieldWrapper<Scalars["DateTime"]>>;
+  expires: FieldWrapper<Scalars["DateTime"]>;
   id: FieldWrapper<Scalars["String"]>;
-  identifier?: Maybe<FieldWrapper<Scalars["String"]>>;
-  token?: Maybe<FieldWrapper<Scalars["String"]>>;
+  identifier: FieldWrapper<Scalars["String"]>;
+  token: FieldWrapper<Scalars["String"]>;
 };
 
 export type VerificationTokenEdge = {
@@ -1543,7 +1550,7 @@ export type VerificationTokenEdge = {
   /** https://facebook.github.io/relay/graphql/connections.htm#sec-Cursor */
   cursor: FieldWrapper<Scalars["String"]>;
   /** https://facebook.github.io/relay/graphql/connections.htm#sec-Node */
-  node?: Maybe<FieldWrapper<VerificationToken>>;
+  node: FieldWrapper<VerificationToken>;
 };
 
 export const AccountPartial = gql`
@@ -1851,6 +1858,7 @@ export type ResolversTypes = ResolversObject<{
   DateTimeNullableFilter: ResolverTypeWrapper<
     DeepPartial<DateTimeNullableFilter>
   >;
+  Decimal: ResolverTypeWrapper<DeepPartial<Scalars["Decimal"]>>;
   Entry: ResolverTypeWrapper<DeepPartial<Entry>>;
   EntryComments_Connection: ResolverTypeWrapper<
     DeepPartial<EntryComments_Connection>
@@ -1893,6 +1901,7 @@ export type ResolversTypes = ResolversObject<{
   Float: ResolverTypeWrapper<DeepPartial<Scalars["Float"]>>;
   FloatNullableFilter: ResolverTypeWrapper<DeepPartial<FloatNullableFilter>>;
   Gender: ResolverTypeWrapper<DeepPartial<Gender>>;
+  Hexadecimal: ResolverTypeWrapper<DeepPartial<Scalars["Hexadecimal"]>>;
   Int: ResolverTypeWrapper<DeepPartial<Scalars["Int"]>>;
   IntNullableFilter: ResolverTypeWrapper<DeepPartial<IntNullableFilter>>;
   Json: ResolverTypeWrapper<DeepPartial<Scalars["Json"]>>;
@@ -2112,6 +2121,7 @@ export type ResolversParentTypes = ResolversObject<{
   DateTime: DeepPartial<Scalars["DateTime"]>;
   DateTimeFilter: DeepPartial<DateTimeFilter>;
   DateTimeNullableFilter: DeepPartial<DateTimeNullableFilter>;
+  Decimal: DeepPartial<Scalars["Decimal"]>;
   Entry: DeepPartial<Entry>;
   EntryComments_Connection: DeepPartial<EntryComments_Connection>;
   EntryCount: DeepPartial<EntryCount>;
@@ -2131,6 +2141,7 @@ export type ResolversParentTypes = ResolversObject<{
   FindManyUsersPaginatedInput: DeepPartial<FindManyUsersPaginatedInput>;
   Float: DeepPartial<Scalars["Float"]>;
   FloatNullableFilter: DeepPartial<FloatNullableFilter>;
+  Hexadecimal: DeepPartial<Scalars["Hexadecimal"]>;
   Int: DeepPartial<Scalars["Int"]>;
   IntNullableFilter: DeepPartial<IntNullableFilter>;
   Json: DeepPartial<Scalars["Json"]>;
@@ -2243,9 +2254,9 @@ export type AccountResolvers<
     ParentType,
     ContextType
   >;
-  provider?: Resolver<Maybe<ResolversTypes["String"]>, ParentType, ContextType>;
+  provider?: Resolver<ResolversTypes["String"], ParentType, ContextType>;
   providerAccountId?: Resolver<
-    Maybe<ResolversTypes["String"]>,
+    ResolversTypes["String"],
     ParentType,
     ContextType
   >;
@@ -2265,9 +2276,9 @@ export type AccountResolvers<
     ParentType,
     ContextType
   >;
-  type?: Resolver<Maybe<ResolversTypes["String"]>, ParentType, ContextType>;
+  type?: Resolver<ResolversTypes["String"], ParentType, ContextType>;
   user?: Resolver<Maybe<ResolversTypes["User"]>, ParentType, ContextType>;
-  userId?: Resolver<Maybe<ResolversTypes["String"]>, ParentType, ContextType>;
+  userId?: Resolver<ResolversTypes["String"], ParentType, ContextType>;
   __isTypeOf?: IsTypeOfResolverFn<ParentType, ContextType>;
 }>;
 
@@ -2276,7 +2287,7 @@ export type AccountEdgeResolvers<
   ParentType extends ResolversParentTypes["AccountEdge"] = ResolversParentTypes["AccountEdge"]
 > = ResolversObject<{
   cursor?: Resolver<ResolversTypes["String"], ParentType, ContextType>;
-  node?: Resolver<Maybe<ResolversTypes["Account"]>, ParentType, ContextType>;
+  node?: Resolver<ResolversTypes["Account"], ParentType, ContextType>;
   __isTypeOf?: IsTypeOfResolverFn<ParentType, ContextType>;
 }>;
 
@@ -2285,12 +2296,8 @@ export type BioResolvers<
   ParentType extends ResolversParentTypes["Bio"] = ResolversParentTypes["Bio"]
 > = ResolversObject<{
   body?: Resolver<Maybe<ResolversTypes["String"]>, ParentType, ContextType>;
-  createdAt?: Resolver<
-    Maybe<ResolversTypes["DateTime"]>,
-    ParentType,
-    ContextType
-  >;
-  headline?: Resolver<Maybe<ResolversTypes["String"]>, ParentType, ContextType>;
+  createdAt?: Resolver<ResolversTypes["DateTime"], ParentType, ContextType>;
+  headline?: Resolver<ResolversTypes["String"], ParentType, ContextType>;
   intro?: Resolver<Maybe<ResolversTypes["String"]>, ParentType, ContextType>;
   status?: Resolver<Maybe<ResolversTypes["String"]>, ParentType, ContextType>;
   updatedAt?: Resolver<
@@ -2305,18 +2312,14 @@ export type CategoryResolvers<
   ContextType = any,
   ParentType extends ResolversParentTypes["Category"] = ResolversParentTypes["Category"]
 > = ResolversObject<{
-  createdAt?: Resolver<
-    Maybe<ResolversTypes["DateTime"]>,
-    ParentType,
-    ContextType
-  >;
+  createdAt?: Resolver<ResolversTypes["DateTime"], ParentType, ContextType>;
   creatorId?: Resolver<
     Maybe<ResolversTypes["String"]>,
     ParentType,
     ContextType
   >;
-  name?: Resolver<Maybe<ResolversTypes["String"]>, ParentType, ContextType>;
-  root?: Resolver<Maybe<ResolversTypes["Boolean"]>, ParentType, ContextType>;
+  name?: Resolver<ResolversTypes["String"], ParentType, ContextType>;
+  root?: Resolver<ResolversTypes["Boolean"], ParentType, ContextType>;
   updatedAt?: Resolver<
     Maybe<ResolversTypes["DateTime"]>,
     ParentType,
@@ -2335,15 +2338,15 @@ export type CommentResolvers<
     ContextType
   >;
   author?: Resolver<Maybe<ResolversTypes["User"]>, ParentType, ContextType>;
-  authorId?: Resolver<Maybe<ResolversTypes["String"]>, ParentType, ContextType>;
+  authorId?: Resolver<ResolversTypes["String"], ParentType, ContextType>;
   body?: Resolver<Maybe<ResolversTypes["String"]>, ParentType, ContextType>;
   createdAt?: Resolver<ResolversTypes["DateTime"], ParentType, ContextType>;
   entry?: Resolver<Maybe<ResolversTypes["Entry"]>, ParentType, ContextType>;
-  entryId?: Resolver<Maybe<ResolversTypes["String"]>, ParentType, ContextType>;
+  entryId?: Resolver<ResolversTypes["String"], ParentType, ContextType>;
   id?: Resolver<ResolversTypes["String"], ParentType, ContextType>;
   position?: Resolver<Maybe<ResolversTypes["String"]>, ParentType, ContextType>;
   reactions?: Resolver<
-    Maybe<Array<Maybe<ResolversTypes["Reaction"]>>>,
+    Array<ResolversTypes["Reaction"]>,
     ParentType,
     ContextType
   >;
@@ -2360,7 +2363,7 @@ export type CommentEdgeResolvers<
   ParentType extends ResolversParentTypes["CommentEdge"] = ResolversParentTypes["CommentEdge"]
 > = ResolversObject<{
   cursor?: Resolver<ResolversTypes["String"], ParentType, ContextType>;
-  node?: Resolver<Maybe<ResolversTypes["Comment"]>, ParentType, ContextType>;
+  node?: Resolver<ResolversTypes["Comment"], ParentType, ContextType>;
   __isTypeOf?: IsTypeOfResolverFn<ParentType, ContextType>;
 }>;
 
@@ -2374,52 +2377,49 @@ export interface DateTimeScalarConfig
   name: "DateTime";
 }
 
+export interface DecimalScalarConfig
+  extends GraphQLScalarTypeConfig<ResolversTypes["Decimal"], any> {
+  name: "Decimal";
+}
+
 export type EntryResolvers<
   ContextType = any,
   ParentType extends ResolversParentTypes["Entry"] = ResolversParentTypes["Entry"]
 > = ResolversObject<{
   _count?: Resolver<ResolversTypes["EntryCount"], ParentType, ContextType>;
   attachments?: Resolver<
-    Maybe<Array<Maybe<ResolversTypes["MediaItem"]>>>,
+    Array<ResolversTypes["MediaItem"]>,
     ParentType,
     ContextType
   >;
   author?: Resolver<Maybe<ResolversTypes["User"]>, ParentType, ContextType>;
-  authorId?: Resolver<Maybe<ResolversTypes["String"]>, ParentType, ContextType>;
+  authorId?: Resolver<ResolversTypes["String"], ParentType, ContextType>;
   categories?: Resolver<
-    Maybe<Array<Maybe<ResolversTypes["Category"]>>>,
+    Array<ResolversTypes["Category"]>,
     ParentType,
     ContextType
   >;
   comments?: Resolver<
-    Maybe<ResolversTypes["EntryComments_Connection"]>,
+    ResolversTypes["EntryComments_Connection"],
     ParentType,
     ContextType,
     RequireFields<EntrycommentsArgs, "searchString">
   >;
   content?: Resolver<Maybe<ResolversTypes["String"]>, ParentType, ContextType>;
-  createdAt?: Resolver<
-    Maybe<ResolversTypes["DateTime"]>,
-    ParentType,
-    ContextType
-  >;
+  createdAt?: Resolver<ResolversTypes["DateTime"], ParentType, ContextType>;
   featuredImage?: Resolver<
     Maybe<ResolversTypes["MediaItem"]>,
     ParentType,
     ContextType
   >;
   id?: Resolver<ResolversTypes["String"], ParentType, ContextType>;
-  published?: Resolver<
-    Maybe<ResolversTypes["Boolean"]>,
-    ParentType,
-    ContextType
-  >;
+  published?: Resolver<ResolversTypes["Boolean"], ParentType, ContextType>;
   reactions?: Resolver<
-    Maybe<Array<Maybe<ResolversTypes["Reaction"]>>>,
+    Array<ResolversTypes["Reaction"]>,
     ParentType,
     ContextType
   >;
-  title?: Resolver<Maybe<ResolversTypes["String"]>, ParentType, ContextType>;
+  title?: Resolver<ResolversTypes["String"], ParentType, ContextType>;
   updatedAt?: Resolver<
     Maybe<ResolversTypes["DateTime"]>,
     ParentType,
@@ -2433,17 +2433,13 @@ export type EntryComments_ConnectionResolvers<
   ParentType extends ResolversParentTypes["EntryComments_Connection"] = ResolversParentTypes["EntryComments_Connection"]
 > = ResolversObject<{
   edges?: Resolver<
-    Maybe<Array<Maybe<ResolversTypes["CommentEdge"]>>>,
+    Array<ResolversTypes["CommentEdge"]>,
     ParentType,
     ContextType
   >;
-  nodes?: Resolver<
-    Maybe<Array<Maybe<ResolversTypes["Comment"]>>>,
-    ParentType,
-    ContextType
-  >;
+  nodes?: Resolver<Array<ResolversTypes["Comment"]>, ParentType, ContextType>;
   pageInfo?: Resolver<ResolversTypes["PageInfo"], ParentType, ContextType>;
-  totalCount?: Resolver<Maybe<ResolversTypes["Int"]>, ParentType, ContextType>;
+  totalCount?: Resolver<ResolversTypes["Int"], ParentType, ContextType>;
   __isTypeOf?: IsTypeOfResolverFn<ParentType, ContextType>;
 }>;
 
@@ -2460,9 +2456,14 @@ export type EntryEdgeResolvers<
   ParentType extends ResolversParentTypes["EntryEdge"] = ResolversParentTypes["EntryEdge"]
 > = ResolversObject<{
   cursor?: Resolver<ResolversTypes["String"], ParentType, ContextType>;
-  node?: Resolver<Maybe<ResolversTypes["Entry"]>, ParentType, ContextType>;
+  node?: Resolver<ResolversTypes["Entry"], ParentType, ContextType>;
   __isTypeOf?: IsTypeOfResolverFn<ParentType, ContextType>;
 }>;
+
+export interface HexadecimalScalarConfig
+  extends GraphQLScalarTypeConfig<ResolversTypes["Hexadecimal"], any> {
+  name: "Hexadecimal";
+}
 
 export interface JsonScalarConfig
   extends GraphQLScalarTypeConfig<ResolversTypes["Json"], any> {
@@ -2501,7 +2502,7 @@ export type MediaItemResolvers<
     ContextType
   >;
   height?: Resolver<ResolversTypes["Float"], ParentType, ContextType>;
-  id?: Resolver<Maybe<ResolversTypes["String"]>, ParentType, ContextType>;
+  id?: Resolver<ResolversTypes["String"], ParentType, ContextType>;
   quality?: Resolver<ResolversTypes["Int"], ParentType, ContextType>;
   size?: Resolver<Maybe<ResolversTypes["String"]>, ParentType, ContextType>;
   src?: Resolver<Maybe<ResolversTypes["String"]>, ParentType, ContextType>;
@@ -2512,11 +2513,7 @@ export type MediaItemResolvers<
     ParentType,
     ContextType
   >;
-  uploadedAt?: Resolver<
-    Maybe<ResolversTypes["DateTime"]>,
-    ParentType,
-    ContextType
-  >;
+  uploadedAt?: Resolver<ResolversTypes["DateTime"], ParentType, ContextType>;
   width?: Resolver<ResolversTypes["Float"], ParentType, ContextType>;
   __isTypeOf?: IsTypeOfResolverFn<ParentType, ContextType>;
 }>;
@@ -2526,7 +2523,7 @@ export type MutationResolvers<
   ParentType extends ResolversParentTypes["Mutation"] = ResolversParentTypes["Mutation"]
 > = ResolversObject<{
   CreateNewUser?: Resolver<
-    Maybe<ResolversTypes["User"]>,
+    ResolversTypes["User"],
     ParentType,
     ContextType,
     RequireFields<
@@ -2535,19 +2532,19 @@ export type MutationResolvers<
     >
   >;
   DeleteUser?: Resolver<
-    Maybe<ResolversTypes["User"]>,
+    ResolversTypes["User"],
     ParentType,
     ContextType,
     RequireFields<MutationDeleteUserArgs, "id">
   >;
   createEntry?: Resolver<
-    Maybe<ResolversTypes["Entry"]>,
+    ResolversTypes["Entry"],
     ParentType,
     ContextType,
     Partial<MutationcreateEntryArgs>
   >;
   createProfile?: Resolver<
-    Maybe<ResolversTypes["Profile"]>,
+    ResolversTypes["Profile"],
     ParentType,
     ContextType,
     RequireFields<MutationcreateProfileArgs, "email">
@@ -2617,41 +2614,33 @@ export type ProfileResolvers<
     ParentType,
     ContextType
   >;
-  dob?: Resolver<Maybe<ResolversTypes["Date"]>, ParentType, ContextType>;
-  gender?: Resolver<Maybe<ResolversTypes["Gender"]>, ParentType, ContextType>;
+  dob?: Resolver<ResolversTypes["Date"], ParentType, ContextType>;
+  gender?: Resolver<ResolversTypes["Gender"], ParentType, ContextType>;
   id?: Resolver<ResolversTypes["String"], ParentType, ContextType>;
   lastSeen?: Resolver<
     Maybe<ResolversTypes["DateTime"]>,
     ParentType,
     ContextType
   >;
-  memberSince?: Resolver<
-    Maybe<ResolversTypes["DateTime"]>,
-    ParentType,
-    ContextType
-  >;
+  memberSince?: Resolver<ResolversTypes["DateTime"], ParentType, ContextType>;
   occupation?: Resolver<
     Maybe<ResolversTypes["String"]>,
     ParentType,
     ContextType
   >;
   phoneNumber?: Resolver<
-    Maybe<ResolversTypes["PhoneNumber"]>,
+    ResolversTypes["PhoneNumber"],
     ParentType,
     ContextType
   >;
-  pronouns?: Resolver<
-    Maybe<ResolversTypes["Pronouns"]>,
-    ParentType,
-    ContextType
-  >;
+  pronouns?: Resolver<ResolversTypes["Pronouns"], ParentType, ContextType>;
   recentActivity?: Resolver<
     Maybe<ResolversTypes["String"]>,
     ParentType,
     ContextType
   >;
   user?: Resolver<Maybe<ResolversTypes["User"]>, ParentType, ContextType>;
-  userId?: Resolver<Maybe<ResolversTypes["String"]>, ParentType, ContextType>;
+  userId?: Resolver<ResolversTypes["String"], ParentType, ContextType>;
   __isTypeOf?: IsTypeOfResolverFn<ParentType, ContextType>;
 }>;
 
@@ -2660,7 +2649,7 @@ export type ProfileEdgeResolvers<
   ParentType extends ResolversParentTypes["ProfileEdge"] = ResolversParentTypes["ProfileEdge"]
 > = ResolversObject<{
   cursor?: Resolver<ResolversTypes["String"], ParentType, ContextType>;
-  node?: Resolver<Maybe<ResolversTypes["Profile"]>, ParentType, ContextType>;
+  node?: Resolver<ResolversTypes["Profile"], ParentType, ContextType>;
   __isTypeOf?: IsTypeOfResolverFn<ParentType, ContextType>;
 }>;
 
@@ -2669,22 +2658,16 @@ export type QueryResolvers<
   ParentType extends ResolversParentTypes["Query"] = ResolversParentTypes["Query"]
 > = ResolversObject<{
   FilterUsers?: Resolver<
-    Maybe<ResolversTypes["QueryFilterUsers_Connection"]>,
+    ResolversTypes["QueryFilterUsers_Connection"],
     ParentType,
     ContextType,
     RequireFields<QueryFilterUsersArgs, "searchString">
   >;
   GetAllEntries?: Resolver<
-    Maybe<ResolversTypes["QueryGetAllEntries_Connection"]>,
+    ResolversTypes["QueryGetAllEntries_Connection"],
     ParentType,
     ContextType,
     RequireFields<QueryGetAllEntriesArgs, "searchString">
-  >;
-  GetEntry?: Resolver<
-    Maybe<ResolversTypes["Entry"]>,
-    ParentType,
-    ContextType,
-    RequireFields<QueryGetEntryArgs, "id">
   >;
   GetSession?: Resolver<
     Maybe<ResolversTypes["Session"]>,
@@ -2693,49 +2676,55 @@ export type QueryResolvers<
     RequireFields<QueryGetSessionArgs, "id">
   >;
   SearchByUserEmail?: Resolver<
-    Maybe<ResolversTypes["QuerySearchByUserEmail_Connection"]>,
+    ResolversTypes["QuerySearchByUserEmail_Connection"],
     ParentType,
     ContextType,
     RequireFields<QuerySearchByUserEmailArgs, "search">
   >;
   SearchEntriesByTitle?: Resolver<
-    Maybe<ResolversTypes["QuerySearchEntriesByTitle_Connection"]>,
+    ResolversTypes["QuerySearchEntriesByTitle_Connection"],
     ParentType,
     ContextType,
     RequireFields<QuerySearchEntriesByTitleArgs, "searchString">
   >;
   accounts?: Resolver<
-    Maybe<ResolversTypes["QueryAccounts_Connection"]>,
+    ResolversTypes["QueryAccounts_Connection"],
     ParentType,
     ContextType,
     RequireFields<QueryaccountsArgs, "userId">
   >;
   allAccounts?: Resolver<
-    Maybe<ResolversTypes["QueryAllAccounts_Connection"]>,
+    ResolversTypes["QueryAllAccounts_Connection"],
     ParentType,
     ContextType,
     RequireFields<QueryallAccountsArgs, "take">
   >;
   allEntries?: Resolver<
-    Maybe<ResolversTypes["QueryAllEntries_Connection"]>,
+    ResolversTypes["QueryAllEntries_Connection"],
     ParentType,
     ContextType,
     RequireFields<QueryallEntriesArgs, "take">
   >;
   entries?: Resolver<
-    Maybe<ResolversTypes["QueryEntries_Connection"]>,
+    ResolversTypes["QueryEntries_Connection"],
     ParentType,
     ContextType,
     Partial<QueryentriesArgs>
   >;
   entryFeed?: Resolver<
-    Maybe<ResolversTypes["QueryEntryFeed_Connection"]>,
+    ResolversTypes["QueryEntryFeed_Connection"],
     ParentType,
     ContextType,
     RequireFields<QueryentryFeedArgs, "searchString" | "skip" | "take">
   >;
+  findEntryById?: Resolver<
+    Maybe<ResolversTypes["Entry"]>,
+    ParentType,
+    ContextType,
+    RequireFields<QueryfindEntryByIdArgs, "id">
+  >;
   getUserByAccount?: Resolver<
-    Maybe<ResolversTypes["QueryGetUserByAccount_Connection"]>,
+    ResolversTypes["QueryGetUserByAccount_Connection"],
     ParentType,
     ContextType,
     RequireFields<
@@ -2744,31 +2733,31 @@ export type QueryResolvers<
     >
   >;
   listProfiles?: Resolver<
-    Maybe<ResolversTypes["QueryListProfiles_Connection"]>,
+    ResolversTypes["QueryListProfiles_Connection"],
     ParentType,
     ContextType,
     RequireFields<QuerylistProfilesArgs, "orderBy">
   >;
   listSessions?: Resolver<
-    Maybe<ResolversTypes["QueryListSessions_Connection"]>,
+    ResolversTypes["QueryListSessions_Connection"],
     ParentType,
     ContextType,
     RequireFields<QuerylistSessionsArgs, "orderBy">
   >;
   node?: Resolver<
-    Maybe<ResolversTypes["Node"]>,
+    ResolversTypes["Node"],
     ParentType,
     ContextType,
     RequireFields<QuerynodeArgs, "id">
   >;
   session?: Resolver<
-    Maybe<ResolversTypes["QuerySession_Connection"]>,
+    ResolversTypes["QuerySession_Connection"],
     ParentType,
     ContextType,
     Partial<QuerysessionArgs>
   >;
   userAccount?: Resolver<
-    Maybe<ResolversTypes["QueryUserAccount_Connection"]>,
+    ResolversTypes["QueryUserAccount_Connection"],
     ParentType,
     ContextType,
     Partial<QueryuserAccountArgs>
@@ -2786,19 +2775,19 @@ export type QueryResolvers<
     RequireFields<QueryuserByIdArgs, "id">
   >;
   userEntries?: Resolver<
-    Maybe<ResolversTypes["QueryUserEntries_Connection"]>,
+    ResolversTypes["QueryUserEntries_Connection"],
     ParentType,
     ContextType,
     Partial<QueryuserEntriesArgs>
   >;
   usersQuery?: Resolver<
-    Maybe<ResolversTypes["QueryUsersQuery_Connection"]>,
+    ResolversTypes["QueryUsersQuery_Connection"],
     ParentType,
     ContextType,
     Partial<QueryusersQueryArgs>
   >;
   verificationTokens?: Resolver<
-    Maybe<ResolversTypes["QueryVerificationTokens_Connection"]>,
+    ResolversTypes["QueryVerificationTokens_Connection"],
     ParentType,
     ContextType,
     Partial<QueryverificationTokensArgs>
@@ -2810,17 +2799,13 @@ export type QueryAccounts_ConnectionResolvers<
   ParentType extends ResolversParentTypes["QueryAccounts_Connection"] = ResolversParentTypes["QueryAccounts_Connection"]
 > = ResolversObject<{
   edges?: Resolver<
-    Maybe<Array<Maybe<ResolversTypes["AccountEdge"]>>>,
+    Array<ResolversTypes["AccountEdge"]>,
     ParentType,
     ContextType
   >;
-  nodes?: Resolver<
-    Maybe<Array<Maybe<ResolversTypes["Account"]>>>,
-    ParentType,
-    ContextType
-  >;
+  nodes?: Resolver<Array<ResolversTypes["Account"]>, ParentType, ContextType>;
   pageInfo?: Resolver<ResolversTypes["PageInfo"], ParentType, ContextType>;
-  totalCount?: Resolver<Maybe<ResolversTypes["Int"]>, ParentType, ContextType>;
+  totalCount?: Resolver<ResolversTypes["Int"], ParentType, ContextType>;
   __isTypeOf?: IsTypeOfResolverFn<ParentType, ContextType>;
 }>;
 
@@ -2829,17 +2814,13 @@ export type QueryAllAccounts_ConnectionResolvers<
   ParentType extends ResolversParentTypes["QueryAllAccounts_Connection"] = ResolversParentTypes["QueryAllAccounts_Connection"]
 > = ResolversObject<{
   edges?: Resolver<
-    Maybe<Array<Maybe<ResolversTypes["AccountEdge"]>>>,
+    Array<ResolversTypes["AccountEdge"]>,
     ParentType,
     ContextType
   >;
-  nodes?: Resolver<
-    Maybe<Array<Maybe<ResolversTypes["Account"]>>>,
-    ParentType,
-    ContextType
-  >;
+  nodes?: Resolver<Array<ResolversTypes["Account"]>, ParentType, ContextType>;
   pageInfo?: Resolver<ResolversTypes["PageInfo"], ParentType, ContextType>;
-  totalCount?: Resolver<Maybe<ResolversTypes["Int"]>, ParentType, ContextType>;
+  totalCount?: Resolver<ResolversTypes["Int"], ParentType, ContextType>;
   __isTypeOf?: IsTypeOfResolverFn<ParentType, ContextType>;
 }>;
 
@@ -2847,18 +2828,10 @@ export type QueryAllEntries_ConnectionResolvers<
   ContextType = any,
   ParentType extends ResolversParentTypes["QueryAllEntries_Connection"] = ResolversParentTypes["QueryAllEntries_Connection"]
 > = ResolversObject<{
-  edges?: Resolver<
-    Maybe<Array<Maybe<ResolversTypes["EntryEdge"]>>>,
-    ParentType,
-    ContextType
-  >;
-  nodes?: Resolver<
-    Maybe<Array<Maybe<ResolversTypes["Entry"]>>>,
-    ParentType,
-    ContextType
-  >;
+  edges?: Resolver<Array<ResolversTypes["EntryEdge"]>, ParentType, ContextType>;
+  nodes?: Resolver<Array<ResolversTypes["Entry"]>, ParentType, ContextType>;
   pageInfo?: Resolver<ResolversTypes["PageInfo"], ParentType, ContextType>;
-  totalCount?: Resolver<Maybe<ResolversTypes["Int"]>, ParentType, ContextType>;
+  totalCount?: Resolver<ResolversTypes["Int"], ParentType, ContextType>;
   __isTypeOf?: IsTypeOfResolverFn<ParentType, ContextType>;
 }>;
 
@@ -2866,18 +2839,10 @@ export type QueryEntries_ConnectionResolvers<
   ContextType = any,
   ParentType extends ResolversParentTypes["QueryEntries_Connection"] = ResolversParentTypes["QueryEntries_Connection"]
 > = ResolversObject<{
-  edges?: Resolver<
-    Maybe<Array<Maybe<ResolversTypes["EntryEdge"]>>>,
-    ParentType,
-    ContextType
-  >;
-  nodes?: Resolver<
-    Maybe<Array<Maybe<ResolversTypes["Entry"]>>>,
-    ParentType,
-    ContextType
-  >;
+  edges?: Resolver<Array<ResolversTypes["EntryEdge"]>, ParentType, ContextType>;
+  nodes?: Resolver<Array<ResolversTypes["Entry"]>, ParentType, ContextType>;
   pageInfo?: Resolver<ResolversTypes["PageInfo"], ParentType, ContextType>;
-  totalCount?: Resolver<Maybe<ResolversTypes["Int"]>, ParentType, ContextType>;
+  totalCount?: Resolver<ResolversTypes["Int"], ParentType, ContextType>;
   __isTypeOf?: IsTypeOfResolverFn<ParentType, ContextType>;
 }>;
 
@@ -2885,18 +2850,10 @@ export type QueryEntryFeed_ConnectionResolvers<
   ContextType = any,
   ParentType extends ResolversParentTypes["QueryEntryFeed_Connection"] = ResolversParentTypes["QueryEntryFeed_Connection"]
 > = ResolversObject<{
-  edges?: Resolver<
-    Maybe<Array<Maybe<ResolversTypes["EntryEdge"]>>>,
-    ParentType,
-    ContextType
-  >;
-  nodes?: Resolver<
-    Maybe<Array<Maybe<ResolversTypes["Entry"]>>>,
-    ParentType,
-    ContextType
-  >;
+  edges?: Resolver<Array<ResolversTypes["EntryEdge"]>, ParentType, ContextType>;
+  nodes?: Resolver<Array<ResolversTypes["Entry"]>, ParentType, ContextType>;
   pageInfo?: Resolver<ResolversTypes["PageInfo"], ParentType, ContextType>;
-  totalCount?: Resolver<Maybe<ResolversTypes["Int"]>, ParentType, ContextType>;
+  totalCount?: Resolver<ResolversTypes["Int"], ParentType, ContextType>;
   __isTypeOf?: IsTypeOfResolverFn<ParentType, ContextType>;
 }>;
 
@@ -2904,18 +2861,10 @@ export type QueryFilterUsers_ConnectionResolvers<
   ContextType = any,
   ParentType extends ResolversParentTypes["QueryFilterUsers_Connection"] = ResolversParentTypes["QueryFilterUsers_Connection"]
 > = ResolversObject<{
-  edges?: Resolver<
-    Maybe<Array<Maybe<ResolversTypes["UserEdge"]>>>,
-    ParentType,
-    ContextType
-  >;
-  nodes?: Resolver<
-    Maybe<Array<Maybe<ResolversTypes["User"]>>>,
-    ParentType,
-    ContextType
-  >;
+  edges?: Resolver<Array<ResolversTypes["UserEdge"]>, ParentType, ContextType>;
+  nodes?: Resolver<Array<ResolversTypes["User"]>, ParentType, ContextType>;
   pageInfo?: Resolver<ResolversTypes["PageInfo"], ParentType, ContextType>;
-  totalCount?: Resolver<Maybe<ResolversTypes["Int"]>, ParentType, ContextType>;
+  totalCount?: Resolver<ResolversTypes["Int"], ParentType, ContextType>;
   __isTypeOf?: IsTypeOfResolverFn<ParentType, ContextType>;
 }>;
 
@@ -2923,18 +2872,10 @@ export type QueryGetAllEntries_ConnectionResolvers<
   ContextType = any,
   ParentType extends ResolversParentTypes["QueryGetAllEntries_Connection"] = ResolversParentTypes["QueryGetAllEntries_Connection"]
 > = ResolversObject<{
-  edges?: Resolver<
-    Maybe<Array<Maybe<ResolversTypes["EntryEdge"]>>>,
-    ParentType,
-    ContextType
-  >;
-  nodes?: Resolver<
-    Maybe<Array<Maybe<ResolversTypes["Entry"]>>>,
-    ParentType,
-    ContextType
-  >;
+  edges?: Resolver<Array<ResolversTypes["EntryEdge"]>, ParentType, ContextType>;
+  nodes?: Resolver<Array<ResolversTypes["Entry"]>, ParentType, ContextType>;
   pageInfo?: Resolver<ResolversTypes["PageInfo"], ParentType, ContextType>;
-  totalCount?: Resolver<Maybe<ResolversTypes["Int"]>, ParentType, ContextType>;
+  totalCount?: Resolver<ResolversTypes["Int"], ParentType, ContextType>;
   __isTypeOf?: IsTypeOfResolverFn<ParentType, ContextType>;
 }>;
 
@@ -2943,17 +2884,13 @@ export type QueryGetUserByAccount_ConnectionResolvers<
   ParentType extends ResolversParentTypes["QueryGetUserByAccount_Connection"] = ResolversParentTypes["QueryGetUserByAccount_Connection"]
 > = ResolversObject<{
   edges?: Resolver<
-    Maybe<Array<Maybe<ResolversTypes["AccountEdge"]>>>,
+    Array<ResolversTypes["AccountEdge"]>,
     ParentType,
     ContextType
   >;
-  nodes?: Resolver<
-    Maybe<Array<Maybe<ResolversTypes["Account"]>>>,
-    ParentType,
-    ContextType
-  >;
+  nodes?: Resolver<Array<ResolversTypes["Account"]>, ParentType, ContextType>;
   pageInfo?: Resolver<ResolversTypes["PageInfo"], ParentType, ContextType>;
-  totalCount?: Resolver<Maybe<ResolversTypes["Int"]>, ParentType, ContextType>;
+  totalCount?: Resolver<ResolversTypes["Int"], ParentType, ContextType>;
   __isTypeOf?: IsTypeOfResolverFn<ParentType, ContextType>;
 }>;
 
@@ -2962,17 +2899,13 @@ export type QueryListProfiles_ConnectionResolvers<
   ParentType extends ResolversParentTypes["QueryListProfiles_Connection"] = ResolversParentTypes["QueryListProfiles_Connection"]
 > = ResolversObject<{
   edges?: Resolver<
-    Maybe<Array<Maybe<ResolversTypes["ProfileEdge"]>>>,
+    Array<ResolversTypes["ProfileEdge"]>,
     ParentType,
     ContextType
   >;
-  nodes?: Resolver<
-    Maybe<Array<Maybe<ResolversTypes["Profile"]>>>,
-    ParentType,
-    ContextType
-  >;
+  nodes?: Resolver<Array<ResolversTypes["Profile"]>, ParentType, ContextType>;
   pageInfo?: Resolver<ResolversTypes["PageInfo"], ParentType, ContextType>;
-  totalCount?: Resolver<Maybe<ResolversTypes["Int"]>, ParentType, ContextType>;
+  totalCount?: Resolver<ResolversTypes["Int"], ParentType, ContextType>;
   __isTypeOf?: IsTypeOfResolverFn<ParentType, ContextType>;
 }>;
 
@@ -2981,17 +2914,13 @@ export type QueryListSessions_ConnectionResolvers<
   ParentType extends ResolversParentTypes["QueryListSessions_Connection"] = ResolversParentTypes["QueryListSessions_Connection"]
 > = ResolversObject<{
   edges?: Resolver<
-    Maybe<Array<Maybe<ResolversTypes["SessionEdge"]>>>,
+    Array<ResolversTypes["SessionEdge"]>,
     ParentType,
     ContextType
   >;
-  nodes?: Resolver<
-    Maybe<Array<Maybe<ResolversTypes["Session"]>>>,
-    ParentType,
-    ContextType
-  >;
+  nodes?: Resolver<Array<ResolversTypes["Session"]>, ParentType, ContextType>;
   pageInfo?: Resolver<ResolversTypes["PageInfo"], ParentType, ContextType>;
-  totalCount?: Resolver<Maybe<ResolversTypes["Int"]>, ParentType, ContextType>;
+  totalCount?: Resolver<ResolversTypes["Int"], ParentType, ContextType>;
   __isTypeOf?: IsTypeOfResolverFn<ParentType, ContextType>;
 }>;
 
@@ -2999,18 +2928,10 @@ export type QuerySearchByUserEmail_ConnectionResolvers<
   ContextType = any,
   ParentType extends ResolversParentTypes["QuerySearchByUserEmail_Connection"] = ResolversParentTypes["QuerySearchByUserEmail_Connection"]
 > = ResolversObject<{
-  edges?: Resolver<
-    Maybe<Array<Maybe<ResolversTypes["UserEdge"]>>>,
-    ParentType,
-    ContextType
-  >;
-  nodes?: Resolver<
-    Maybe<Array<Maybe<ResolversTypes["User"]>>>,
-    ParentType,
-    ContextType
-  >;
+  edges?: Resolver<Array<ResolversTypes["UserEdge"]>, ParentType, ContextType>;
+  nodes?: Resolver<Array<ResolversTypes["User"]>, ParentType, ContextType>;
   pageInfo?: Resolver<ResolversTypes["PageInfo"], ParentType, ContextType>;
-  totalCount?: Resolver<Maybe<ResolversTypes["Int"]>, ParentType, ContextType>;
+  totalCount?: Resolver<ResolversTypes["Int"], ParentType, ContextType>;
   __isTypeOf?: IsTypeOfResolverFn<ParentType, ContextType>;
 }>;
 
@@ -3018,18 +2939,10 @@ export type QuerySearchEntriesByTitle_ConnectionResolvers<
   ContextType = any,
   ParentType extends ResolversParentTypes["QuerySearchEntriesByTitle_Connection"] = ResolversParentTypes["QuerySearchEntriesByTitle_Connection"]
 > = ResolversObject<{
-  edges?: Resolver<
-    Maybe<Array<Maybe<ResolversTypes["EntryEdge"]>>>,
-    ParentType,
-    ContextType
-  >;
-  nodes?: Resolver<
-    Maybe<Array<Maybe<ResolversTypes["Entry"]>>>,
-    ParentType,
-    ContextType
-  >;
+  edges?: Resolver<Array<ResolversTypes["EntryEdge"]>, ParentType, ContextType>;
+  nodes?: Resolver<Array<ResolversTypes["Entry"]>, ParentType, ContextType>;
   pageInfo?: Resolver<ResolversTypes["PageInfo"], ParentType, ContextType>;
-  totalCount?: Resolver<Maybe<ResolversTypes["Int"]>, ParentType, ContextType>;
+  totalCount?: Resolver<ResolversTypes["Int"], ParentType, ContextType>;
   __isTypeOf?: IsTypeOfResolverFn<ParentType, ContextType>;
 }>;
 
@@ -3038,17 +2951,13 @@ export type QuerySession_ConnectionResolvers<
   ParentType extends ResolversParentTypes["QuerySession_Connection"] = ResolversParentTypes["QuerySession_Connection"]
 > = ResolversObject<{
   edges?: Resolver<
-    Maybe<Array<Maybe<ResolversTypes["SessionEdge"]>>>,
+    Array<ResolversTypes["SessionEdge"]>,
     ParentType,
     ContextType
   >;
-  nodes?: Resolver<
-    Maybe<Array<Maybe<ResolversTypes["Session"]>>>,
-    ParentType,
-    ContextType
-  >;
+  nodes?: Resolver<Array<ResolversTypes["Session"]>, ParentType, ContextType>;
   pageInfo?: Resolver<ResolversTypes["PageInfo"], ParentType, ContextType>;
-  totalCount?: Resolver<Maybe<ResolversTypes["Int"]>, ParentType, ContextType>;
+  totalCount?: Resolver<ResolversTypes["Int"], ParentType, ContextType>;
   __isTypeOf?: IsTypeOfResolverFn<ParentType, ContextType>;
 }>;
 
@@ -3057,17 +2966,13 @@ export type QueryUserAccount_ConnectionResolvers<
   ParentType extends ResolversParentTypes["QueryUserAccount_Connection"] = ResolversParentTypes["QueryUserAccount_Connection"]
 > = ResolversObject<{
   edges?: Resolver<
-    Maybe<Array<Maybe<ResolversTypes["AccountEdge"]>>>,
+    Array<ResolversTypes["AccountEdge"]>,
     ParentType,
     ContextType
   >;
-  nodes?: Resolver<
-    Maybe<Array<Maybe<ResolversTypes["Account"]>>>,
-    ParentType,
-    ContextType
-  >;
+  nodes?: Resolver<Array<ResolversTypes["Account"]>, ParentType, ContextType>;
   pageInfo?: Resolver<ResolversTypes["PageInfo"], ParentType, ContextType>;
-  totalCount?: Resolver<Maybe<ResolversTypes["Int"]>, ParentType, ContextType>;
+  totalCount?: Resolver<ResolversTypes["Int"], ParentType, ContextType>;
   __isTypeOf?: IsTypeOfResolverFn<ParentType, ContextType>;
 }>;
 
@@ -3075,18 +2980,10 @@ export type QueryUserEntries_ConnectionResolvers<
   ContextType = any,
   ParentType extends ResolversParentTypes["QueryUserEntries_Connection"] = ResolversParentTypes["QueryUserEntries_Connection"]
 > = ResolversObject<{
-  edges?: Resolver<
-    Maybe<Array<Maybe<ResolversTypes["EntryEdge"]>>>,
-    ParentType,
-    ContextType
-  >;
-  nodes?: Resolver<
-    Maybe<Array<Maybe<ResolversTypes["Entry"]>>>,
-    ParentType,
-    ContextType
-  >;
+  edges?: Resolver<Array<ResolversTypes["EntryEdge"]>, ParentType, ContextType>;
+  nodes?: Resolver<Array<ResolversTypes["Entry"]>, ParentType, ContextType>;
   pageInfo?: Resolver<ResolversTypes["PageInfo"], ParentType, ContextType>;
-  totalCount?: Resolver<Maybe<ResolversTypes["Int"]>, ParentType, ContextType>;
+  totalCount?: Resolver<ResolversTypes["Int"], ParentType, ContextType>;
   __isTypeOf?: IsTypeOfResolverFn<ParentType, ContextType>;
 }>;
 
@@ -3094,18 +2991,10 @@ export type QueryUsersQuery_ConnectionResolvers<
   ContextType = any,
   ParentType extends ResolversParentTypes["QueryUsersQuery_Connection"] = ResolversParentTypes["QueryUsersQuery_Connection"]
 > = ResolversObject<{
-  edges?: Resolver<
-    Maybe<Array<Maybe<ResolversTypes["UserEdge"]>>>,
-    ParentType,
-    ContextType
-  >;
-  nodes?: Resolver<
-    Maybe<Array<Maybe<ResolversTypes["User"]>>>,
-    ParentType,
-    ContextType
-  >;
+  edges?: Resolver<Array<ResolversTypes["UserEdge"]>, ParentType, ContextType>;
+  nodes?: Resolver<Array<ResolversTypes["User"]>, ParentType, ContextType>;
   pageInfo?: Resolver<ResolversTypes["PageInfo"], ParentType, ContextType>;
-  totalCount?: Resolver<Maybe<ResolversTypes["Int"]>, ParentType, ContextType>;
+  totalCount?: Resolver<ResolversTypes["Int"], ParentType, ContextType>;
   __isTypeOf?: IsTypeOfResolverFn<ParentType, ContextType>;
 }>;
 
@@ -3114,17 +3003,17 @@ export type QueryVerificationTokens_ConnectionResolvers<
   ParentType extends ResolversParentTypes["QueryVerificationTokens_Connection"] = ResolversParentTypes["QueryVerificationTokens_Connection"]
 > = ResolversObject<{
   edges?: Resolver<
-    Maybe<Array<Maybe<ResolversTypes["VerificationTokenEdge"]>>>,
+    Array<ResolversTypes["VerificationTokenEdge"]>,
     ParentType,
     ContextType
   >;
   nodes?: Resolver<
-    Maybe<Array<Maybe<ResolversTypes["VerificationToken"]>>>,
+    Array<ResolversTypes["VerificationToken"]>,
     ParentType,
     ContextType
   >;
   pageInfo?: Resolver<ResolversTypes["PageInfo"], ParentType, ContextType>;
-  totalCount?: Resolver<Maybe<ResolversTypes["Int"]>, ParentType, ContextType>;
+  totalCount?: Resolver<ResolversTypes["Int"], ParentType, ContextType>;
   __isTypeOf?: IsTypeOfResolverFn<ParentType, ContextType>;
 }>;
 
@@ -3132,19 +3021,11 @@ export type SessionResolvers<
   ContextType = any,
   ParentType extends ResolversParentTypes["Session"] = ResolversParentTypes["Session"]
 > = ResolversObject<{
-  expires?: Resolver<
-    Maybe<ResolversTypes["DateTime"]>,
-    ParentType,
-    ContextType
-  >;
+  expires?: Resolver<ResolversTypes["DateTime"], ParentType, ContextType>;
   id?: Resolver<ResolversTypes["String"], ParentType, ContextType>;
-  sessionToken?: Resolver<
-    Maybe<ResolversTypes["String"]>,
-    ParentType,
-    ContextType
-  >;
+  sessionToken?: Resolver<ResolversTypes["String"], ParentType, ContextType>;
   user?: Resolver<Maybe<ResolversTypes["User"]>, ParentType, ContextType>;
-  userId?: Resolver<Maybe<ResolversTypes["String"]>, ParentType, ContextType>;
+  userId?: Resolver<ResolversTypes["String"], ParentType, ContextType>;
   __isTypeOf?: IsTypeOfResolverFn<ParentType, ContextType>;
 }>;
 
@@ -3153,7 +3034,7 @@ export type SessionEdgeResolvers<
   ParentType extends ResolversParentTypes["SessionEdge"] = ResolversParentTypes["SessionEdge"]
 > = ResolversObject<{
   cursor?: Resolver<ResolversTypes["String"], ParentType, ContextType>;
-  node?: Resolver<Maybe<ResolversTypes["Session"]>, ParentType, ContextType>;
+  node?: Resolver<ResolversTypes["Session"], ParentType, ContextType>;
   __isTypeOf?: IsTypeOfResolverFn<ParentType, ContextType>;
 }>;
 
@@ -3178,13 +3059,13 @@ export type UserResolvers<
 > = ResolversObject<{
   _count?: Resolver<ResolversTypes["UserCount"], ParentType, ContextType>;
   accounts?: Resolver<
-    Maybe<ResolversTypes["UserAccounts_Connection"]>,
+    ResolversTypes["UserAccounts_Connection"],
     ParentType,
     ContextType,
     Partial<UseraccountsArgs>
   >;
   comments?: Resolver<
-    Maybe<ResolversTypes["UserComments_Connection"]>,
+    ResolversTypes["UserComments_Connection"],
     ParentType,
     ContextType,
     Partial<UsercommentsArgs>
@@ -3196,7 +3077,7 @@ export type UserResolvers<
     ContextType
   >;
   entries?: Resolver<
-    Maybe<ResolversTypes["UserEntries_Connection"]>,
+    ResolversTypes["UserEntries_Connection"],
     ParentType,
     ContextType,
     Partial<UserentriesArgs>
@@ -3210,9 +3091,9 @@ export type UserResolvers<
   >;
   name?: Resolver<Maybe<ResolversTypes["String"]>, ParentType, ContextType>;
   profile?: Resolver<Maybe<ResolversTypes["Profile"]>, ParentType, ContextType>;
-  role?: Resolver<Maybe<ResolversTypes["Role"]>, ParentType, ContextType>;
+  role?: Resolver<ResolversTypes["Role"], ParentType, ContextType>;
   sessions?: Resolver<
-    Maybe<ResolversTypes["UserSessions_Connection"]>,
+    ResolversTypes["UserSessions_Connection"],
     ParentType,
     ContextType,
     Partial<UsersessionsArgs>
@@ -3230,17 +3111,13 @@ export type UserAccounts_ConnectionResolvers<
   ParentType extends ResolversParentTypes["UserAccounts_Connection"] = ResolversParentTypes["UserAccounts_Connection"]
 > = ResolversObject<{
   edges?: Resolver<
-    Maybe<Array<Maybe<ResolversTypes["AccountEdge"]>>>,
+    Array<ResolversTypes["AccountEdge"]>,
     ParentType,
     ContextType
   >;
-  nodes?: Resolver<
-    Maybe<Array<Maybe<ResolversTypes["Account"]>>>,
-    ParentType,
-    ContextType
-  >;
+  nodes?: Resolver<Array<ResolversTypes["Account"]>, ParentType, ContextType>;
   pageInfo?: Resolver<ResolversTypes["PageInfo"], ParentType, ContextType>;
-  totalCount?: Resolver<Maybe<ResolversTypes["Int"]>, ParentType, ContextType>;
+  totalCount?: Resolver<ResolversTypes["Int"], ParentType, ContextType>;
   __isTypeOf?: IsTypeOfResolverFn<ParentType, ContextType>;
 }>;
 
@@ -3249,17 +3126,13 @@ export type UserComments_ConnectionResolvers<
   ParentType extends ResolversParentTypes["UserComments_Connection"] = ResolversParentTypes["UserComments_Connection"]
 > = ResolversObject<{
   edges?: Resolver<
-    Maybe<Array<Maybe<ResolversTypes["CommentEdge"]>>>,
+    Array<ResolversTypes["CommentEdge"]>,
     ParentType,
     ContextType
   >;
-  nodes?: Resolver<
-    Maybe<Array<Maybe<ResolversTypes["Comment"]>>>,
-    ParentType,
-    ContextType
-  >;
+  nodes?: Resolver<Array<ResolversTypes["Comment"]>, ParentType, ContextType>;
   pageInfo?: Resolver<ResolversTypes["PageInfo"], ParentType, ContextType>;
-  totalCount?: Resolver<Maybe<ResolversTypes["Int"]>, ParentType, ContextType>;
+  totalCount?: Resolver<ResolversTypes["Int"], ParentType, ContextType>;
   __isTypeOf?: IsTypeOfResolverFn<ParentType, ContextType>;
 }>;
 
@@ -3279,7 +3152,7 @@ export type UserEdgeResolvers<
   ParentType extends ResolversParentTypes["UserEdge"] = ResolversParentTypes["UserEdge"]
 > = ResolversObject<{
   cursor?: Resolver<ResolversTypes["String"], ParentType, ContextType>;
-  node?: Resolver<Maybe<ResolversTypes["User"]>, ParentType, ContextType>;
+  node?: Resolver<ResolversTypes["User"], ParentType, ContextType>;
   __isTypeOf?: IsTypeOfResolverFn<ParentType, ContextType>;
 }>;
 
@@ -3287,18 +3160,10 @@ export type UserEntries_ConnectionResolvers<
   ContextType = any,
   ParentType extends ResolversParentTypes["UserEntries_Connection"] = ResolversParentTypes["UserEntries_Connection"]
 > = ResolversObject<{
-  edges?: Resolver<
-    Maybe<Array<Maybe<ResolversTypes["EntryEdge"]>>>,
-    ParentType,
-    ContextType
-  >;
-  nodes?: Resolver<
-    Maybe<Array<Maybe<ResolversTypes["Entry"]>>>,
-    ParentType,
-    ContextType
-  >;
+  edges?: Resolver<Array<ResolversTypes["EntryEdge"]>, ParentType, ContextType>;
+  nodes?: Resolver<Array<ResolversTypes["Entry"]>, ParentType, ContextType>;
   pageInfo?: Resolver<ResolversTypes["PageInfo"], ParentType, ContextType>;
-  totalCount?: Resolver<Maybe<ResolversTypes["Int"]>, ParentType, ContextType>;
+  totalCount?: Resolver<ResolversTypes["Int"], ParentType, ContextType>;
   __isTypeOf?: IsTypeOfResolverFn<ParentType, ContextType>;
 }>;
 
@@ -3307,17 +3172,13 @@ export type UserSessions_ConnectionResolvers<
   ParentType extends ResolversParentTypes["UserSessions_Connection"] = ResolversParentTypes["UserSessions_Connection"]
 > = ResolversObject<{
   edges?: Resolver<
-    Maybe<Array<Maybe<ResolversTypes["SessionEdge"]>>>,
+    Array<ResolversTypes["SessionEdge"]>,
     ParentType,
     ContextType
   >;
-  nodes?: Resolver<
-    Maybe<Array<Maybe<ResolversTypes["Session"]>>>,
-    ParentType,
-    ContextType
-  >;
+  nodes?: Resolver<Array<ResolversTypes["Session"]>, ParentType, ContextType>;
   pageInfo?: Resolver<ResolversTypes["PageInfo"], ParentType, ContextType>;
-  totalCount?: Resolver<Maybe<ResolversTypes["Int"]>, ParentType, ContextType>;
+  totalCount?: Resolver<ResolversTypes["Int"], ParentType, ContextType>;
   __isTypeOf?: IsTypeOfResolverFn<ParentType, ContextType>;
 }>;
 
@@ -3325,18 +3186,10 @@ export type VerificationTokenResolvers<
   ContextType = any,
   ParentType extends ResolversParentTypes["VerificationToken"] = ResolversParentTypes["VerificationToken"]
 > = ResolversObject<{
-  expires?: Resolver<
-    Maybe<ResolversTypes["DateTime"]>,
-    ParentType,
-    ContextType
-  >;
+  expires?: Resolver<ResolversTypes["DateTime"], ParentType, ContextType>;
   id?: Resolver<ResolversTypes["String"], ParentType, ContextType>;
-  identifier?: Resolver<
-    Maybe<ResolversTypes["String"]>,
-    ParentType,
-    ContextType
-  >;
-  token?: Resolver<Maybe<ResolversTypes["String"]>, ParentType, ContextType>;
+  identifier?: Resolver<ResolversTypes["String"], ParentType, ContextType>;
+  token?: Resolver<ResolversTypes["String"], ParentType, ContextType>;
   __isTypeOf?: IsTypeOfResolverFn<ParentType, ContextType>;
 }>;
 
@@ -3345,11 +3198,7 @@ export type VerificationTokenEdgeResolvers<
   ParentType extends ResolversParentTypes["VerificationTokenEdge"] = ResolversParentTypes["VerificationTokenEdge"]
 > = ResolversObject<{
   cursor?: Resolver<ResolversTypes["String"], ParentType, ContextType>;
-  node?: Resolver<
-    Maybe<ResolversTypes["VerificationToken"]>,
-    ParentType,
-    ContextType
-  >;
+  node?: Resolver<ResolversTypes["VerificationToken"], ParentType, ContextType>;
   __isTypeOf?: IsTypeOfResolverFn<ParentType, ContextType>;
 }>;
 
@@ -3362,10 +3211,12 @@ export type Resolvers<ContextType = any> = ResolversObject<{
   CommentEdge?: CommentEdgeResolvers<ContextType>;
   Date?: GraphQLScalarType;
   DateTime?: GraphQLScalarType;
+  Decimal?: GraphQLScalarType;
   Entry?: EntryResolvers<ContextType>;
   EntryComments_Connection?: EntryComments_ConnectionResolvers<ContextType>;
   EntryCount?: EntryCountResolvers<ContextType>;
   EntryEdge?: EntryEdgeResolvers<ContextType>;
+  Hexadecimal?: GraphQLScalarType;
   Json?: GraphQLScalarType;
   MediaItem?: MediaItemResolvers<ContextType>;
   Mutation?: MutationResolvers<ContextType>;
@@ -3411,10 +3262,10 @@ export type Resolvers<ContextType = any> = ResolversObject<{
 export type AccountPartialFragment = {
   __typename: "Account";
   id: string;
-  userId?: string | null;
-  type?: string | null;
-  provider?: string | null;
-  providerAccountId?: string | null;
+  userId: string;
+  type: string;
+  provider: string;
+  providerAccountId: string;
   refresh_token?: string | null;
   access_token?: string | null;
   expires_at?: number | null;
@@ -3433,11 +3284,11 @@ export type AccountEdgePartialFragment = {
 
 export type BioPartialFragment = {
   __typename: "Bio";
-  headline?: string | null;
+  headline: string;
   intro?: string | null;
   body?: string | null;
   status?: string | null;
-  createdAt?: Date | null;
+  createdAt: Date;
   updatedAt?: Date | null;
 };
 
@@ -3449,12 +3300,12 @@ export type EntryCountPartialFragment = {
 export type EntryPartialFragment = {
   __typename: "Entry";
   id: string;
-  title?: string | null;
+  title: string;
   content?: string | null;
-  published?: boolean | null;
-  reactions?: Array<Reaction | null> | null;
-  authorId?: string | null;
-  createdAt?: Date | null;
+  published: boolean;
+  reactions: Array<Reaction>;
+  authorId: string;
+  createdAt: Date;
   updatedAt?: Date | null;
 };
 
@@ -3466,9 +3317,9 @@ export type EntryEdgePartialFragment = {
 export type MediaItemPartialFragment = {
   __typename: "MediaItem";
   ariaLabel?: string | null;
-  id?: string | null;
+  id: string;
   description?: string | null;
-  uploadedAt?: Date | null;
+  uploadedAt: Date;
   updatedAt?: Date | null;
   filename?: string | null;
   size?: string | null;
@@ -3495,12 +3346,12 @@ export type PageInfoPartialFragment = {
 export type ProfilePartialFragment = {
   __typename: "Profile";
   id: string;
-  userId?: string | null;
-  memberSince?: Date | null;
-  dob?: typeof GraphQLDate | null;
-  phoneNumber?: typeof String | null;
-  gender?: Gender | null;
-  pronouns?: Pronouns | null;
+  userId: string;
+  memberSince: Date;
+  dob: typeof GraphQLDate;
+  phoneNumber: typeof GraphQLPhoneNumber;
+  gender: Gender;
+  pronouns: Pronouns;
   lastSeen?: Date | null;
   occupation?: string | null;
   city?: string | null;
@@ -3512,9 +3363,9 @@ export type ProfilePartialFragment = {
 export type SessionPartialFragment = {
   __typename: "Session";
   id: string;
-  userId?: string | null;
-  expires?: Date | null;
-  sessionToken?: string | null;
+  userId: string;
+  expires: Date;
+  sessionToken: string;
 };
 
 export type SessionEdgePartialFragment = {
@@ -3542,7 +3393,7 @@ export type UserPartialFragment = {
   email?: string | null;
   image?: string | null;
   emailVerified?: Date | null;
-  role?: Role | null;
+  role: Role;
   status?: UserStatus | null;
 };
 

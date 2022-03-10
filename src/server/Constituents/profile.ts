@@ -44,18 +44,28 @@ export const Profile: core.NexusObjectTypeDef<"Profile"> =
       });
       t.field("memberSince", { type: "DateTime" });
       t.nullable.field("coverPhoto", { type: MediaItem });
-      t.field("dob", { type: "Date" });
-      t.field("phoneNumber", { type: "PhoneNumber" });
+      t.field("dob", {
+        type: "Date",
+        resolve(source) {
+          return source.dob!;
+        }
+      });
+      t.field("phoneNumber", {
+        type: "PhoneNumber",
+        resolve(source) {
+          return source.phoneNumber!;
+        }
+      });
       t.field("gender", {
         type: "Gender",
         resolve(root) {
-          return root.gender;
+          return root.gender!;
         }
       });
       t.field("pronouns", {
         type: Pronouns,
         resolve(root) {
-          return root.pronouns;
+          return root.pronouns!;
         }
       });
       t.nullable.field("lastSeen", {
@@ -87,6 +97,8 @@ export const Profile: core.NexusObjectTypeDef<"Profile"> =
       });
       t.field("user", {
         type: "User",
+        nullable: true,
+
         async resolve(root, _args, ctx, _info) {
           const profileToUser = await ctx.prisma.profile
             .findFirst({
@@ -99,7 +111,7 @@ export const Profile: core.NexusObjectTypeDef<"Profile"> =
             .user();
           return profileToUser;
         }
-      }) as core.FieldResolver<"Profile", "user"> | undefined;
+      });
     }
   });
 
@@ -195,9 +207,7 @@ export const ProfileMutation: core.NexusExtendTypeDef<"Mutation"> = extendType({
         });
         return create;
       }
-    } as core.NexusOutputFieldConfig<"Mutation", "createProfile">) as
-      | core.FieldResolver<"Mutation", "createProfile">
-      | undefined;
+    });
   }
 });
 

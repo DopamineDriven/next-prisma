@@ -28,6 +28,7 @@ export const Account: core.NexusObjectTypeDef<"Account"> = objectType({
     t.nullable.string("oauth_token");
     t.field("user", {
       type: "User",
+      nullable: true,
       async resolve(parent, args, ctx, info) {
         const user = await ctx.prisma.account
           .findFirst({
