@@ -293,7 +293,6 @@ export type ProfileEdgeFieldPolicy = {
 export type QueryKeySpecifier = (
   | "FilterUsers"
   | "GetAllEntries"
-  | "GetEntry"
   | "GetSession"
   | "SearchByUserEmail"
   | "SearchEntriesByTitle"
@@ -302,6 +301,7 @@ export type QueryKeySpecifier = (
   | "allEntries"
   | "entries"
   | "entryFeed"
+  | "findEntryById"
   | "getUserByAccount"
   | "listProfiles"
   | "listSessions"
@@ -318,7 +318,6 @@ export type QueryKeySpecifier = (
 export type QueryFieldPolicy = {
   FilterUsers?: FieldPolicy<any> | FieldReadFunction<any>;
   GetAllEntries?: FieldPolicy<any> | FieldReadFunction<any>;
-  GetEntry?: FieldPolicy<any> | FieldReadFunction<any>;
   GetSession?: FieldPolicy<any> | FieldReadFunction<any>;
   SearchByUserEmail?: FieldPolicy<any> | FieldReadFunction<any>;
   SearchEntriesByTitle?: FieldPolicy<any> | FieldReadFunction<any>;
@@ -327,6 +326,7 @@ export type QueryFieldPolicy = {
   allEntries?: FieldPolicy<any> | FieldReadFunction<any>;
   entries?: FieldPolicy<any> | FieldReadFunction<any>;
   entryFeed?: FieldPolicy<any> | FieldReadFunction<any>;
+  findEntryById?: FieldPolicy<any> | FieldReadFunction<any>;
   getUserByAccount?: FieldPolicy<any> | FieldReadFunction<any>;
   listProfiles?: FieldPolicy<any> | FieldReadFunction<any>;
   listSessions?: FieldPolicy<any> | FieldReadFunction<any>;

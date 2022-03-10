@@ -1,9 +1,7 @@
 overwrite: true
 generates:
   ./src/graphql/generated/graphql.schema.graphql:
-    schema:
-      ${NEXT_GQL_ENDPOINT}
-
+    schema: ${NEXT_GQL_ENDPOINT}
 
     documents: "./src/graphql/**/*.graphql"
     hooks:
@@ -16,8 +14,7 @@ generates:
       commentDescriptions: true
       includeDirectives: true
   ./src/graphql/generated/introspection.schema.json:
-    schema:
-      ${NEXT_GQL_ENDPOINT}
+    schema: ${NEXT_GQL_ENDPOINT}
 
     documents: "./src/graphql/**/*.graphql"
     hooks:
@@ -26,8 +23,7 @@ generates:
     plugins:
       - introspection
   ./src/graphql/generated/resolver-types.ts:
-    schema:
-      ${NEXT_GQL_ENDPOINT}
+    schema: ${NEXT_GQL_ENDPOINT}
 
     documents: "./src/graphql/**/*.graphql"
     hooks:
@@ -39,8 +35,7 @@ generates:
     config:
       useIndexSignature: true
   ./src/graphql/generated/graphql.ts:
-    schema:
-      ${NEXT_GQL_ENDPOINT}
+    schema: ${NEXT_GQL_ENDPOINT}
 
     documents: "./src/graphql/**/*.graphql"
     hooks:
@@ -59,7 +54,8 @@ generates:
           content:
             - "import { Context } from '@/server/Context/index'"
             - "import { Upload } from 'graphql-upload'"
-            - "import { GraphQLDate, GraphQLDateTime, GraphQLTime, GraphQLJSON, GraphQLJSONObject, JSONResolver, GraphQLBigInt } from 'graphql-scalars';"
+            - "import { GraphQLDate, GraphQLDateTime, GraphQLTime, GraphQLHexadecimal, GraphQLJSON,GraphQLPhoneNumber,GraphQLUUID, GraphQLJSONObject, JSONResolver, GraphQLBigInt } from 'graphql-scalars';"
+            - "import {Prisma} from '@prisma/client'"
             - "import { DeepPartial } from 'utility-types';"
       - typescript-document-nodes:
           strictScalars: true
@@ -82,6 +78,8 @@ generates:
     config:
       useIndexSignature: true
       scalars:
+        Decimal: Prisma.Decimal.Value
+        Hexadecimal: typeof GraphQLHexadecimal
         Json: typeof GraphQLJSON
         JSONObject: typeof GraphQLJSONObject
         Upload: File
@@ -89,16 +87,15 @@ generates:
         DateTime: Date
         Time: typeof GraphQLTime
         BigInt: typeof GraphQLBigInt
-        UUID: typeof String
-        PhoneNumber: typeof String
+        UUID: typeof GraphQLUUID
+        PhoneNumber: typeof GraphQLPhoneNumber
       reactApolloVersion: 3
       withHooks: true
       numericEnums: false
       namingConvention: keep
       addDocBlocks: true
   ./src/apollo/fragment-matcher.ts:
-    schema:
-      ${NEXT_GQL_ENDPOINT}
+    schema: ${NEXT_GQL_ENDPOINT}
 
     documents: "./src/graphql/**/*.graphql"
     hooks:
@@ -110,8 +107,7 @@ generates:
       useExplicitTyping: true
       apolloClientVersion: 3
   ./src/apollo/helpers.ts:
-    schema:
-      ${NEXT_GQL_ENDPOINT}
+    schema: ${NEXT_GQL_ENDPOINT}
 
     documents: "./src/graphql/**/*.graphql"
     hooks:
