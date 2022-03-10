@@ -52,7 +52,7 @@ generates:
           nonOptionalTypename: false
       - add:
           content:
-            - "import { Context } from '@/server/Context/index'"
+            - "import { Context } from '../../server/Context/index'"
             - "import { Upload } from 'graphql-upload'"
             - "import { GraphQLDate, GraphQLDateTime, GraphQLTime, GraphQLHexadecimal, GraphQLJSON,GraphQLPhoneNumber,GraphQLUUID, GraphQLJSONObject, JSONResolver, GraphQLBigInt } from 'graphql-scalars';"
             - "import {Prisma} from '@prisma/client'"
@@ -63,7 +63,7 @@ generates:
       - typescript-resolvers:
           defaultMapper: DeepPartial<{T}>
           optionalInfoArgument: true
-          contextType: any
+          contextType: Context
           makeResolverTypeCallable: true
           noSchemaStitching: false
         config:
