@@ -1,4 +1,4 @@
-import { Context } from "@/server/Context/index";
+import { Context } from "../../server/Context/index";
 import { Upload } from "graphql-upload";
 import {
   GraphQLDate,
@@ -2233,7 +2233,7 @@ export type ResolversParentTypes = ResolversObject<{
 }>;
 
 export type AccountResolvers<
-  ContextType = any,
+  ContextType = Context,
   ParentType extends ResolversParentTypes["Account"] = ResolversParentTypes["Account"]
 > = ResolversObject<{
   access_token?: Resolver<
@@ -2283,7 +2283,7 @@ export type AccountResolvers<
 }>;
 
 export type AccountEdgeResolvers<
-  ContextType = any,
+  ContextType = Context,
   ParentType extends ResolversParentTypes["AccountEdge"] = ResolversParentTypes["AccountEdge"]
 > = ResolversObject<{
   cursor?: Resolver<ResolversTypes["String"], ParentType, ContextType>;
@@ -2292,7 +2292,7 @@ export type AccountEdgeResolvers<
 }>;
 
 export type BioResolvers<
-  ContextType = any,
+  ContextType = Context,
   ParentType extends ResolversParentTypes["Bio"] = ResolversParentTypes["Bio"]
 > = ResolversObject<{
   body?: Resolver<Maybe<ResolversTypes["String"]>, ParentType, ContextType>;
@@ -2309,7 +2309,7 @@ export type BioResolvers<
 }>;
 
 export type CategoryResolvers<
-  ContextType = any,
+  ContextType = Context,
   ParentType extends ResolversParentTypes["Category"] = ResolversParentTypes["Category"]
 > = ResolversObject<{
   createdAt?: Resolver<ResolversTypes["DateTime"], ParentType, ContextType>;
@@ -2329,7 +2329,7 @@ export type CategoryResolvers<
 }>;
 
 export type CommentResolvers<
-  ContextType = any,
+  ContextType = Context,
   ParentType extends ResolversParentTypes["Comment"] = ResolversParentTypes["Comment"]
 > = ResolversObject<{
   attachment?: Resolver<
@@ -2359,7 +2359,7 @@ export type CommentResolvers<
 }>;
 
 export type CommentEdgeResolvers<
-  ContextType = any,
+  ContextType = Context,
   ParentType extends ResolversParentTypes["CommentEdge"] = ResolversParentTypes["CommentEdge"]
 > = ResolversObject<{
   cursor?: Resolver<ResolversTypes["String"], ParentType, ContextType>;
@@ -2383,7 +2383,7 @@ export interface DecimalScalarConfig
 }
 
 export type EntryResolvers<
-  ContextType = any,
+  ContextType = Context,
   ParentType extends ResolversParentTypes["Entry"] = ResolversParentTypes["Entry"]
 > = ResolversObject<{
   _count?: Resolver<ResolversTypes["EntryCount"], ParentType, ContextType>;
@@ -2429,7 +2429,7 @@ export type EntryResolvers<
 }>;
 
 export type EntryComments_ConnectionResolvers<
-  ContextType = any,
+  ContextType = Context,
   ParentType extends ResolversParentTypes["EntryComments_Connection"] = ResolversParentTypes["EntryComments_Connection"]
 > = ResolversObject<{
   edges?: Resolver<
@@ -2444,7 +2444,7 @@ export type EntryComments_ConnectionResolvers<
 }>;
 
 export type EntryCountResolvers<
-  ContextType = any,
+  ContextType = Context,
   ParentType extends ResolversParentTypes["EntryCount"] = ResolversParentTypes["EntryCount"]
 > = ResolversObject<{
   comments?: Resolver<ResolversTypes["Int"], ParentType, ContextType>;
@@ -2452,7 +2452,7 @@ export type EntryCountResolvers<
 }>;
 
 export type EntryEdgeResolvers<
-  ContextType = any,
+  ContextType = Context,
   ParentType extends ResolversParentTypes["EntryEdge"] = ResolversParentTypes["EntryEdge"]
 > = ResolversObject<{
   cursor?: Resolver<ResolversTypes["String"], ParentType, ContextType>;
@@ -2471,7 +2471,7 @@ export interface JsonScalarConfig
 }
 
 export type MediaItemResolvers<
-  ContextType = any,
+  ContextType = Context,
   ParentType extends ResolversParentTypes["MediaItem"] = ResolversParentTypes["MediaItem"]
 > = ResolversObject<{
   ariaLabel?: Resolver<
@@ -2519,7 +2519,7 @@ export type MediaItemResolvers<
 }>;
 
 export type MutationResolvers<
-  ContextType = any,
+  ContextType = Context,
   ParentType extends ResolversParentTypes["Mutation"] = ResolversParentTypes["Mutation"]
 > = ResolversObject<{
   CreateNewUser?: Resolver<
@@ -2552,7 +2552,7 @@ export type MutationResolvers<
 }>;
 
 export type NodeResolvers<
-  ContextType = any,
+  ContextType = Context,
   ParentType extends ResolversParentTypes["Node"] = ResolversParentTypes["Node"]
 > = ResolversObject<{
   __resolveType: TypeResolveFn<
@@ -2570,7 +2570,7 @@ export type NodeResolvers<
 }>;
 
 export type PageInfoResolvers<
-  ContextType = any,
+  ContextType = Context,
   ParentType extends ResolversParentTypes["PageInfo"] = ResolversParentTypes["PageInfo"]
 > = ResolversObject<{
   endCursor?: Resolver<
@@ -2598,7 +2598,7 @@ export interface PhoneNumberScalarConfig
 }
 
 export type ProfileResolvers<
-  ContextType = any,
+  ContextType = Context,
   ParentType extends ResolversParentTypes["Profile"] = ResolversParentTypes["Profile"]
 > = ResolversObject<{
   activityFeed?: Resolver<
@@ -2645,7 +2645,7 @@ export type ProfileResolvers<
 }>;
 
 export type ProfileEdgeResolvers<
-  ContextType = any,
+  ContextType = Context,
   ParentType extends ResolversParentTypes["ProfileEdge"] = ResolversParentTypes["ProfileEdge"]
 > = ResolversObject<{
   cursor?: Resolver<ResolversTypes["String"], ParentType, ContextType>;
@@ -2654,7 +2654,7 @@ export type ProfileEdgeResolvers<
 }>;
 
 export type QueryResolvers<
-  ContextType = any,
+  ContextType = Context,
   ParentType extends ResolversParentTypes["Query"] = ResolversParentTypes["Query"]
 > = ResolversObject<{
   FilterUsers?: Resolver<
@@ -2795,7 +2795,7 @@ export type QueryResolvers<
 }>;
 
 export type QueryAccounts_ConnectionResolvers<
-  ContextType = any,
+  ContextType = Context,
   ParentType extends ResolversParentTypes["QueryAccounts_Connection"] = ResolversParentTypes["QueryAccounts_Connection"]
 > = ResolversObject<{
   edges?: Resolver<
@@ -2810,7 +2810,7 @@ export type QueryAccounts_ConnectionResolvers<
 }>;
 
 export type QueryAllAccounts_ConnectionResolvers<
-  ContextType = any,
+  ContextType = Context,
   ParentType extends ResolversParentTypes["QueryAllAccounts_Connection"] = ResolversParentTypes["QueryAllAccounts_Connection"]
 > = ResolversObject<{
   edges?: Resolver<
@@ -2825,7 +2825,7 @@ export type QueryAllAccounts_ConnectionResolvers<
 }>;
 
 export type QueryAllEntries_ConnectionResolvers<
-  ContextType = any,
+  ContextType = Context,
   ParentType extends ResolversParentTypes["QueryAllEntries_Connection"] = ResolversParentTypes["QueryAllEntries_Connection"]
 > = ResolversObject<{
   edges?: Resolver<Array<ResolversTypes["EntryEdge"]>, ParentType, ContextType>;
@@ -2836,7 +2836,7 @@ export type QueryAllEntries_ConnectionResolvers<
 }>;
 
 export type QueryEntries_ConnectionResolvers<
-  ContextType = any,
+  ContextType = Context,
   ParentType extends ResolversParentTypes["QueryEntries_Connection"] = ResolversParentTypes["QueryEntries_Connection"]
 > = ResolversObject<{
   edges?: Resolver<Array<ResolversTypes["EntryEdge"]>, ParentType, ContextType>;
@@ -2847,7 +2847,7 @@ export type QueryEntries_ConnectionResolvers<
 }>;
 
 export type QueryEntryFeed_ConnectionResolvers<
-  ContextType = any,
+  ContextType = Context,
   ParentType extends ResolversParentTypes["QueryEntryFeed_Connection"] = ResolversParentTypes["QueryEntryFeed_Connection"]
 > = ResolversObject<{
   edges?: Resolver<Array<ResolversTypes["EntryEdge"]>, ParentType, ContextType>;
@@ -2858,7 +2858,7 @@ export type QueryEntryFeed_ConnectionResolvers<
 }>;
 
 export type QueryFilterUsers_ConnectionResolvers<
-  ContextType = any,
+  ContextType = Context,
   ParentType extends ResolversParentTypes["QueryFilterUsers_Connection"] = ResolversParentTypes["QueryFilterUsers_Connection"]
 > = ResolversObject<{
   edges?: Resolver<Array<ResolversTypes["UserEdge"]>, ParentType, ContextType>;
@@ -2869,7 +2869,7 @@ export type QueryFilterUsers_ConnectionResolvers<
 }>;
 
 export type QueryGetAllEntries_ConnectionResolvers<
-  ContextType = any,
+  ContextType = Context,
   ParentType extends ResolversParentTypes["QueryGetAllEntries_Connection"] = ResolversParentTypes["QueryGetAllEntries_Connection"]
 > = ResolversObject<{
   edges?: Resolver<Array<ResolversTypes["EntryEdge"]>, ParentType, ContextType>;
@@ -2880,7 +2880,7 @@ export type QueryGetAllEntries_ConnectionResolvers<
 }>;
 
 export type QueryGetUserByAccount_ConnectionResolvers<
-  ContextType = any,
+  ContextType = Context,
   ParentType extends ResolversParentTypes["QueryGetUserByAccount_Connection"] = ResolversParentTypes["QueryGetUserByAccount_Connection"]
 > = ResolversObject<{
   edges?: Resolver<
@@ -2895,7 +2895,7 @@ export type QueryGetUserByAccount_ConnectionResolvers<
 }>;
 
 export type QueryListProfiles_ConnectionResolvers<
-  ContextType = any,
+  ContextType = Context,
   ParentType extends ResolversParentTypes["QueryListProfiles_Connection"] = ResolversParentTypes["QueryListProfiles_Connection"]
 > = ResolversObject<{
   edges?: Resolver<
@@ -2910,7 +2910,7 @@ export type QueryListProfiles_ConnectionResolvers<
 }>;
 
 export type QueryListSessions_ConnectionResolvers<
-  ContextType = any,
+  ContextType = Context,
   ParentType extends ResolversParentTypes["QueryListSessions_Connection"] = ResolversParentTypes["QueryListSessions_Connection"]
 > = ResolversObject<{
   edges?: Resolver<
@@ -2925,7 +2925,7 @@ export type QueryListSessions_ConnectionResolvers<
 }>;
 
 export type QuerySearchByUserEmail_ConnectionResolvers<
-  ContextType = any,
+  ContextType = Context,
   ParentType extends ResolversParentTypes["QuerySearchByUserEmail_Connection"] = ResolversParentTypes["QuerySearchByUserEmail_Connection"]
 > = ResolversObject<{
   edges?: Resolver<Array<ResolversTypes["UserEdge"]>, ParentType, ContextType>;
@@ -2936,7 +2936,7 @@ export type QuerySearchByUserEmail_ConnectionResolvers<
 }>;
 
 export type QuerySearchEntriesByTitle_ConnectionResolvers<
-  ContextType = any,
+  ContextType = Context,
   ParentType extends ResolversParentTypes["QuerySearchEntriesByTitle_Connection"] = ResolversParentTypes["QuerySearchEntriesByTitle_Connection"]
 > = ResolversObject<{
   edges?: Resolver<Array<ResolversTypes["EntryEdge"]>, ParentType, ContextType>;
@@ -2947,7 +2947,7 @@ export type QuerySearchEntriesByTitle_ConnectionResolvers<
 }>;
 
 export type QuerySession_ConnectionResolvers<
-  ContextType = any,
+  ContextType = Context,
   ParentType extends ResolversParentTypes["QuerySession_Connection"] = ResolversParentTypes["QuerySession_Connection"]
 > = ResolversObject<{
   edges?: Resolver<
@@ -2962,7 +2962,7 @@ export type QuerySession_ConnectionResolvers<
 }>;
 
 export type QueryUserAccount_ConnectionResolvers<
-  ContextType = any,
+  ContextType = Context,
   ParentType extends ResolversParentTypes["QueryUserAccount_Connection"] = ResolversParentTypes["QueryUserAccount_Connection"]
 > = ResolversObject<{
   edges?: Resolver<
@@ -2977,7 +2977,7 @@ export type QueryUserAccount_ConnectionResolvers<
 }>;
 
 export type QueryUserEntries_ConnectionResolvers<
-  ContextType = any,
+  ContextType = Context,
   ParentType extends ResolversParentTypes["QueryUserEntries_Connection"] = ResolversParentTypes["QueryUserEntries_Connection"]
 > = ResolversObject<{
   edges?: Resolver<Array<ResolversTypes["EntryEdge"]>, ParentType, ContextType>;
@@ -2988,7 +2988,7 @@ export type QueryUserEntries_ConnectionResolvers<
 }>;
 
 export type QueryUsersQuery_ConnectionResolvers<
-  ContextType = any,
+  ContextType = Context,
   ParentType extends ResolversParentTypes["QueryUsersQuery_Connection"] = ResolversParentTypes["QueryUsersQuery_Connection"]
 > = ResolversObject<{
   edges?: Resolver<Array<ResolversTypes["UserEdge"]>, ParentType, ContextType>;
@@ -2999,7 +2999,7 @@ export type QueryUsersQuery_ConnectionResolvers<
 }>;
 
 export type QueryVerificationTokens_ConnectionResolvers<
-  ContextType = any,
+  ContextType = Context,
   ParentType extends ResolversParentTypes["QueryVerificationTokens_Connection"] = ResolversParentTypes["QueryVerificationTokens_Connection"]
 > = ResolversObject<{
   edges?: Resolver<
@@ -3018,7 +3018,7 @@ export type QueryVerificationTokens_ConnectionResolvers<
 }>;
 
 export type SessionResolvers<
-  ContextType = any,
+  ContextType = Context,
   ParentType extends ResolversParentTypes["Session"] = ResolversParentTypes["Session"]
 > = ResolversObject<{
   expires?: Resolver<ResolversTypes["DateTime"], ParentType, ContextType>;
@@ -3030,7 +3030,7 @@ export type SessionResolvers<
 }>;
 
 export type SessionEdgeResolvers<
-  ContextType = any,
+  ContextType = Context,
   ParentType extends ResolversParentTypes["SessionEdge"] = ResolversParentTypes["SessionEdge"]
 > = ResolversObject<{
   cursor?: Resolver<ResolversTypes["String"], ParentType, ContextType>;
@@ -3054,7 +3054,7 @@ export interface UploadScalarConfig
 }
 
 export type UserResolvers<
-  ContextType = any,
+  ContextType = Context,
   ParentType extends ResolversParentTypes["User"] = ResolversParentTypes["User"]
 > = ResolversObject<{
   _count?: Resolver<ResolversTypes["UserCount"], ParentType, ContextType>;
@@ -3107,7 +3107,7 @@ export type UserResolvers<
 }>;
 
 export type UserAccounts_ConnectionResolvers<
-  ContextType = any,
+  ContextType = Context,
   ParentType extends ResolversParentTypes["UserAccounts_Connection"] = ResolversParentTypes["UserAccounts_Connection"]
 > = ResolversObject<{
   edges?: Resolver<
@@ -3122,7 +3122,7 @@ export type UserAccounts_ConnectionResolvers<
 }>;
 
 export type UserComments_ConnectionResolvers<
-  ContextType = any,
+  ContextType = Context,
   ParentType extends ResolversParentTypes["UserComments_Connection"] = ResolversParentTypes["UserComments_Connection"]
 > = ResolversObject<{
   edges?: Resolver<
@@ -3137,7 +3137,7 @@ export type UserComments_ConnectionResolvers<
 }>;
 
 export type UserCountResolvers<
-  ContextType = any,
+  ContextType = Context,
   ParentType extends ResolversParentTypes["UserCount"] = ResolversParentTypes["UserCount"]
 > = ResolversObject<{
   accounts?: Resolver<ResolversTypes["Int"], ParentType, ContextType>;
@@ -3148,7 +3148,7 @@ export type UserCountResolvers<
 }>;
 
 export type UserEdgeResolvers<
-  ContextType = any,
+  ContextType = Context,
   ParentType extends ResolversParentTypes["UserEdge"] = ResolversParentTypes["UserEdge"]
 > = ResolversObject<{
   cursor?: Resolver<ResolversTypes["String"], ParentType, ContextType>;
@@ -3157,7 +3157,7 @@ export type UserEdgeResolvers<
 }>;
 
 export type UserEntries_ConnectionResolvers<
-  ContextType = any,
+  ContextType = Context,
   ParentType extends ResolversParentTypes["UserEntries_Connection"] = ResolversParentTypes["UserEntries_Connection"]
 > = ResolversObject<{
   edges?: Resolver<Array<ResolversTypes["EntryEdge"]>, ParentType, ContextType>;
@@ -3168,7 +3168,7 @@ export type UserEntries_ConnectionResolvers<
 }>;
 
 export type UserSessions_ConnectionResolvers<
-  ContextType = any,
+  ContextType = Context,
   ParentType extends ResolversParentTypes["UserSessions_Connection"] = ResolversParentTypes["UserSessions_Connection"]
 > = ResolversObject<{
   edges?: Resolver<
@@ -3183,7 +3183,7 @@ export type UserSessions_ConnectionResolvers<
 }>;
 
 export type VerificationTokenResolvers<
-  ContextType = any,
+  ContextType = Context,
   ParentType extends ResolversParentTypes["VerificationToken"] = ResolversParentTypes["VerificationToken"]
 > = ResolversObject<{
   expires?: Resolver<ResolversTypes["DateTime"], ParentType, ContextType>;
@@ -3194,7 +3194,7 @@ export type VerificationTokenResolvers<
 }>;
 
 export type VerificationTokenEdgeResolvers<
-  ContextType = any,
+  ContextType = Context,
   ParentType extends ResolversParentTypes["VerificationTokenEdge"] = ResolversParentTypes["VerificationTokenEdge"]
 > = ResolversObject<{
   cursor?: Resolver<ResolversTypes["String"], ParentType, ContextType>;
@@ -3202,7 +3202,7 @@ export type VerificationTokenEdgeResolvers<
   __isTypeOf?: IsTypeOfResolverFn<ParentType, ContextType>;
 }>;
 
-export type Resolvers<ContextType = any> = ResolversObject<{
+export type Resolvers<ContextType = Context> = ResolversObject<{
   Account?: AccountResolvers<ContextType>;
   AccountEdge?: AccountEdgeResolvers<ContextType>;
   Bio?: BioResolvers<ContextType>;
