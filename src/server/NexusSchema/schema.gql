@@ -197,6 +197,11 @@ input DateTimeNullableFilter {
   notIn: [DateTime!]
 }
 
+"""
+An arbitrary-precision Decimal type
+"""
+scalar Decimal
+
 type Entry implements Node {
   _count: EntryCount!
   attachments: [MediaItem!]!
@@ -394,6 +399,11 @@ enum Gender {
   OTHER
   UNCERTAIN
 }
+
+"""
+scalar Hexadecimal
+"""
+scalar Hexadecimal
 
 input IntNullableFilter {
   equals: Int

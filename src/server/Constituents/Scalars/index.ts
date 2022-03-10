@@ -1,5 +1,6 @@
 export * from "./date";
 export * from "./date-time";
+export * from "./decimal";
 export * from "./json";
 export * from "./phone-number";
 export * from "./time";

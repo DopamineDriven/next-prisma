@@ -8135,6 +8135,11 @@ pretty-quick@^3.1.3:
     mri "^1.1.5"
     multimatch "^4.0.0"
 
+prisma-graphql-type-decimal@^2.0.0:
+  version "2.0.0"
+  resolved "https://registry.yarnpkg.com/prisma-graphql-type-decimal/-/prisma-graphql-type-decimal-2.0.0.tgz#ef2dd12036b8d07c48474d57ae6eccdf96d8e9d5"
+  integrity sha512-+gcz3N/P58Z25Bq6ic0DHtGrKB0r3rzuMFPqyxxSIRHhLe+ReuqEBx8H2ngHhPRA/Nx49zPvxAn5pXOrSxSpLQ==
+
 prisma@^3.10.0:
   version "3.10.0"
   resolved "https://registry.yarnpkg.com/prisma/-/prisma-3.10.0.tgz#872d87afbeb1cbcaa77c3d6a63c125e0d704b04d"

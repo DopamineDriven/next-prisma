@@ -29,6 +29,20 @@ declare global {
       opts?: core.CommonInputFieldConfig<TypeName, FieldName>
     ): void; // "DateTime";
     /**
+     * scalar Hexadecimal
+     */
+    Hexadecimal<FieldName extends string>(
+      fieldName: FieldName,
+      opts?: core.CommonInputFieldConfig<TypeName, FieldName>
+    ): void; // "Hexadecimal";
+    /**
+     * An arbitrary-precision Decimal type
+     */
+    Decimal<FieldName extends string>(
+      fieldName: FieldName,
+      opts?: core.CommonInputFieldConfig<TypeName, FieldName>
+    ): void; // "Decimal";
+    /**
      * The `JSONObject` scalar type represents JSON objects as specified by [ECMA-404](http://www.ecma-international.org/publications/files/ECMA-ST/ECMA-404.pdf).
      */
     Json<FieldName extends string>(
@@ -85,6 +99,20 @@ declare global {
       fieldName: FieldName,
       ...opts: core.ScalarOutSpread<TypeName, FieldName>
     ): void; // "DateTime";
+    /**
+     * scalar Hexadecimal
+     */
+    Hexadecimal<FieldName extends string>(
+      fieldName: FieldName,
+      ...opts: core.ScalarOutSpread<TypeName, FieldName>
+    ): void; // "Hexadecimal";
+    /**
+     * An arbitrary-precision Decimal type
+     */
+    Decimal<FieldName extends string>(
+      fieldName: FieldName,
+      ...opts: core.ScalarOutSpread<TypeName, FieldName>
+    ): void; // "Decimal";
     /**
      * The `JSONObject` scalar type represents JSON objects as specified by [ECMA-404](http://www.ecma-international.org/publications/files/ECMA-ST/ECMA-404.pdf).
      */
@@ -848,6 +876,8 @@ export interface NexusGenScalars {
   ID: string;
   Date: string;
   DateTime: object;
+  Decimal: number;
+  Hexadecimal: string;
   Json: string;
   PhoneNumber: string;
   Time: string;
