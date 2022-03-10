@@ -16,19 +16,18 @@ import { useMemo } from "react";
 import { relayStylePagination } from "@apollo/client/utilities";
 import {
   TypedTypePolicies,
-  UserConnectionKeySpecifier,
-  CommentConnectionKeySpecifier,
-  EntryConnectionKeySpecifier,
-  ProfileConnectionKeySpecifier,
-  SessionConnectionKeySpecifier
+  QueryListProfiles_ConnectionKeySpecifier,
+  QueryEntries_ConnectionKeySpecifier,
+  UserComments_ConnectionKeySpecifier,
+  QuerySession_ConnectionKeySpecifier,
+  QueryUsersQuery_ConnectionKeySpecifier,
+  QueryKeySpecifier
 } from "./helpers";
 import emittedIntrospection from "./fragment-matcher";
+import { RelayFieldPolicy } from "@apollo/client/utilities/policies/pagination";
 
-export type DocumentType<
-  TDocumentNode extends TypedDocumentNode<any, any>
-> = TDocumentNode extends TypedDocumentNode<infer TType, any>
-  ? TType
-  : never;
+export type DocumentType<TDocumentNode extends TypedDocumentNode<any, any>> =
+  TDocumentNode extends TypedDocumentNode<infer TType, any> ? TType : never;
 
 let apolloClient: ApolloClient<NormalizedCacheObject> | undefined;
 
@@ -47,37 +46,65 @@ function createApolloClient(
       possibleTypes: emittedIntrospection.possibleTypes,
       typePolicies: {
         Query: {
+          keyFields: (): QueryKeySpecifier => [
+            "FilterUsers",
+            "GetAllEntries",
+            "GetSession",
+            "SearchByUserEmail",
+            "allAccounts",
+            "accounts",
+            "SearchEntriesByTitle",
+            "allEntries",
+            "entryFeed",
+            "findEntryById",
+            "getUserByAccount",
+            "listProfiles",
+            "listSessions",
+            "node",
+            "session",
+            "userAccount",
+            "userByEmail",
+            "userById",
+            "userEntries",
+            "usersQuery",
+            "verificationTokens"
+          ],
           fields: {
             listComments:
-              relayStylePagination<CommentConnectionKeySpecifier>([
+              relayStylePagination<UserComments_ConnectionKeySpecifier>([
                 "edges",
+                "nodes",
                 "pageInfo",
                 "totalCount"
-              ] as CommentConnectionKeySpecifier),
-            listEntries: relayStylePagination<EntryConnectionKeySpecifier>(
-              [
+              ] as UserComments_ConnectionKeySpecifier) as RelayFieldPolicy<UserComments_ConnectionKeySpecifier>,
+            listEntries:
+              relayStylePagination<QueryEntries_ConnectionKeySpecifier>([
                 "edges",
+                "nodes",
                 "pageInfo",
                 "totalCount"
-              ] as EntryConnectionKeySpecifier
-            ),
+              ] as QueryEntries_ConnectionKeySpecifier) as RelayFieldPolicy<QueryEntries_ConnectionKeySpecifier>,
             listProfiles:
-              relayStylePagination<ProfileConnectionKeySpecifier>([
+              relayStylePagination<QueryListProfiles_ConnectionKeySpecifier>([
                 "edges",
                 "pageInfo",
+                "nodes",
                 "totalCount"
-              ] as ProfileConnectionKeySpecifier),
+              ] as QueryListProfiles_ConnectionKeySpecifier) as RelayFieldPolicy<QueryListProfiles_ConnectionKeySpecifier>,
             listSessions:
-              relayStylePagination<SessionConnectionKeySpecifier>([
+              relayStylePagination<QuerySession_ConnectionKeySpecifier>([
                 "edges",
+                "nodes",
                 "pageInfo",
                 "totalCount"
-              ] as SessionConnectionKeySpecifier),
-            listUsers: relayStylePagination<UserConnectionKeySpecifier>([
-              "edges",
-              "pageInfo",
-              "totalCount"
-            ] as UserConnectionKeySpecifier)
+              ] as QuerySession_ConnectionKeySpecifier) as RelayFieldPolicy<QuerySession_ConnectionKeySpecifier>,
+            listUsers:
+              relayStylePagination<QueryUsersQuery_ConnectionKeySpecifier>([
+                "edges",
+                "nodes",
+                "pageInfo",
+                "totalCount"
+              ] as QueryUsersQuery_ConnectionKeySpecifier) as RelayFieldPolicy<QueryUsersQuery_ConnectionKeySpecifier>
           }
         }
       } as TypedTypePolicies
