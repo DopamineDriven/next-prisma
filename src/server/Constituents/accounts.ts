@@ -57,7 +57,7 @@ export const AccountQuery: core.NexusExtendTypeDef<"Query"> =
   extendType<"Query">({
     type: "Query",
     definition(t) {
-      t.connectionField("getUserByAccount", {
+      t.connectionField("listAccounts", {
         type: "Account",
         inheritAdditionalArgs: true,
         additionalArgs: {
@@ -77,6 +77,8 @@ export const AccountQuery: core.NexusExtendTypeDef<"Query"> =
             }
           });
         },
+        complexity: ({ args, childComplexity }) =>
+          [args].length * childComplexity,
         async nodes(root, args, ctx, info) {
           return await ctx.prisma.account
             .findUnique({
@@ -92,9 +94,7 @@ export const AccountQuery: core.NexusExtendTypeDef<"Query"> =
               }
             })
             .user()
-            .accounts({
-              cursor: { id: args.after ? args.after : undefined }
-            })
+            .accounts()
             .then(data => {
               return { totalCount: data.length, ...data };
             });

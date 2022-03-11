@@ -1064,7 +1064,7 @@ type Query {
     take: Int = 10
   ): QueryEntryFeed_Connection!
   findEntryById(id: String!): Entry
-  getUserByAccount(
+  listAccounts(
     """
     Returns the elements in the list that come after the specified cursor
     """
@@ -1087,7 +1087,7 @@ type Query {
     last: Int
     provider: String!
     providerAccountId: String!
-  ): QueryGetUserByAccount_Connection!
+  ): QueryListAccounts_Connection!
   listProfiles(
     """
     Returns the elements in the list that come after the specified cursor
@@ -1369,7 +1369,7 @@ type QueryGetAllEntries_Connection {
   totalCount: Int!
 }
 
-type QueryGetUserByAccount_Connection {
+type QueryListAccounts_Connection {
   """
   https://facebook.github.io/relay/graphql/connections.htm#sec-Edge-Types
   """

@@ -974,7 +974,7 @@ export interface NexusGenObjects {
     nodes: NexusGenRootTypes["Entry"][]; // [Entry!]!
     pageInfo: NexusGenRootTypes["PageInfo"]; // PageInfo!
   };
-  QueryGetUserByAccount_Connection: {
+  QueryListAccounts_Connection: {
     // root type
     edges: NexusGenRootTypes["AccountEdge"][]; // [AccountEdge!]!
     nodes: NexusGenRootTypes["Account"][]; // [Account!]!
@@ -1261,7 +1261,7 @@ export interface NexusGenFieldTypes {
     entries: NexusGenRootTypes["QueryEntries_Connection"]; // QueryEntries_Connection!
     entryFeed: NexusGenRootTypes["QueryEntryFeed_Connection"]; // QueryEntryFeed_Connection!
     findEntryById: NexusGenRootTypes["Entry"] | null; // Entry
-    getUserByAccount: NexusGenRootTypes["QueryGetUserByAccount_Connection"]; // QueryGetUserByAccount_Connection!
+    listAccounts: NexusGenRootTypes["QueryListAccounts_Connection"]; // QueryListAccounts_Connection!
     listProfiles: NexusGenRootTypes["QueryListProfiles_Connection"]; // QueryListProfiles_Connection!
     listSessions: NexusGenRootTypes["QueryListSessions_Connection"]; // QueryListSessions_Connection!
     node: NexusGenRootTypes["Node"]; // Node!
@@ -1322,7 +1322,7 @@ export interface NexusGenFieldTypes {
     pageInfo: NexusGenRootTypes["PageInfo"]; // PageInfo!
     totalCount: number; // Int!
   };
-  QueryGetUserByAccount_Connection: {
+  QueryListAccounts_Connection: {
     // field return type
     edges: NexusGenRootTypes["AccountEdge"][]; // [AccountEdge!]!
     nodes: NexusGenRootTypes["Account"][]; // [Account!]!
@@ -1644,7 +1644,7 @@ export interface NexusGenFieldTypeNames {
     entries: "QueryEntries_Connection";
     entryFeed: "QueryEntryFeed_Connection";
     findEntryById: "Entry";
-    getUserByAccount: "QueryGetUserByAccount_Connection";
+    listAccounts: "QueryListAccounts_Connection";
     listProfiles: "QueryListProfiles_Connection";
     listSessions: "QueryListSessions_Connection";
     node: "Node";
@@ -1705,7 +1705,7 @@ export interface NexusGenFieldTypeNames {
     pageInfo: "PageInfo";
     totalCount: "Int";
   };
-  QueryGetUserByAccount_Connection: {
+  QueryListAccounts_Connection: {
     // field return type name
     edges: "AccountEdge";
     nodes: "Account";
@@ -1987,7 +1987,7 @@ export interface NexusGenArgTypes {
       // args
       id: string; // String!
     };
-    getUserByAccount: {
+    listAccounts: {
       // args
       after?: string | null; // String
       before?: string | null; // String

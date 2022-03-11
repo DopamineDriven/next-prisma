@@ -49,7 +49,7 @@ export function connectionType(
     }
   });
 
-  const Node = objectType({
+  const TypeNode = objectType({
     name: `${name}Node`,
     definition(t) {
       t.field("node", { type: name });
@@ -67,5 +67,5 @@ export function connectionType(
     }
   });
 
-  return { Connection, Edge, PageInfo };
+  return { Connection, Edge, PageInfo, TypeNode };
 }
