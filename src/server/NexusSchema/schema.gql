@@ -126,6 +126,11 @@ type Comment implements Node {
   updatedAt: DateTime
 }
 
+input CommentAuthorIdEntryIdCompoundUniqueInput {
+  authorId: String
+  entryId: String
+}
+
 type CommentEdge {
   """
   https://facebook.github.io/relay/graphql/connections.htm#sec-Cursor
@@ -148,6 +153,19 @@ input CommentOrderByRelationAggregateInput {
   _count: SortOrderEnum
 }
 
+input CommentOrderByWithRelationInput {
+  author: UserOrderByWithRelationInput
+  authorId: SortOrderEnum
+  body: SortOrderEnum
+  createdAt: SortOrderEnum
+  entry: EntryOrderByWithRelationInput
+  entryId: SortOrderEnum
+  id: SortOrderEnum
+  position: SortOrderEnum
+  reactions: SortOrderEnum
+  updatedAt: SortOrderEnum
+}
+
 input CommentWhereInput {
   AND: [CommentWhereInput!]
   NOT: [CommentWhereInput!]
@@ -163,6 +181,11 @@ input CommentWhereInput {
   position: StringNullableFilter
   reactions: EnumCommentReactionsNullableListFilter
   updatedAt: DateTimeNullableFilter
+}
+
+input CommentWhereUniqueInput {
+  authorId_entryId: CommentAuthorIdEntryIdCompoundUniqueInput
+  id: String
 }
 
 """
@@ -289,6 +312,19 @@ input EntryOrderBy {
 
 input EntryOrderByRelationAggregateInput {
   _count: SortOrderEnum
+}
+
+input EntryOrderByWithRelationInput {
+  author: UserOrderByWithRelationInput
+  authorId: SortOrderEnum
+  comments: CommentOrderByRelationAggregateInput
+  content: SortOrderEnum
+  createdAt: SortOrderEnum
+  id: SortOrderEnum
+  published: SortOrderEnum
+  reactions: SortOrderEnum
+  title: SortOrderEnum
+  updatedAt: SortOrderEnum
 }
 
 input EntryRelationFilter {
@@ -1074,20 +1110,18 @@ type Query {
     Returns the elements in the list that come before the specified cursor
     """
     before: String
+    count: Int!
 
     """
     Returns the first n elements from the list.
     """
     first: Int
-    id: String!
 
     """
     Returns the last n elements from the list.
     """
     last: Int
-    provider: String!
-    providerAccountId: String!
-  ): QueryListAccounts_Connection!
+  ): QueryListAccounts_Connection
   listProfiles(
     """
     Returns the elements in the list that come after the specified cursor
@@ -1794,6 +1828,7 @@ type User implements Node {
     last: Int
   ): UserSessions_Connection!
   status: UserStatus
+  username: String
 }
 
 type UserAccounts_Connection {
@@ -1900,6 +1935,7 @@ input UserOrderByWithRelationAndSearchRelevanceInput {
   sessions: SessionOrderByRelationAggregateInput
   status: SortOrderEnum
   updatedAt: SortOrderEnum
+  username: SortOrderEnum
 }
 
 input UserOrderByWithRelationInput {
@@ -1918,6 +1954,7 @@ input UserOrderByWithRelationInput {
   sessions: SessionOrderByRelationAggregateInput
   status: SortOrderEnum
   updatedAt: SortOrderEnum
+  username: SortOrderEnum
 }
 
 input UserRelationFilter {
@@ -1988,6 +2025,7 @@ input UserWhereInput {
   sessions: SessionListRelationFilter
   status: EnumUserStatusNullableFilter
   updatedAt: DateTimeNullableFilter
+  username: StringNullableFilter
 }
 
 input UserWhereUniqueInput {

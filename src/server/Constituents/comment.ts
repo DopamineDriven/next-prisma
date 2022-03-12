@@ -9,6 +9,7 @@ import {
   UserRelationFilter,
   EntryRelationFilter
 } from ".";
+import { findManyCursorConnection } from "@devoxa/prisma-relay-cursor-connection";
 
 export const Comment: core.NexusObjectTypeDef<"Comment"> =
   core.objectType<`Comment`>({
@@ -55,39 +56,32 @@ export const Comment: core.NexusObjectTypeDef<"Comment"> =
     }
   });
 
+// const listComments: core.NexusExtendTypeDef<"Query"> = core.extendType<"Query">({
+//   type: "Query",
+//   definition(t) {
+//     t.connectionField("listComments" {
+//       extendConnection(t) {
+//         t.nonNull.field("totalCount", {
+//           nullable: false,
+//           type: "Int",
+//           resolve: (source, args, ctx) => {
+//             const totalCount: number | 0 = source?.edges?.length
+//               ? source.edges.length
+//               : source.nodes?.length
+//                 ? source.nodes.length
+//                 : 0;
+//             return { totalCount: totalCount }.totalCount;
+//           }
+//         });
+//       },
+//       type: "Comment",
+//       async resolve(parent, args, ctx, info) {
+//         return await findManyCursorConnection(args => ctx.prisma.comment.findMany({ include: { author: true, entry: true }, take: args.take, cursor: args.cursor }), () => ctx.prisma.comment.count({
+//           take: args.take,
+//         }))
+//       }
+//     })
+//   }
+// });
+
 // Input Types
-export const CommentListRelationFilter = core.inputObjectType({
-  name: "CommentListRelationFilter",
-  definition(t) {
-    t.field("every", { type: CommentWhereInput });
-    t.field("none", { type: CommentWhereInput });
-    t.field("some", { type: CommentWhereInput });
-  }
-});
-
-export const CommentOrderByRelationAggregateInput = core.inputObjectType({
-  name: "CommentOrderByRelationAggregateInput",
-  definition(t) {
-    t.nullable.field("_count", { type: SortOrderEnum });
-  }
-});
-
-export const CommentWhereInput = core.inputObjectType({
-  name: "CommentWhereInput",
-  definition(t) {
-    t.list.nonNull.field("AND", { type: CommentWhereInput });
-    t.list.nonNull.field("NOT", { type: CommentWhereInput });
-    t.list.nonNull.field("OR", { type: CommentWhereInput });
-    t.field("author", { type: UserRelationFilter });
-    t.field("authorId", { type: StringNullableFilter });
-    t.field("body", { type: StringNullableFilter });
-    t.field("createdAt", { type: DateTimeFilter });
-    t.field("entry", { type: EntryRelationFilter });
-    t.field("entryId", { type: StringNullableFilter });
-    t.nullable.field("attachment", { type: "MediaItemRelationFilter" });
-    t.field("id", { type: StringFilter });
-    t.field("position", { type: StringNullableFilter });
-    t.field("reactions", { type: EnumCommentReactionsNullableListFilter });
-    t.field("updatedAt", { type: DateTimeNullableFilter });
-  }
-});

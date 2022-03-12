@@ -1,3 +1,45 @@
+diff --git a/node_modules/next-auth/core/types.d.ts b/node_modules/next-auth/core/types.d.ts
+index 9c1c63a..b019132 100644
+--- a/node_modules/next-auth/core/types.d.ts
++++ b/node_modules/next-auth/core/types.d.ts
+@@ -234,7 +234,8 @@ export interface Account extends Record<string, unknown>, DefaultAccount {
+ export interface DefaultProfile {
+     sub?: string;
+     name?: string;
+-    email?: string;
++  email?: string;
++  username?: string;
+     image?: string;
+ }
+ /** The OAuth profile returned from your provider */
+@@ -403,7 +404,8 @@ export interface DefaultSession extends Record<string, unknown> {
+     user?: {
+         name?: string | null;
+         email?: string | null;
+-        image?: string | null;
++      image?: string | null;
++      username?: string | null;
+     };
+     expires: ISODateString;
+ }
+@@ -417,6 +419,7 @@ export interface DefaultSession extends Record<string, unknown> {
+  * [`session` callback](https://next-auth.js.org/configuration/callbacks#jwt-callback)
+  */
+ export interface Session extends Record<string, unknown>, DefaultSession {
++
+ }
+ export declare type SessionStrategy = "jwt" | "database";
+ /** [Documentation](https://next-auth.js.org/configuration/options#session) */
+@@ -447,7 +450,8 @@ export interface SessionOptions {
+     updateAge: number;
+ }
+ export interface DefaultUser {
+-    id: string;
++  id: string;
++  username?: string | null;
+     name?: string | null;
+     email?: string | null;
+     image?: string | null;
 diff --git a/node_modules/next-auth/jwt/types.d.ts b/node_modules/next-auth/jwt/types.d.ts
 index e4c1074..eca24d2 100644
 --- a/node_modules/next-auth/jwt/types.d.ts

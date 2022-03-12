@@ -17,14 +17,15 @@ import {
   DateTimeNullableFilter,
   DateTimeFilter,
   UserRelationFilter,
+  UserOrderByWithRelationInput,
+  CommentOrderByRelationAggregateInput,
   CategoryObject,
   CommentListRelationFilter,
   Reaction,
   MediaItemRelationFilter,
   MediaItemListRelationFilter
 } from ".";
-import { nodeDefinitions } from "graphql-relay";
-import { prisma, Prisma } from "@prisma/client";
+import { Prisma } from "@prisma/client";
 
 export const Entry: core.NexusObjectTypeDef<"Entry"> = objectType({
   name: "Entry",
@@ -264,6 +265,25 @@ export const EntryListRelationFilter = core.inputObjectType({
     t.field("some", { type: EntryWhereInput });
   }
 });
+
+export const EntryOrderByWithRelationInput =
+  core.inputObjectType<"EntryOrderByWithRelationInput">({
+    name: "EntryOrderByWithRelationInput",
+    definition(t) {
+      t.nullable.field("id", { type: SortOrderEnum });
+      t.nullable.field("title", { type: SortOrderEnum });
+      t.nullable.field("published", { type: SortOrderEnum });
+      t.nullable.field("authorId", { type: SortOrderEnum });
+      t.nullable.field("content", { type: SortOrderEnum });
+      t.nullable.field("createdAt", { type: SortOrderEnum });
+      t.nullable.field("updatedAt", { type: SortOrderEnum });
+      t.nullable.field("reactions", { type: SortOrderEnum });
+      t.nullable.field("author", { type: UserOrderByWithRelationInput });
+      t.nullable.field("comments", {
+        type: CommentOrderByRelationAggregateInput
+      });
+    }
+  });
 
 export const EntryOrderByRelationAggregateInput = core.inputObjectType({
   name: "EntryOrderByRelationAggregateInput",

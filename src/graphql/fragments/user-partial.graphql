@@ -3,9 +3,9 @@ fragment UserEdgePartial on UserEdge {
   __typename
 }
 
-
 fragment UserPartial on User {
   id
+  username
   name
   email
   image

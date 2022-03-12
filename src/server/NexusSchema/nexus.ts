@@ -238,6 +238,11 @@ export interface NexusGenInputs {
     equals?: boolean | null; // Boolean
     not?: NexusGenInputs["NestedBoolFilter"] | null; // NestedBoolFilter
   };
+  CommentAuthorIdEntryIdCompoundUniqueInput: {
+    // input type
+    authorId?: string | null; // String
+    entryId?: string | null; // String
+  };
   CommentListRelationFilter: {
     // input type
     every?: NexusGenInputs["CommentWhereInput"] | null; // CommentWhereInput
@@ -247,6 +252,19 @@ export interface NexusGenInputs {
   CommentOrderByRelationAggregateInput: {
     // input type
     _count?: NexusGenEnums["SortOrderEnum"] | null; // SortOrderEnum
+  };
+  CommentOrderByWithRelationInput: {
+    // input type
+    author?: NexusGenInputs["UserOrderByWithRelationInput"] | null; // UserOrderByWithRelationInput
+    authorId?: NexusGenEnums["SortOrderEnum"] | null; // SortOrderEnum
+    body?: NexusGenEnums["SortOrderEnum"] | null; // SortOrderEnum
+    createdAt?: NexusGenEnums["SortOrderEnum"] | null; // SortOrderEnum
+    entry?: NexusGenInputs["EntryOrderByWithRelationInput"] | null; // EntryOrderByWithRelationInput
+    entryId?: NexusGenEnums["SortOrderEnum"] | null; // SortOrderEnum
+    id?: NexusGenEnums["SortOrderEnum"] | null; // SortOrderEnum
+    position?: NexusGenEnums["SortOrderEnum"] | null; // SortOrderEnum
+    reactions?: NexusGenEnums["SortOrderEnum"] | null; // SortOrderEnum
+    updatedAt?: NexusGenEnums["SortOrderEnum"] | null; // SortOrderEnum
   };
   CommentWhereInput: {
     // input type
@@ -264,6 +282,13 @@ export interface NexusGenInputs {
     position?: NexusGenInputs["StringNullableFilter"] | null; // StringNullableFilter
     reactions?: NexusGenInputs["EnumCommentReactionsNullableListFilter"] | null; // EnumCommentReactionsNullableListFilter
     updatedAt?: NexusGenInputs["DateTimeNullableFilter"] | null; // DateTimeNullableFilter
+  };
+  CommentWhereUniqueInput: {
+    // input type
+    authorId_entryId?:
+      | NexusGenInputs["CommentAuthorIdEntryIdCompoundUniqueInput"]
+      | null; // CommentAuthorIdEntryIdCompoundUniqueInput
+    id?: string | null; // String
   };
   DateTimeFilter: {
     // input type
@@ -302,6 +327,19 @@ export interface NexusGenInputs {
   EntryOrderByRelationAggregateInput: {
     // input type
     _count?: NexusGenEnums["SortOrderEnum"] | null; // SortOrderEnum
+  };
+  EntryOrderByWithRelationInput: {
+    // input type
+    author?: NexusGenInputs["UserOrderByWithRelationInput"] | null; // UserOrderByWithRelationInput
+    authorId?: NexusGenEnums["SortOrderEnum"] | null; // SortOrderEnum
+    comments?: NexusGenInputs["CommentOrderByRelationAggregateInput"] | null; // CommentOrderByRelationAggregateInput
+    content?: NexusGenEnums["SortOrderEnum"] | null; // SortOrderEnum
+    createdAt?: NexusGenEnums["SortOrderEnum"] | null; // SortOrderEnum
+    id?: NexusGenEnums["SortOrderEnum"] | null; // SortOrderEnum
+    published?: NexusGenEnums["SortOrderEnum"] | null; // SortOrderEnum
+    reactions?: NexusGenEnums["SortOrderEnum"] | null; // SortOrderEnum
+    title?: NexusGenEnums["SortOrderEnum"] | null; // SortOrderEnum
+    updatedAt?: NexusGenEnums["SortOrderEnum"] | null; // SortOrderEnum
   };
   EntryRelationFilter: {
     // input type
@@ -771,6 +809,7 @@ export interface NexusGenInputs {
     sessions?: NexusGenInputs["SessionOrderByRelationAggregateInput"] | null; // SessionOrderByRelationAggregateInput
     status?: NexusGenEnums["SortOrderEnum"] | null; // SortOrderEnum
     updatedAt?: NexusGenEnums["SortOrderEnum"] | null; // SortOrderEnum
+    username?: NexusGenEnums["SortOrderEnum"] | null; // SortOrderEnum
   };
   UserOrderByWithRelationInput: {
     // input type
@@ -791,6 +830,7 @@ export interface NexusGenInputs {
     sessions?: NexusGenInputs["SessionOrderByRelationAggregateInput"] | null; // SessionOrderByRelationAggregateInput
     status?: NexusGenEnums["SortOrderEnum"] | null; // SortOrderEnum
     updatedAt?: NexusGenEnums["SortOrderEnum"] | null; // SortOrderEnum
+    username?: NexusGenEnums["SortOrderEnum"] | null; // SortOrderEnum
   };
   UserRelationFilter: {
     // input type
@@ -817,6 +857,7 @@ export interface NexusGenInputs {
     sessions?: NexusGenInputs["SessionListRelationFilter"] | null; // SessionListRelationFilter
     status?: NexusGenInputs["EnumUserStatusNullableFilter"] | null; // EnumUserStatusNullableFilter
     updatedAt?: NexusGenInputs["DateTimeNullableFilter"] | null; // DateTimeNullableFilter
+    username?: NexusGenInputs["StringNullableFilter"] | null; // StringNullableFilter
   };
   UserWhereUniqueInput: {
     // input type
@@ -1261,7 +1302,7 @@ export interface NexusGenFieldTypes {
     entries: NexusGenRootTypes["QueryEntries_Connection"]; // QueryEntries_Connection!
     entryFeed: NexusGenRootTypes["QueryEntryFeed_Connection"]; // QueryEntryFeed_Connection!
     findEntryById: NexusGenRootTypes["Entry"] | null; // Entry
-    listAccounts: NexusGenRootTypes["QueryListAccounts_Connection"]; // QueryListAccounts_Connection!
+    listAccounts: NexusGenRootTypes["QueryListAccounts_Connection"] | null; // QueryListAccounts_Connection
     listProfiles: NexusGenRootTypes["QueryListProfiles_Connection"]; // QueryListProfiles_Connection!
     listSessions: NexusGenRootTypes["QueryListSessions_Connection"]; // QueryListSessions_Connection!
     node: NexusGenRootTypes["Node"]; // Node!
@@ -1421,6 +1462,7 @@ export interface NexusGenFieldTypes {
     role: NexusGenEnums["Role"]; // Role!
     sessions: NexusGenRootTypes["UserSessions_Connection"]; // UserSessions_Connection!
     status: NexusGenEnums["UserStatus"] | null; // UserStatus
+    username: string | null; // String
   };
   UserAccounts_Connection: {
     // field return type
@@ -1804,6 +1846,7 @@ export interface NexusGenFieldTypeNames {
     role: "Role";
     sessions: "UserSessions_Connection";
     status: "UserStatus";
+    username: "String";
   };
   UserAccounts_Connection: {
     // field return type name
@@ -1991,11 +2034,9 @@ export interface NexusGenArgTypes {
       // args
       after?: string | null; // String
       before?: string | null; // String
+      count: number; // Int!
       first?: number | null; // Int
-      id: string; // String!
       last?: number | null; // Int
-      provider: string; // String!
-      providerAccountId: string; // String!
     };
     listProfiles: {
       // args

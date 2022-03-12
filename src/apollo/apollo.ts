@@ -19,6 +19,8 @@ import {
   QueryListProfiles_ConnectionKeySpecifier,
   QueryEntries_ConnectionKeySpecifier,
   UserComments_ConnectionKeySpecifier,
+  QueryAccounts_ConnectionFieldPolicy,
+  QueryAccounts_ConnectionKeySpecifier,
   QuerySession_ConnectionKeySpecifier,
   QueryUsersQuery_ConnectionKeySpecifier,
   QueryKeySpecifier
@@ -57,7 +59,7 @@ function createApolloClient(
             "allEntries",
             "entryFeed",
             "findEntryById",
-            "getUserByAccount",
+            "listAccounts",
             "listProfiles",
             "listSessions",
             "node",
@@ -70,6 +72,13 @@ function createApolloClient(
             "verificationTokens"
           ],
           fields: {
+            listAccounts:
+              relayStylePagination<QueryAccounts_ConnectionKeySpecifier>([
+                "edges",
+                "nodes",
+                "pageInfo",
+                "totalCount"
+              ] as QueryAccounts_ConnectionKeySpecifier) as RelayFieldPolicy<QueryAccounts_ConnectionKeySpecifier>,
             listComments:
               relayStylePagination<UserComments_ConnectionKeySpecifier>([
                 "edges",

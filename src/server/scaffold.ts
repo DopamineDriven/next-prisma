@@ -27,6 +27,7 @@ import {
 import { fromGlobalId, toGlobalId } from "graphql-relay";
 import { loggingMiddleware } from "./Context";
 import { connectionType } from "./Constituents/Abstract/connection-strategy";
+import { LogMutationTimePlugin } from "./Constituents/Plugins";
 export const MONGO_DB_URI = process.env.DATABASE_URL ?? "";
 
 export const ConnectDb = async () => {
@@ -62,7 +63,7 @@ export const LoadSchemaSync: GraphQLSchema = loadSchemaSync(
 );
 let possibleGlobalIdTypeNames: core.GetGen2<"abstractTypeMembers", "Node">;
 export const schema = core.makeSchema({
-  types: { ...types },
+  types: types,
   plugins: [
     core.connectionPlugin({
       // additionalArgs: { totalCount: "Int" },
@@ -108,7 +109,8 @@ export const schema = core.makeSchema({
       }
     }),
     queryComplexityPlugin(),
-    declarativeWrappingPlugin()
+    declarativeWrappingPlugin(),
+    LogMutationTimePlugin
   ],
   sourceTypes: {
     modules: [
