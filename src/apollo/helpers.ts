@@ -302,7 +302,7 @@ export type QueryKeySpecifier = (
   | "entries"
   | "entryFeed"
   | "findEntryById"
-  | "getUserByAccount"
+  | "listAccounts"
   | "listProfiles"
   | "listSessions"
   | "node"
@@ -327,7 +327,7 @@ export type QueryFieldPolicy = {
   entries?: FieldPolicy<any> | FieldReadFunction<any>;
   entryFeed?: FieldPolicy<any> | FieldReadFunction<any>;
   findEntryById?: FieldPolicy<any> | FieldReadFunction<any>;
-  getUserByAccount?: FieldPolicy<any> | FieldReadFunction<any>;
+  listAccounts?: FieldPolicy<any> | FieldReadFunction<any>;
   listProfiles?: FieldPolicy<any> | FieldReadFunction<any>;
   listSessions?: FieldPolicy<any> | FieldReadFunction<any>;
   node?: FieldPolicy<any> | FieldReadFunction<any>;
@@ -430,14 +430,14 @@ export type QueryGetAllEntries_ConnectionFieldPolicy = {
   pageInfo?: FieldPolicy<any> | FieldReadFunction<any>;
   totalCount?: FieldPolicy<any> | FieldReadFunction<any>;
 };
-export type QueryGetUserByAccount_ConnectionKeySpecifier = (
+export type QueryListAccounts_ConnectionKeySpecifier = (
   | "edges"
   | "nodes"
   | "pageInfo"
   | "totalCount"
-  | QueryGetUserByAccount_ConnectionKeySpecifier
+  | QueryListAccounts_ConnectionKeySpecifier
 )[];
-export type QueryGetUserByAccount_ConnectionFieldPolicy = {
+export type QueryListAccounts_ConnectionFieldPolicy = {
   edges?: FieldPolicy<any> | FieldReadFunction<any>;
   nodes?: FieldPolicy<any> | FieldReadFunction<any>;
   pageInfo?: FieldPolicy<any> | FieldReadFunction<any>;
@@ -599,6 +599,7 @@ export type UserKeySpecifier = (
   | "role"
   | "sessions"
   | "status"
+  | "username"
   | UserKeySpecifier
 )[];
 export type UserFieldPolicy = {
@@ -616,6 +617,7 @@ export type UserFieldPolicy = {
   role?: FieldPolicy<any> | FieldReadFunction<any>;
   sessions?: FieldPolicy<any> | FieldReadFunction<any>;
   status?: FieldPolicy<any> | FieldReadFunction<any>;
+  username?: FieldPolicy<any> | FieldReadFunction<any>;
 };
 export type UserAccounts_ConnectionKeySpecifier = (
   | "edges"
@@ -872,15 +874,12 @@ export type StrictTypedTypePolicies = {
       | (() => undefined | QueryGetAllEntries_ConnectionKeySpecifier);
     fields?: QueryGetAllEntries_ConnectionFieldPolicy;
   };
-  QueryGetUserByAccount_Connection?: Omit<
-    TypePolicy,
-    "fields" | "keyFields"
-  > & {
+  QueryListAccounts_Connection?: Omit<TypePolicy, "fields" | "keyFields"> & {
     keyFields?:
       | false
-      | QueryGetUserByAccount_ConnectionKeySpecifier
-      | (() => undefined | QueryGetUserByAccount_ConnectionKeySpecifier);
-    fields?: QueryGetUserByAccount_ConnectionFieldPolicy;
+      | QueryListAccounts_ConnectionKeySpecifier
+      | (() => undefined | QueryListAccounts_ConnectionKeySpecifier);
+    fields?: QueryListAccounts_ConnectionFieldPolicy;
   };
   QueryListProfiles_Connection?: Omit<TypePolicy, "fields" | "keyFields"> & {
     keyFields?:

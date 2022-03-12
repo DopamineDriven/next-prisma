@@ -169,6 +169,11 @@ export type Comment = Node & {
   updatedAt?: Maybe<Scalars["DateTime"]>;
 };
 
+export type CommentAuthorIdEntryIdCompoundUniqueInput = {
+  authorId?: InputMaybe<Scalars["String"]>;
+  entryId?: InputMaybe<Scalars["String"]>;
+};
+
 export type CommentEdge = {
   __typename?: "CommentEdge";
   /** https://facebook.github.io/relay/graphql/connections.htm#sec-Cursor */
@@ -187,6 +192,19 @@ export type CommentOrderByRelationAggregateInput = {
   _count?: InputMaybe<SortOrderEnum>;
 };
 
+export type CommentOrderByWithRelationInput = {
+  author?: InputMaybe<UserOrderByWithRelationInput>;
+  authorId?: InputMaybe<SortOrderEnum>;
+  body?: InputMaybe<SortOrderEnum>;
+  createdAt?: InputMaybe<SortOrderEnum>;
+  entry?: InputMaybe<EntryOrderByWithRelationInput>;
+  entryId?: InputMaybe<SortOrderEnum>;
+  id?: InputMaybe<SortOrderEnum>;
+  position?: InputMaybe<SortOrderEnum>;
+  reactions?: InputMaybe<SortOrderEnum>;
+  updatedAt?: InputMaybe<SortOrderEnum>;
+};
+
 export type CommentWhereInput = {
   AND?: InputMaybe<Array<CommentWhereInput>>;
   NOT?: InputMaybe<Array<CommentWhereInput>>;
@@ -202,6 +220,11 @@ export type CommentWhereInput = {
   position?: InputMaybe<StringNullableFilter>;
   reactions?: InputMaybe<EnumCommentReactionsNullableListFilter>;
   updatedAt?: InputMaybe<DateTimeNullableFilter>;
+};
+
+export type CommentWhereUniqueInput = {
+  authorId_entryId?: InputMaybe<CommentAuthorIdEntryIdCompoundUniqueInput>;
+  id?: InputMaybe<Scalars["String"]>;
 };
 
 export type DateTimeFilter = {
@@ -291,6 +314,19 @@ export type EntryOrderBy = {
 
 export type EntryOrderByRelationAggregateInput = {
   _count?: InputMaybe<SortOrderEnum>;
+};
+
+export type EntryOrderByWithRelationInput = {
+  author?: InputMaybe<UserOrderByWithRelationInput>;
+  authorId?: InputMaybe<SortOrderEnum>;
+  comments?: InputMaybe<CommentOrderByRelationAggregateInput>;
+  content?: InputMaybe<SortOrderEnum>;
+  createdAt?: InputMaybe<SortOrderEnum>;
+  id?: InputMaybe<SortOrderEnum>;
+  published?: InputMaybe<SortOrderEnum>;
+  reactions?: InputMaybe<SortOrderEnum>;
+  title?: InputMaybe<SortOrderEnum>;
+  updatedAt?: InputMaybe<SortOrderEnum>;
 };
 
 export type EntryRelationFilter = {
@@ -823,7 +859,7 @@ export type Query = {
   entries: QueryEntries_Connection;
   entryFeed: QueryEntryFeed_Connection;
   findEntryById?: Maybe<Entry>;
-  getUserByAccount: QueryGetUserByAccount_Connection;
+  listAccounts?: Maybe<QueryListAccounts_Connection>;
   listProfiles: QueryListProfiles_Connection;
   listSessions: QueryListSessions_Connection;
   node: Node;
@@ -918,14 +954,12 @@ export type QueryFindEntryByIdArgs = {
   id: Scalars["String"];
 };
 
-export type QueryGetUserByAccountArgs = {
+export type QueryListAccountsArgs = {
   after?: InputMaybe<Scalars["String"]>;
   before?: InputMaybe<Scalars["String"]>;
+  count: Scalars["Int"];
   first?: InputMaybe<Scalars["Int"]>;
-  id: Scalars["String"];
   last?: InputMaybe<Scalars["Int"]>;
-  provider: Scalars["String"];
-  providerAccountId: Scalars["String"];
 };
 
 export type QueryListProfilesArgs = {
@@ -1069,8 +1103,8 @@ export type QueryGetAllEntries_Connection = {
   totalCount: Scalars["Int"];
 };
 
-export type QueryGetUserByAccount_Connection = {
-  __typename?: "QueryGetUserByAccount_Connection";
+export type QueryListAccounts_Connection = {
+  __typename?: "QueryListAccounts_Connection";
   /** https://facebook.github.io/relay/graphql/connections.htm#sec-Edge-Types */
   edges: Array<AccountEdge>;
   /** Flattened list of Account type */
@@ -1321,6 +1355,7 @@ export type User = Node & {
   role: Role;
   sessions: UserSessions_Connection;
   status?: Maybe<UserStatus>;
+  username?: Maybe<Scalars["String"]>;
 };
 
 export type UserAccountsArgs = {
@@ -1431,6 +1466,7 @@ export type UserOrderByWithRelationAndSearchRelevanceInput = {
   sessions?: InputMaybe<SessionOrderByRelationAggregateInput>;
   status?: InputMaybe<SortOrderEnum>;
   updatedAt?: InputMaybe<SortOrderEnum>;
+  username?: InputMaybe<SortOrderEnum>;
 };
 
 export type UserOrderByWithRelationInput = {
@@ -1451,6 +1487,7 @@ export type UserOrderByWithRelationInput = {
   sessions?: InputMaybe<SessionOrderByRelationAggregateInput>;
   status?: InputMaybe<SortOrderEnum>;
   updatedAt?: InputMaybe<SortOrderEnum>;
+  username?: InputMaybe<SortOrderEnum>;
 };
 
 export type UserRelationFilter = {
@@ -1512,6 +1549,7 @@ export type UserWhereInput = {
   sessions?: InputMaybe<SessionListRelationFilter>;
   status?: InputMaybe<EnumUserStatusNullableFilter>;
   updatedAt?: InputMaybe<DateTimeNullableFilter>;
+  username?: InputMaybe<StringNullableFilter>;
 };
 
 export type UserWhereUniqueInput = {
@@ -1659,10 +1697,13 @@ export type ResolversTypes = ResolversObject<{
   Boolean: ResolverTypeWrapper<Scalars["Boolean"]>;
   Category: ResolverTypeWrapper<Category>;
   Comment: ResolverTypeWrapper<Comment>;
+  CommentAuthorIdEntryIdCompoundUniqueInput: CommentAuthorIdEntryIdCompoundUniqueInput;
   CommentEdge: ResolverTypeWrapper<CommentEdge>;
   CommentListRelationFilter: CommentListRelationFilter;
   CommentOrderByRelationAggregateInput: CommentOrderByRelationAggregateInput;
+  CommentOrderByWithRelationInput: CommentOrderByWithRelationInput;
   CommentWhereInput: CommentWhereInput;
+  CommentWhereUniqueInput: CommentWhereUniqueInput;
   Date: ResolverTypeWrapper<Scalars["Date"]>;
   DateTime: ResolverTypeWrapper<Scalars["DateTime"]>;
   DateTimeFilter: DateTimeFilter;
@@ -1675,6 +1716,7 @@ export type ResolversTypes = ResolversObject<{
   EntryListRelationFilter: EntryListRelationFilter;
   EntryOrderBy: EntryOrderBy;
   EntryOrderByRelationAggregateInput: EntryOrderByRelationAggregateInput;
+  EntryOrderByWithRelationInput: EntryOrderByWithRelationInput;
   EntryRelationFilter: EntryRelationFilter;
   EntryWhereInput: EntryWhereInput;
   EnumCommentReactionsNullableListFilter: EnumCommentReactionsNullableListFilter;
@@ -1742,7 +1784,7 @@ export type ResolversTypes = ResolversObject<{
   QueryEntryFeed_Connection: ResolverTypeWrapper<QueryEntryFeed_Connection>;
   QueryFilterUsers_Connection: ResolverTypeWrapper<QueryFilterUsers_Connection>;
   QueryGetAllEntries_Connection: ResolverTypeWrapper<QueryGetAllEntries_Connection>;
-  QueryGetUserByAccount_Connection: ResolverTypeWrapper<QueryGetUserByAccount_Connection>;
+  QueryListAccounts_Connection: ResolverTypeWrapper<QueryListAccounts_Connection>;
   QueryListProfiles_Connection: ResolverTypeWrapper<QueryListProfiles_Connection>;
   QueryListSessions_Connection: ResolverTypeWrapper<QueryListSessions_Connection>;
   QueryModeEnum: QueryModeEnum;
@@ -1806,10 +1848,13 @@ export type ResolversParentTypes = ResolversObject<{
   Boolean: Scalars["Boolean"];
   Category: Category;
   Comment: Comment;
+  CommentAuthorIdEntryIdCompoundUniqueInput: CommentAuthorIdEntryIdCompoundUniqueInput;
   CommentEdge: CommentEdge;
   CommentListRelationFilter: CommentListRelationFilter;
   CommentOrderByRelationAggregateInput: CommentOrderByRelationAggregateInput;
+  CommentOrderByWithRelationInput: CommentOrderByWithRelationInput;
   CommentWhereInput: CommentWhereInput;
+  CommentWhereUniqueInput: CommentWhereUniqueInput;
   Date: Scalars["Date"];
   DateTime: Scalars["DateTime"];
   DateTimeFilter: DateTimeFilter;
@@ -1822,6 +1867,7 @@ export type ResolversParentTypes = ResolversObject<{
   EntryListRelationFilter: EntryListRelationFilter;
   EntryOrderBy: EntryOrderBy;
   EntryOrderByRelationAggregateInput: EntryOrderByRelationAggregateInput;
+  EntryOrderByWithRelationInput: EntryOrderByWithRelationInput;
   EntryRelationFilter: EntryRelationFilter;
   EntryWhereInput: EntryWhereInput;
   EnumCommentReactionsNullableListFilter: EnumCommentReactionsNullableListFilter;
@@ -1884,7 +1930,7 @@ export type ResolversParentTypes = ResolversObject<{
   QueryEntryFeed_Connection: QueryEntryFeed_Connection;
   QueryFilterUsers_Connection: QueryFilterUsers_Connection;
   QueryGetAllEntries_Connection: QueryGetAllEntries_Connection;
-  QueryGetUserByAccount_Connection: QueryGetUserByAccount_Connection;
+  QueryListAccounts_Connection: QueryListAccounts_Connection;
   QueryListProfiles_Connection: QueryListProfiles_Connection;
   QueryListSessions_Connection: QueryListSessions_Connection;
   QuerySearchByUserEmail_Connection: QuerySearchByUserEmail_Connection;
@@ -2416,14 +2462,11 @@ export type QueryResolvers<
     ContextType,
     RequireFields<QueryFindEntryByIdArgs, "id">
   >;
-  getUserByAccount?: Resolver<
-    ResolversTypes["QueryGetUserByAccount_Connection"],
+  listAccounts?: Resolver<
+    Maybe<ResolversTypes["QueryListAccounts_Connection"]>,
     ParentType,
     ContextType,
-    RequireFields<
-      QueryGetUserByAccountArgs,
-      "id" | "provider" | "providerAccountId"
-    >
+    RequireFields<QueryListAccountsArgs, "count">
   >;
   listProfiles?: Resolver<
     ResolversTypes["QueryListProfiles_Connection"],
@@ -2572,9 +2615,9 @@ export type QueryGetAllEntries_ConnectionResolvers<
   __isTypeOf?: IsTypeOfResolverFn<ParentType, ContextType>;
 }>;
 
-export type QueryGetUserByAccount_ConnectionResolvers<
+export type QueryListAccounts_ConnectionResolvers<
   ContextType = any,
-  ParentType extends ResolversParentTypes["QueryGetUserByAccount_Connection"] = ResolversParentTypes["QueryGetUserByAccount_Connection"]
+  ParentType extends ResolversParentTypes["QueryListAccounts_Connection"] = ResolversParentTypes["QueryListAccounts_Connection"]
 > = ResolversObject<{
   edges?: Resolver<
     Array<ResolversTypes["AccountEdge"]>,
@@ -2796,6 +2839,7 @@ export type UserResolvers<
     ParentType,
     ContextType
   >;
+  username?: Resolver<Maybe<ResolversTypes["String"]>, ParentType, ContextType>;
   __isTypeOf?: IsTypeOfResolverFn<ParentType, ContextType>;
 }>;
 
@@ -2926,7 +2970,7 @@ export type Resolvers<ContextType = any> = ResolversObject<{
   QueryEntryFeed_Connection?: QueryEntryFeed_ConnectionResolvers<ContextType>;
   QueryFilterUsers_Connection?: QueryFilterUsers_ConnectionResolvers<ContextType>;
   QueryGetAllEntries_Connection?: QueryGetAllEntries_ConnectionResolvers<ContextType>;
-  QueryGetUserByAccount_Connection?: QueryGetUserByAccount_ConnectionResolvers<ContextType>;
+  QueryListAccounts_Connection?: QueryListAccounts_ConnectionResolvers<ContextType>;
   QueryListProfiles_Connection?: QueryListProfiles_ConnectionResolvers<ContextType>;
   QueryListSessions_Connection?: QueryListSessions_ConnectionResolvers<ContextType>;
   QuerySearchByUserEmail_Connection?: QuerySearchByUserEmail_ConnectionResolvers<ContextType>;
