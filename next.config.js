@@ -69,7 +69,6 @@ module.exports = withSuperjson()({
   images: {
     formats: ["image/avif", "image/webp"],
     domains: [
-      "avatars.githubusercontent.com",
       "secure.gravatar.com",
       "pbs.twimg.com",
       "en.gravatar.com",

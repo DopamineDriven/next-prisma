@@ -3,13 +3,20 @@ import {
   DefaultProfile,
   DefaultUser,
   DefaultAccount,
-  DefaultSession,
   Profile as CoreProfile
 } from "next-auth/core/types";
 import { TwitterProfile } from "next-auth/providers/twitter";
 import { ProviderOptions } from "./provider-manipulation";
 import { ProviderUnion } from "./enums";
-
+export interface DefaultSessions extends Record<string, unknown> {
+  user?: {
+    name?: string | null;
+    email?: string | null;
+    username?: string | null;
+    image?: string | null;
+  };
+  expires: ISODateString;
+}
 export interface MergeOptionsWithDefaults extends DefaultProfile {
   data:
     | ProviderOptions["gitHub"]
@@ -18,11 +25,12 @@ export interface MergeOptionsWithDefaults extends DefaultProfile {
 }
 
 declare module "next-auth" {
-  interface Session extends Record<string, unknown>, DefaultSession {
+  interface Session extends Record<string, unknown>, DefaultSessions {
     user?: {
       name?: string | null;
       email?: string | null;
       image?: string | null;
+      username?: string | null;
     };
     twitter?: ProviderOptions["twitter"];
     google?: ProviderOptions["google"];

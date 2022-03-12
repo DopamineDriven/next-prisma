@@ -1,5 +1,6 @@
 import { ConnectionCursor } from "graphql-relay";
 import { core, objectType } from "nexus";
+
 interface IEdgeType<T> {
   cursor: string;
   node: T;

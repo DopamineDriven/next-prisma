@@ -872,22 +872,21 @@ export async function seed<T extends import("@prisma/client").PrismaClient>(
   const entryOneAttachmentSrc =
     "https://images.unsplash.com/photo-1443428018053-13da55589fed?ixlib=rb-1.2.1&ixid=MnwxMjA3fDB8MHxwaG90by1wYWdlfHx8fGVufDB8fHx8&auto=format&fit=crop&w=1000&q=80";
 
-  const entryTwoFileName="Solar Eclipse"
+  const entryTwoFileName = "Solar Eclipse";
   const entryTwoAttachmentSrc = `https://images.unsplash.com/photo-1503862242163-608ef852091d?ixlib=rb-1.2.1&ixid=MnwxMjA3fDB8MHxwaG90by1wYWdlfHx8fGVufDB8fHx8&auto=format&fit=crop&w=1000&q=80`;
-
 
   const entryAttachmentIdOne = new ObjectId().toHexString();
 
   const entryAttachmentIdTwo = new ObjectId().toHexString();
 
   const entryAttachmentOneLastModified = faker.date.past(
-      0.1421355,
-      new Date(Date.now())
+    0.1421355,
+    new Date(Date.now())
   );
 
-    const entryAttachmentTwoLastModified = faker.date.past(
-      3.1421355,
-      new Date(Date.now())
+  const entryAttachmentTwoLastModified = faker.date.past(
+    3.1421355,
+    new Date(Date.now())
   );
 
   const entryAttachments: SetMediaItems = {
@@ -933,9 +932,9 @@ export async function seed<T extends import("@prisma/client").PrismaClient>(
     ]
   };
 
-  const dobGenerated = fractionateTimeStamp(
-    new Date(usingUnixTime()).toUTCString()
-  )[0]; // adheres to the Date Intl format by splitting the timestamp at the T character
+  const dobGenerated = new Date(n(0, 1095379200500))
+    .toISOString()
+    .split(/([T])/)[0]; // adheres to the Date Intl format by splitting the timestamp at the T character
 
   const userCity = faker.address.city();
 
@@ -1071,6 +1070,7 @@ export async function seed<T extends import("@prisma/client").PrismaClient>(
       data: {
         imageMeta: userAvatar,
         createdAt: new Date(Date.now()),
+        username: `${seedFirstName}_${seedSurname}`,
         role: roleTemplate(0, 10),
         email: `${seedFirstName.toLowerCase()}.${seedSurname.toLowerCase()}@gmail.com`,
         image: userAvatarString,

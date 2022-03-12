@@ -1,4 +1,11 @@
-import { extendType, objectType, stringArg, nonNull, core } from "nexus";
+import {
+  extendType,
+  objectType,
+  stringArg,
+  nonNull,
+  core,
+  intArg
+} from "nexus";
 import { buildOrderBy } from "./utils";
 import {
   SortOrderEnum,
@@ -7,7 +14,17 @@ import {
   StringNullableFilter,
   IntNullableFilter
 } from ".";
-import { GraphQLObjectType } from "graphql";
+import {
+  getComplexity,
+  simpleEstimator,
+  ComplexityEstimator,
+  QueryComplexityOptions
+} from "graphql-query-complexity";
+import { loadSchema, loadSchemaSync } from "@graphql-tools/load";
+import { join } from "path";
+import { GraphQLFileLoader } from "@graphql-tools/graphql-file-loader";
+import { GraphQLSchema } from "graphql";
+import { createComplexityRule } from "graphql-query-complexity/dist/cjs/createComplexityRule";
 
 export const Account: core.NexusObjectTypeDef<"Account"> = objectType({
   name: "Account",
@@ -52,7 +69,16 @@ export const AccountOrderByArg: core.NexusArgDef<"AccountOrderBy"> =
   AllAccountsOrderBy.asArg({
     default: { provider: "asc" }
   });
-
+const LoadSchemaSync: GraphQLSchema = loadSchemaSync(
+  join(process.cwd(), "/src/server/NexusSchema/schema.gql"),
+  {
+    loaders: [new GraphQLFileLoader()],
+    sort: true,
+    inheritResolversFromInterfaces: true,
+    experimentalFragmentVariables: true,
+    commentDescriptions: true
+  }
+);
 export const AccountQuery: core.NexusExtendTypeDef<"Query"> =
   extendType<"Query">({
     type: "Query",
@@ -61,9 +87,7 @@ export const AccountQuery: core.NexusExtendTypeDef<"Query"> =
         type: "Account",
         inheritAdditionalArgs: true,
         additionalArgs: {
-          id: nonNull(stringArg()),
-          provider: nonNull(stringArg()),
-          providerAccountId: nonNull(stringArg())
+          count: nonNull(intArg())
         },
         extendConnection(t) {
           t.nonNull.field("totalCount", {
@@ -77,27 +101,17 @@ export const AccountQuery: core.NexusExtendTypeDef<"Query"> =
             }
           });
         },
-        complexity: ({ args, childComplexity }) =>
-          [args].length * childComplexity,
+        nullable: true,
+        complexity: ({ args, childComplexity, field, type }) =>
+          args.count * childComplexity,
         async nodes(root, args, ctx, info) {
-          return await ctx.prisma.account
-            .findUnique({
-              where: {
-                id: args.id,
-                provider_providerAccountId: {
-                  provider: args.provider,
-                  providerAccountId: args.providerAccountId
-                }
-              },
-              select: {
-                user: true
-              }
-            })
-            .user()
-            .accounts()
-            .then(data => {
-              return { totalCount: data.length, ...data };
-            });
+          return await ctx.prisma.account.findMany({
+            // where: {
+            //   id: args.id
+            // },
+            take: args.first ?? 10,
+            include: { user: true }
+          });
         },
         async totalCount(_source, _args, ctx, info) {
           const getUserByAcct = (

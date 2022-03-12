@@ -1,4 +1,6 @@
 import { OAuthUserConfig, OAuthConfig } from "next-auth/providers";
+// import { Adapter, AdapterUser, AdapterSession } from "next-auth/adapters";
+// import { Prisma, PrismaClient } from "@prisma/client";
 
 export interface GitHubProfile {
   data: {
@@ -42,3 +44,9 @@ export type GitHubCustomProvider = <
 >(
   options: Partial<OAuthUserConfig<P>>
 ) => OAuthConfig<P>;
+
+// export async function CustomAdapter({createSession, createUser}: Adapter, prisma: PrismaClient) {
+//   const createUserFunc = async <T extends Prisma.UserCreateArgs>(user: Prisma.SelectSubset<T, Prisma.UserCreateArgs>) =>
+//     await prisma.user.create(user);
+//   const signIn = createUser(createUserFunc(user))
+// }

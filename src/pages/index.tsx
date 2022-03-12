@@ -21,6 +21,7 @@ import * as Jose from "jose";
 import { decode } from "jsonwebtoken";
 import { UnwrapPromise } from "@/types/mapped";
 import { getCookie } from "cookies-next";
+import { Profile } from "@/components/Profile";
 import { CookieValueTypes } from "cookies-next/lib/types";
 export type IndexProps = {
   session: Session | null;
@@ -104,6 +105,7 @@ export default function Index<T extends typeof getServerSideProps>({
         <Login />
       ) : authed === true && status === "authenticated" ? (
         <>
+          <Profile viewerStatus={status} viewerSession={data} />
           <div className='fit font-interVar py-10'>
             <main>
               {session ? (
