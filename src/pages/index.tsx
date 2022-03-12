@@ -12,12 +12,13 @@ import { useState } from "react";
 import { NormalizedCacheObject } from "@apollo/client";
 import { useRouter } from "next/router";
 import Layout from "@/components/Layout/layout";
-import { Session } from "next-auth";
-import { getToken, JWT } from "next-auth/jwt";
+import { Awaitable, Session } from "next-auth";
+import { getToken, JWT, JWTDecodeParams } from "next-auth/jwt";
 import { UnwrapPromise } from "@/types/mapped";
 import { getCookie, checkCookies } from "cookies-next";
 import { Profile } from "@/components/Profile";
 import { CookieValueTypes } from "cookies-next/lib/types";
+import * as JWTNamespace from "jsonwebtoken";
 
 export type IndexProps = {
   session: Session | null;
@@ -56,8 +57,9 @@ export const getServerSideProps = async <T extends ParsedUrlQuery>(
   ctx: GetServerSidePropsContext<T>
 ): Promise<GetServerSidePropsResult<IndexProps>> => {
   const params = ctx.params ? ctx.params.session : "";
-  const session = await getSession({ ctx: ctx });
+  const session = await getSession({ ctx: ctx, req: ctx.req, broadcast: true });
   const token = await getToken({
+    cookieName: "next-auth.session-token",
     req: ctx.req,
     secret: process.env.NEXTAUTH_SECRET ?? ""
   });
