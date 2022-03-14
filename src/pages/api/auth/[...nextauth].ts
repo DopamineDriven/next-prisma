@@ -23,7 +23,7 @@ const authHandler: NextApiHandler<NextAuthOptions> = (req, res) => {
   console.log("twitter", twitter ?? "no twitterpatter");
   return NextAuth(req, res, {
     providers: [
-      GitHubProvider<GitHubCustomProvider>({
+      GitHubProvider({
         clientId: process.env.GITHUB_ID ?? "",
         clientSecret: process.env.GITHUB_SECRET ?? ""
       }),
@@ -31,7 +31,7 @@ const authHandler: NextApiHandler<NextAuthOptions> = (req, res) => {
         clientId: process.env.GOOGLE_ID ?? "",
         clientSecret: process.env.GOOGLE_SECRET ?? ""
       }),
-      TwitterCustom<TwitterProfile>({
+      TwitterProvider({
         clientId: process.env.TWITTER_CLIENT_ID ?? "",
         clientSecret: process.env.TWITTER_CLIENT_SECRET ?? "",
         version: "2.0"
