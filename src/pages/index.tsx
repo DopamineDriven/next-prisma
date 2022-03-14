@@ -24,7 +24,6 @@ export type IndexProps = {
   session: Session | null;
   initialApolloState: NormalizedCacheObject;
   jwt: JWT | null;
-  cookies: CookieValueTypes | null;
   nextAuth: string;
 };
 
@@ -57,27 +56,26 @@ export const getServerSideProps = async <T extends ParsedUrlQuery>(
   ctx: GetServerSidePropsContext<T>
 ): Promise<GetServerSidePropsResult<IndexProps>> => {
   const params = ctx.params ? ctx.params.session : "";
-  const session = await getSession({ ctx: ctx, req: ctx.req, broadcast: true });
+  const session = await getSession({ ctx: ctx, req: ctx.req });
   const token = await getToken({
     cookieName: "next-auth.session-token",
     req: ctx.req,
     secret: process.env.NEXTAUTH_SECRET ?? ""
   });
-  console.log(JSON.stringify(session, null, 2));
-  console.log(params ?? "");
-  const getCookies = getCookie("next-auth", {
-    req: ctx.req,
-    res: ctx.res
-  });
+  // console.log(JSON.stringify(session, null, 2));
+  // console.log(params ?? "");
+  // const getCookies = getCookie("next-auth", {
+  //   req: ctx.req,
+  //   res: ctx.res
+  // });
   const nextAuth = ctx.req.cookies["next-auth.session-token"];
 
   const apolloClient = initializeApollo(null, ctx.params);
-  getCookie("next-auth", { req: ctx.req, res: ctx.res });
+  // getCookie("next-auth", { req: ctx.req, res: ctx.res });
 
   return {
     props: {
       nextAuth,
-      cookies: getCookies ?? null,
       jwt: token ?? null,
       session: session ?? null,
       initialApolloState: apolloClient.cache.extract(true)
@@ -86,8 +84,6 @@ export const getServerSideProps = async <T extends ParsedUrlQuery>(
 };
 
 export default function Index<T extends typeof getServerSideProps>({
-  initialApolloState,
-  cookies,
   nextAuth,
   session,
   jwt
