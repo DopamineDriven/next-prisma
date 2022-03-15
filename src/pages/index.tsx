@@ -23,8 +23,6 @@ import * as JWTNamespace from "jsonwebtoken";
 export type IndexProps = {
   session: Session | null;
   initialApolloState: NormalizedCacheObject;
-  jwt: JWT | null;
-  nextAuth: string;
 };
 
 // the definition of this page
@@ -57,26 +55,12 @@ export const getServerSideProps = async <T extends ParsedUrlQuery>(
 ): Promise<GetServerSidePropsResult<IndexProps>> => {
   const params = ctx.params ? ctx.params.session : "";
   const session = await getSession({ ctx: ctx, req: ctx.req });
-  const token = await getToken({
-    cookieName: "next-auth.session-token",
-    req: ctx.req,
-    secret: process.env.NEXTAUTH_SECRET ?? ""
-  });
-  // console.log(JSON.stringify(session, null, 2));
-  // console.log(params ?? "");
-  // const getCookies = getCookie("next-auth", {
-  //   req: ctx.req,
-  //   res: ctx.res
-  // });
-  const nextAuth = ctx.req.cookies["next-auth.session-token"];
 
-  const apolloClient = initializeApollo(null, ctx.params);
+  const apolloClient = initializeApollo(null, { req: ctx.req, res: ctx.res });
   // getCookie("next-auth", { req: ctx.req, res: ctx.res });
 
   return {
     props: {
-      nextAuth,
-      jwt: token ?? null,
       session: session ?? null,
       initialApolloState: apolloClient.cache.extract(true)
     }
@@ -84,9 +68,7 @@ export const getServerSideProps = async <T extends ParsedUrlQuery>(
 };
 
 export default function Index<T extends typeof getServerSideProps>({
-  nextAuth,
-  session,
-  jwt
+  session
 }: InferGetServerSidePropsType<T>) {
   // const apolloClient = useApollo(initialApolloState);
 
@@ -110,22 +92,23 @@ export default function Index<T extends typeof getServerSideProps>({
           <div className='fit font-interVar py-10'>
             <main>
               {session ? (
-                <Inspector>
-                  {JSON.stringify(
-                    {
-                      session: session,
-                      token: jwt,
-                      reqCook: nextAuth ?? "no cookie",
-                      sessionClient: data
-                      // cookies: getCookie(nextAuth)
-                    },
-                    null,
-                    2
-                  )}
-                </Inspector>
-              ) : <div>loading...</div> ? (
+                <>{`${session.user?.username ?? "no username"}`}</>
+              ) : // <Inspector>
+              //   {/* {JSON.stringify(
+              //     {
+              //       session: session,
+              //       token: jwt,
+              //       reqCook: nextAuth ?? "no cookie",
+              //       sessionClient: data
+              //       // cookies: getCookie(nextAuth)
+              //     },
+              //     null,
+              //     2
+              //   )} */}
+              // </Inspector>
+              <div>loading...</div> ? (
                 <div className='py-[2rem] prose-pre:prose-sm prose-gray font-normal font-sans max-w-3xl flex-col'>
-                  <Inspector>{session}</Inspector>
+                  {/* <Inspector>{session}</Inspector> */}
                 </div>
               ) : (
                 <></>

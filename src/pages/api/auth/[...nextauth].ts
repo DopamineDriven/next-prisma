@@ -13,14 +13,6 @@ import TwitterCustom, {
 } from "../../../lib/providers/twitter-custom";
 import { GitHubCustomProvider } from "@/lib/providers/github-custom";
 const authHandler: NextApiHandler<NextAuthOptions> = (req, res) => {
-  const {
-    query: { twitter, google, github }
-  } = req;
-  const reqresAuth = res.req.headers.authorization;
-  console.log("reqResAuth" + reqresAuth ?? "no reqresauth");
-  console.log("requested query " + req.query ?? "no query");
-  console.log("requested url " + req.url ?? "no url");
-  console.log("twitter", twitter ?? "no twitterpatter");
   return NextAuth(req, res, {
     providers: [
       GitHubProvider({
@@ -38,7 +30,7 @@ const authHandler: NextApiHandler<NextAuthOptions> = (req, res) => {
       })
     ],
     debug: true,
-    logger: { debug: (code, metadata) => ({ code, ...(metadata as any) }) },
+    logger: { debug: (code, metadata) => ({ code, metadata }) },
     adapter: PrismaAdapter(prisma),
     session: {
       updateAge: 120,
@@ -50,8 +42,8 @@ const authHandler: NextApiHandler<NextAuthOptions> = (req, res) => {
       /** Override this method to control the NextAuth.js issued JWT encoding. */
     },
     theme: {
-      colorScheme: "auto",
-      logo: "https://www.andrewross.app/commit-twice-daily.gif"
+      colorScheme: "auto"
+      // logo: "https://www.andrewross.app/commit-twice-daily.gif"
     },
     secret: process.env.NEXTAUTH_SECRET
   });
